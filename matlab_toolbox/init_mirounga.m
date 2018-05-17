@@ -2,10 +2,6 @@
 
 cd(conf.maindir)
 
-conf.inputdir        = [conf.maindir '../SMUG_INPUT/all/'];
-conf.woddir          = [conf.maindir '../DATA/WOD_data/WOD_matlab_nc/'];
-conf.public          = [conf.maindir '../public/'];
-
 conf.rawdir          = [conf.maindir 'original_datasets/'];
 conf.locdir          = [conf.maindir 'original_datasets/original_cls_locations/'];
 conf.rawdir_hr       = [conf.maindir 'original_datasets/original_hr_datasets/'];
@@ -20,10 +16,11 @@ conf.texdir          = [conf.maindir 'doc_latex/'];
 conf.plotdir         = [conf.maindir 'plots/'];
 conf.calibplotdir    = [conf.maindir 'calibration_plots/'];
 
-conf.matlabdir       = [conf.maindir 'matlab_toolbox/'];
 conf.builddir        = [conf.matlabdir 'config_scripts/build_fcell/'];
 conf.confplot        = [conf.matlabdir 'config_scripts/config_plots/'];
 conf.adjustment      = [conf.matlabdir 'config_scripts/compute_adjustments/'];
+conf.json            = [conf.matlabdir 'config_scripts/json_files/'];
+conf.csv_config      = [conf.matlabdir 'config_scripts/csv_config_files/'];
 
 conf.temporary       = [conf.maindir 'temporary/'];
 conf.temporary_tex   = [conf.maindir 'temporary/tex/'];
@@ -42,9 +39,6 @@ conf.temporary_fcell = [conf.maindir 'temporary/fcell/'];
 [s,mess,messid] = mkdir(conf.plotdir);
 [s,mess,messid] = mkdir(conf.calibplotdir);
 [s,mess,messid] = mkdir(conf.matlabdir);
-[s,mess,messid] = mkdir(conf.builddir);
-[s,mess,messid] = mkdir(conf.confplot);
-[s,mess,messid] = mkdir(conf.adjustment);
 [s,mess,messid] = mkdir(conf.temporary);
 [s,mess,messid] = mkdir(conf.temporary_tex);
 [s,mess,messid] = mkdir(conf.temporary_fcell);
@@ -60,11 +54,11 @@ conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
 conf.global_diagnostics = 0;   % compute global maps
 conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
 
-addpath(genpath(conf.matlabdir));
+%% update matlab path
 addpath(conf.datadir)
 
 %% read list deployment
-name_meta='list_deployment.csv';
+name_meta=[conf.csv_config 'list_deployment.csv'];
 if exist(name_meta,'file')
     fid=fopen(name_meta);
     list_deployment=textscan(fid,'%s %s %d %d %s %d', ...
@@ -77,7 +71,7 @@ else
 end
 
 %% read list deploymet CTD HR
-name_meta='list_deployment_hr.csv';
+name_meta=[conf.csv_config 'list_deployment_hr.csv'];
 if exist(name_meta,'file')
     fid=fopen(name_meta);
     list_deployment_hr=textscan(fid,'%s %s %d %s %d', ...
@@ -208,14 +202,16 @@ end
 %% update json and ODV files
 
 if conf.update_input_data
+    
     % update deployment.json
-    fic = dir([conf.maindir 'deployment2.json']); datefic = fic.datenum;
-    copyfile([conf.maindir 'deployment2.json'],[conf.maindir 'deployment2_' datestr(datefic,'yyyymmdd') '.json']);
-    copyfile([conf.inputdir '../deployment2.json'],[conf.maindir 'deployment2.json']);
+    fic = dir([conf.json 'deployment2.json']); datefic = fic.datenum;
+    copyfile([conf.json 'deployment2.json'],[conf.json 'deployment2_' datestr(datefic,'yyyymmdd') '.json']);
+    copyfile([conf.inputdir '../deployment2.json'],[conf.json 'deployment2.json']);
+    
     % update platform.json
-    fic = dir([conf.maindir 'platform2.json']); datefic = fic.datenum;
-    copyfile([conf.maindir 'platform2.json'],[conf.maindir 'platform2_' datestr(datefic,'yyyymmdd') '.json']);
-    copyfile([conf.inputdir '../platform2.json'],[conf.maindir 'platform2.json']);
+    fic = dir([conf.json 'platform2.json']); datefic = fic.datenum;
+    copyfile([conf.json 'platform2.json'],[conf.json 'platform2_' datestr(datefic,'yyyymmdd') '.json']);
+    copyfile([conf.inputdir '../platform2.json'],[conf.json 'platform2.json']);
     
     ldir = dir(conf.inputdir);
     for kk=1:length(ldir),
@@ -260,14 +256,14 @@ if conf.update_input_data
 end
 
 %% load metadata
-deployment=loadjson([conf.maindir 'deployment2.json']);
+deployment=loadjson([conf.json 'deployment2.json']);
 
 deployment_code={};
 for kk=1:length(deployment),
     deployment_code{kk} = deployment{kk}.deployment_code;
 end
 
-deployment_patch=loadjson([conf.maindir 'deployment2_patch.json']);
+deployment_patch=loadjson([conf.json 'deployment2_patch.json']);
 for kk=1:length(deployment_patch),
     if ~ismember(deployment_patch{kk}.deployment_code,deployment_code),
         deployment={deployment{:},deployment_patch{kk}};
@@ -281,18 +277,7 @@ ind=1;
 for ii=1:length(deployment)
     I=find(strcmp(deployment{1,ii}.deployment_code,list_deployment{:,1}));
     if length(I)==0 & sum(strcmp(deployment{1,ii}.deployment_code,list_ex(1,:)))==0
-        disp(sprintf('%s must be added in list_deployment.csv',deployment{1,ii}.deployment_code));
-        %list{ind,1}=sprintf(deployment{1,ii}.deployment_code);
-        %list{ind,2}=deployment{1,ii}.pi_code;
-        %list{ind,3}=0;
-        %list{ind,4}=0;
-        %list{ind,5}='UNKNOWN';
-        %list{ind,6}=0;
-        %fileID = fopen(name_meta,'a');
-        %fprintf(fileID,'%s,%s,%d,%d,%s,%d\n',list{ind,:});
-        %fclose(fileID);
-        %ind=ind+1;
-    
+        disp(sprintf('%s must be added in list_deployment.csv',deployment{1,ii}.deployment_code));    
     elseif sum(strcmp(deployment{1,ii}.deployment_code,list_ex(1,:)))==0
         list{ind,1}=list_deployment{1,1}{I};
         list{ind,2}=list_deployment{1,2}{I};
@@ -307,13 +292,13 @@ warning off
 conf.list_ficseals=list;
 
 %% build deployment list
-platform=loadjson([conf.maindir 'platform2.json']);
+platform=loadjson([conf.json 'platform2.json']);
 deployment_code={};
 for kk=1:length(platform),
     deployment_code{kk} = platform{kk}.deployment_code;
 end
 
-platform_patch=loadjson([conf.maindir 'platform2_patch.json']);
+platform_patch=loadjson([conf.json 'platform2_patch.json']);
 for kk=1:length(platform_patch),
     if ismember(platform_patch{kk}.deployment_code,{conf.list_ficseals{:,1}}) ...
             && ~ismember(platform_patch{kk}.deployment_code,deployment_code),
@@ -377,8 +362,7 @@ for ii=1:length(conf.platform)
 end
 
 %% read metata updates
-conf.table_tag_updates = readtable([conf.maindir 'metadata_update_table.csv'],...
-    'delimiter',',');
+conf.table_tag_updates = readtable([conf.csv_config 'metadata_update_table.csv'],'delimiter',',');
 
 %% create list of ptt vs location files from conf.locdir
 conf.list_cls_locations    = dir([conf.locdir,'*.smoothing.csv']);

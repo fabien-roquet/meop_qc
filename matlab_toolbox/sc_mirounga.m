@@ -24,48 +24,27 @@
 %% initialization
 if ~exist('resume','var') || resume == 0
     
-    clear all; close all
-    
-    conf=[];
-    config = 'fabien';
     resume = 0;
+    clear all; close all; conf=[];
+    configsys;
     
-    % machine-dependent settings
     conf.version     = 'MEOP-CTD_2018-04-10';
     conf.version_old = 'MEOP-CTD_2017-11-11';
-    switch config,
-        case 'fabien',
-            conf.maindir = '/Users/roquet/GoogleDrive/MEOP-CTD/';
-            conf.woddir  = '/Users/roquet/GoogleDrive/WOD_data/WOD_data/';
-            conf.pdflatex= '/Library/TeX/texbin/pdflatex';
-        case 'baptistelinux',
-            conf.maindir = '/media/ubuntu/SPPHD/MEOP/MEOP-CTD/';
-            conf.woddir  = '/media/ubuntu/SPPHD/MEOP/WOD_data/';
-            conf.pdflatex= 'pdflatex';
-        case 'baptistewindow',
-            conf.maindir = 'D:\MEOP\MEOP-CTD\';
-            conf.woddir  = 'L:\MEOP\DATA\WOD_data\';
-            conf.pdflatex= 'pdflatex';
-        otherwise
-            conf.maindir = '/Users/roquet/GoogleDrive/MEOP-CTD/';
-            conf.woddir  = '/Users/roquet/GoogleDrive/WOD_data/WOD_data/';
-            conf.pdflatex= '/Library/TeX/texbin/pdflatex';
-    end
     conf.update_input_data  = 0;   % input data are updated from SMUG_INPUT
     
     % init mirounga
-    cd([conf.maindir 'matlab_toolbox']);
+    addpath(genpath(conf.matlabdir))
     init_mirounga;
     
     % Process all
     Itag0 = tags_processed(conf);
-
+    
     % Process list
     list={
-       'ct101'
-       }';
+        'ct101'
+        }';
     Itag0=tags_processed(conf,list);
-
+    
     % % Process a given NATION
     % Itag0=tags_processed(conf,'AUSTRALIA');
     
@@ -152,12 +131,12 @@ if conf.create_ncargo & resume==1
         
         %   5) create ncARGO file hr0
         sc_create_hr0;
-            
+        
         diary off
-
+        
     end
     ktag = Itag0(1);
-
+    
 end
 
 %% create FR data files (fr0)
@@ -362,15 +341,15 @@ if conf.apply_tlc && resume==4
             S_hr = Mqc_hr.PSAL;
             
             for kk=1:np,
-
+                
                 I = find(~isnan(P_hr(:,kk).*T_hr(:,kk))); Ti = P_lr(:,kk)*NaN;
                 if length(I), Ti = interp1(P_hr(I,kk),T_hr(I,kk),P_lr(:,kk),'nearest',NaN); end
                 T_lr(:,kk) = Ti;
-
+                
                 I = find(~isnan(P_hr(:,kk).*S_hr(:,kk))); Si = P_lr(:,kk)*NaN;
                 if length(I), Si = interp1(P_hr(I,kk),S_hr(I,kk),P_lr(:,kk),'nearest',NaN); end
                 S_lr(:,kk) = Si;
-
+                
             end
             
             T_lr(isnan(T_lr)) = Mqc_lr.TEMP(isnan(T_lr));
