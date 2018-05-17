@@ -128,6 +128,54 @@ for (ii in 1:length(nc_files)){
 	}
 	dev.off()
 	
+	## Smooth sections both horizontally and vertically, for temperature and salinity so as to have one observation every 5 metres and every second day
+	N <- ncol(pres);
+	pseq <- seq(0, max(pres, na.rm = T), 5)
+	
+	## Get a T and S value for each depth increment of 5 metres
+	sm_t <- matrix(ncol=N,nrow=(length(pseq) - 1)); sm_s <- matrix(ncol=N,nrow=(length(pseq) - 1))
+	for (kk in 1:N){
+		for (jj in 1:(length(pseq) - 1)){
+			
+		if(length(which(is.na(temp[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk]))) == length(temp[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk])) {
+			sm_t[jj,kk] <- NA	
+		} else {
+			sm_t[jj,kk] <- mean(temp[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk], na.rm = T)
+		}
+	
+		if(length(which(is.na(psal[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk]))) == length(psal[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk])) {
+			sm_s[jj,kk] <- NA	
+		} else {
+			sm_s[jj,kk] <- mean(psal[which(pres[,kk] >= pseq[jj] & pres[,kk] < pseq[jj+1]),kk], na.rm = T)
+		}
+		
+		}
+	}
+	pseq <- pseq[2:length(pseq)]
+	
+	## Get a mean T and S value for every second day
+	tseq <- seq(as.Date(time[1]), as.Date(time[length(time)]) - 1, by = 'day'); tseq <- tseq[seq(1,length(tseq),2)];
+	smooth_t <- matrix(ncol = length(tseq), nrow = nrow(sm_t));	smooth_s <- matrix(ncol = length(tseq), nrow = nrow(sm_s));
+	for (jj in 1:(length(tseq))){
+		
+		sel <- which(abs(as.numeric(difftime(rep(tseq[jj], length(time)), time, units = 'hours'))) < 24)
+		if(length(sel) > 0){
+			smooth_t[,jj] <- rowMeans(sm_t[,sel], na.rm = T)
+		}
+		if(length(sel) > 0){
+			smooth_s[,jj] <- rowMeans(sm_s[,sel], na.rm = T)
+		}
+		
+	}
+	smooth_t[which(is.nan(smooth_t))] <- NA; smooth_s[which(is.nan(smooth_s))] <- NA
+	
+	# image(tseq, pseq, t(smooth_t), ylim = rev(range(pseq)), col = jet.colors)
+	p <- plot_ly(x=tseq, y=rev(pseq), z=smooth_t, colorscale = 'Jet', type='contour', autocontour = F, contours = list(start = tr[1], end = tr[2]))
+	htmlwidgets::saveWidget(p, "~/Downloads/index.html")
+	# plotly_IMAGE(p, format = "png", out_file = "index.png")
+	
+	
+	
 	## Section Plots
 	png(file = paste("/Users/xhoenner/Downloads/OverviewPlots/",gsub('_prof.nc','', gsub(".*/", "", nc_files[ii])),'_transect_',ifelse(length(grep('hr1', gsub(".*/", "", nc_files[ii]))) == 1 | length(grep('lr1', gsub(".*/", "", nc_files[ii]))) == 1, 'adj', 'raw'),'.png',sep=""), width = 1200, height = 1000, units = "px", res=92, bg = "white");
 	par(mfrow=c(2,1))
