@@ -69,10 +69,10 @@ Scientific Data, 1:140028, doi: 10.1038/sdata.2014.28
 * The delayed-mode general methodology and estimated accuracy of CTD-SRDL hydrographic data 
 are presented in :
   * Roquet F., Charrassin J.-B., Marchand S., Boehme L., Fedak M., Reverdin G., and Guinet C., 2011. Validating hydrographic data obtained from seal-borne satellite-relayed data loggers. J. Atmosph. And Ocean. Tech., 28:787-801. doi: 10.1175/2010JTECHO801.1
-* The thermal cell effect correction is described in :
-  * Mensah, V., Roquet, F., Picard, B., Pauthenet, E., Guinet, C., 2017.  A correction methodology for the thermal mass induced-errors of CTD tags mounted on marine mammals. Accepted in Journal of Atmospheric and Oceanic Technologies.
 * The density inversion removal algorithm is described in :
   * Barker, P. M. and McDougall, T. J., 2017. Stabilizing Hydrographic Profiles with Minimal Change to the Water Masses. Journal of Atmospheric and Oceanic Technology, 34:1935-1945. doi: 10.1175/JTECH-D-16-0111.1
+* The thermal cell effect correction is described in :
+  * Mensah, V., Roquet, F., Lia Siegelman-Charbit, Picard, B., Pauthenet, E., Guinet, C., 2018.  A correction methodology for the thermal mass induced-errors of CTD tags mounted on marine mammals. J. Atmos. Oceanic Technol., 35:1237–1252 doi: 10.1175/JTECH-D-17-0141.1
 
 
 ### National specificities :
