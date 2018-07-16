@@ -1,27 +1,21 @@
-%% ft14KI
-% 
-% EXP='ft14KI';
-% PI='Christophe Guinet';
-% nomfic='ft14_ODV.txt';
-% disp(EXP)
-% 
+%% ft14
+
+%% remove tags
 
 %% apply corrections
 list_tag = dir([info_deployment.dir,'*_prof.nc']);
 sc_init_corrections;
 
-calib_coeff.ft14 =[
-	 1	   0	   0	   0	  0
-	 2	   0	   0	   0	  0
-	 3	   0	   0	   0      0
-	 4	   0	   0	   0	  0
-	 5	   0	   0	   0	  0
-];
+calib_coeff.ft14 = [
+	];
 
-temp_error=0.05;
-psal_error=0.05;
+temp_error=0.1;
+psal_error=0.2;
 
+minT=-3;
+maxT=32;
 
+minS= 4;
+maxS=40;
 
-
-
+min_Nprof= 30;
