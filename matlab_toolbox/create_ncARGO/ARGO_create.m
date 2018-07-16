@@ -1,4 +1,4 @@
-function ARGO_create(ficout,Nprof,Nlevels,isfluo,isoxy,issalcor)
+function ARGO_create(ficout,Nprof,Nlevels,isfluo,isoxy,islight,issalcor)
 %% create a file in ARGO netcdf format
 
 
@@ -29,6 +29,8 @@ for kk=1:Nprof,
     a(:,3,kk)=sprintf('%16s','PSAL'); 
     if isfluo, a(:,4,kk)=sprintf('%16s','CHLA'); end
     if isoxy , a(:,4+isfluo,kk)=sprintf('%16s','DOXY'); end
+    if islight , a(:,4+isfluo+isoxy,kk)=sprintf('%16s','LIGHT'); end
+
 end
 ncwrite(ficout,'STATION_PARAMETERS',a);
 ncwrite(ficout,'CYCLE_NUMBER',zeros(Nprof,1)*NaN);
@@ -50,6 +52,8 @@ ncwrite(ficout,'PROFILE_PSAL_QC',repmat('A',1,Nprof));
 ncwrite(ficout,'PROFILE_TEMP_QC',repmat('A',1,Nprof));
 if isfluo, ncwrite(ficout,'PROFILE_CHLA_QC',repmat('A',1,Nprof)); end
 if isoxy,  ncwrite(ficout,'PROFILE_DOXY_QC',repmat('A',1,Nprof)); end
+if islight,  ncwrite(ficout,'PROFILE_LIGHT_QC',repmat('A',1,Nprof)); end
+
 %%
 PARAMETER = ncread(ficout,'PARAMETER');
 SCIENTIFIC_CALIB_EQUATION = ncread(ficout,'SCIENTIFIC_CALIB_EQUATION');
@@ -73,6 +77,11 @@ for kk=1:Nprof,
         PARAMETER(:,4+isfluo,1,kk)=sprintf('%s%12s','DOXY',' ');
         SCIENTIFIC_CALIB_EQUATION(:,4+isfluo,1,kk)=   sprintf('%256s',' ');
         SCIENTIFIC_CALIB_COEFFICIENT(:,4+isfluo,1,kk)=sprintf('%256s',' ');
+    end
+    if islight
+        PARAMETER(:,4+isfluo+isoxy,1,kk)=sprintf('%s%11s','LIGHT',' ');
+        SCIENTIFIC_CALIB_EQUATION(:,4+isfluo+isoxy,1,kk)=   sprintf('%256s',' ');
+        SCIENTIFIC_CALIB_COEFFICIENT(:,4+isfluo+isoxy,1,kk)=sprintf('%256s',' ');
     end
 end
 ncwrite(ficout,'PARAMETER', PARAMETER);

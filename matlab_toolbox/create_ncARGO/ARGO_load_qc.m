@@ -40,30 +40,30 @@ switch adjusted
         list_var={list_basevar{:},...
             'PRES','TEMP','PSAL',...
             'PRES_QC','TEMP_QC','PSAL_QC'...
-            'CHLA','DOXY','CHLA_QC','DOXY_QC'};
+            'CHLA','DOXY','LIGHT','CHLA_QC','DOXY_QC','LIGHT_QC'};
     case 1
         list_var={list_basevar{:},...
             'PRES_ADJUSTED','TEMP_ADJUSTED','PSAL_ADJUSTED',...
             'PRES_ADJUSTED_QC','TEMP_ADJUSTED_QC','PSAL_ADJUSTED_QC'...
-            'CHLA_ADJUSTED','DOXY_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC'};
+            'CHLA_ADJUSTED','DOXY_ADJUSTED','LIGHT_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC','LIGHT_ADJUSTED_QC'};
     case 2,
         list_var={list_basevar{:},...
             'PRES_ADJUSTED','TEMP_ADJUSTED','PSAL_ADJUSTED',...
             'PRES_ADJUSTED_QC','TEMP_ADJUSTED_QC','PSAL_ADJUSTED_QC',...
             'PRES','TEMP','PSAL','TEMP_ADJUSTED_ERROR','PSAL_ADJUSTED_ERROR'...
-            'CHLA_ADJUSTED','DOXY_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC'...
-            'CHLA','DOXY','CHLA_QC','DOXY_QC'};
+            'CHLA_ADJUSTED','DOXY_ADJUSTED','LIGHT_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC','LIGHT_ADJUSTED_QC',...
+            'CHLA','DOXY','LIGHT','CHLA_QC','DOXY_QC','LIGHT_QC'};
     case 3
         list_var={list_basevar{:},...
             'PRES_ADJUSTED','TEMP_ADJUSTED','PSAL_ADJUSTED',...
             'PRES_ADJUSTED_QC','TEMP_ADJUSTED_QC','PSAL_ADJUSTED_QC'...
-            'CHLA_ADJUSTED','DOXY_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC'};
+            'CHLA_ADJUSTED','DOXY_ADJUSTED','LIGHT_ADJUSTED','CHLA_ADJUSTED_QC','DOXY_ADJUSTED_QC','LIGHT_ADJUSTED_QC'};
     
     case 4
         list_var={list_basevar{:},...
             'PRES','TEMP','PSAL',...
             'PRES_QC','TEMP_QC','PSAL_QC'...
-            'CHLA','DOXY','CHLA_QC','DOXY_QC'};
+            'CHLA','DOXY','LIGHT','CHLA_QC','DOXY_QC','LIGHT_QC'};
 end
 finfo = ncinfo(fileIn);
 vars={finfo.Variables.Name};
@@ -85,6 +85,9 @@ if adjusted==1 | adjusted==3
     if isfield (dd,'DOXY_ADJUSTED')
         dd.DOXY = dd.DOXY_ADJUSTED; dd=rmfield(dd,'DOXY_ADJUSTED');
     end
+     if isfield (dd,'LIGHT_ADJUSTED')
+        dd.LIGHT = dd.LIGHT_ADJUSTED; dd=rmfield(dd,'LIGHT_ADJUSTED');
+    end
 end
 
 % handle masks
@@ -100,6 +103,9 @@ if adjusted==0 || adjusted==4,
     if isfield (dd,'DOXY')
         dd.DOXY_QC = double(dd.DOXY_QC);
     end
+    if isfield (dd,'LIGHT')
+        dd.LIGHT_QC = double(dd.LIGHT_QC);
+    end
 else
     dd.PRES_QC = double(dd.PRES_ADJUSTED_QC); dd=rmfield(dd,'PRES_ADJUSTED_QC');
     dd.TEMP_QC = double(dd.TEMP_ADJUSTED_QC); dd=rmfield(dd,'TEMP_ADJUSTED_QC');
@@ -111,6 +117,9 @@ else
     end
     if isfield (dd,'DOXY')
         dd.DOXY_QC = double(dd.DOXY_ADJUSTED_QC); dd=rmfield(dd,'DOXY_ADJUSTED_QC');
+    end
+    if isfield (dd,'LIGHT')
+        dd.LIGHT_QC = double(dd.LIGHT_ADJUSTED_QC); dd=rmfield(dd,'LIGHT_ADJUSTED_QC');
     end
 end
 dd.PRES_QC(dd.PRES_QC>47) = dd.PRES_QC(dd.PRES_QC>47)-48;dd.PRES_QC(dd.PRES_QC==32) = 9;
@@ -124,6 +133,10 @@ end
 if isfield (dd,'DOXY')
     dd.DOXY_QC(dd.DOXY_QC>47) = dd.DOXY_QC(dd.DOXY_QC>47)-48;dd.DOXY_QC(dd.PRES_QC==32) = 9;
 end
+if isfield (dd,'LIGHT')
+    dd.LIGHT_QC(dd.LIGHT_QC>47) = dd.LIGHT_QC(dd.LIGHT_QC>47)-48;dd.LIGHT_QC(dd.PRES_QC==32) = 9;
+end
+
 dd.Tmask = double(dd.TEMP_QC==1);
 if isfield (dd,'PSAL')
     dd.Smask = double(dd.PSAL_QC==1);
@@ -162,7 +175,7 @@ for ii=1:length(list_var),
     end
 end
 
-list_var={'PRES','TEMP','PSAL','PRES_QC','TEMP_QC','PSAL_QC','CHLA','DOXY','CHLA_QC','DOXY_QC'};
+list_var={'PRES','TEMP','PSAL','PRES_QC','TEMP_QC','PSAL_QC','CHLA','DOXY','LIGHT','CHLA_QC','DOXY_QC','LIGHT_QC'};
 for ii=1:length(list_var),
     if isfield(dd,list_var{ii})
         data=eval(['dd.' list_var{ii} '(:,Iprof)']);
@@ -172,7 +185,7 @@ end
 
 if adjusted==2,
     list_var={'PRES_ADJUSTED','TEMP_ADJUSTED','PSAL_ADJUSTED','TEMP_ADJUSTED_ERROR','PSAL_ADJUSTED_ERROR'...
-        ,'CHLA_ADJUSTED','DOXY_ADJUSTED','CHLA_ADJUSTED_ERROR','DOXY_ADJUSTED_ERROR'};
+        ,'CHLA_ADJUSTED','DOXY_ADJUSTED','LIGHT_ADJUSTED','CHLA_ADJUSTED_ERROR','DOXY_ADJUSTED_ERROR','LIGHT_ADJUSTED_ERROR'};
     for ii=1:length(list_var),
         if isfield(dd,list_var{ii})
             data=eval(['dd.' list_var{ii} '(:,Iprof)']);
@@ -193,6 +206,9 @@ if adjusted~=0,
     if isfield (dd,'DOXY')
         argo_qc.DOXY(argo_qc.DOXY_QC>1)=NaN;
     end
+    if isfield (dd,'LIGHT')
+        argo_qc.LIGHT(argo_qc.LIGHT_QC>1)=NaN;
+    end
 
 end
 
@@ -207,6 +223,9 @@ if adjusted==2,
     end
     if exist ('dd.DOXY')
         argo_qc.DOXY_ADJUSTED(argo_qc.DOXY_QC>1)=NaN;
+    end
+     if exist ('dd.LIGHT')
+        argo_qc.LIGHT_ADJUSTED(argo_qc.LIGHT_QC>1)=NaN;
     end
 end
 

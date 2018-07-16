@@ -10,10 +10,11 @@ tline = fgetl(fid);
 fclose(fid);
 
 clear F O C BD;
-isfluo=0; isoxy=0; iscond=0;
+isfluo=0; isoxy=0; iscond=0;islight=0;
 Fluo=strfind(tline,'Fluorescence');
 Oxy =strfind(tline,'Oxygen');
 Cond=strfind(tline,'Conductivity');
+Light=strfind(tline,'Light');
 
 if length(Cond)>0
     
@@ -27,7 +28,8 @@ if length(Cond)>0
     end
     F(F==999)=NaN;
     O(O==999)=NaN;
-
+    L=T.*NaN;
+    
 elseif length(Fluo)==0 & length(Oxy)==0
     
     [tag,numProf,date,lon,lat,P,T,S] = ...
@@ -35,6 +37,7 @@ elseif length(Fluo)==0 & length(Oxy)==0
         'delimiter',';','headerlines',2);
     F=T.*NaN;
     O=T.*NaN;
+    L=T.*NaN;
     
 elseif length(Fluo)>0 & length(Oxy)>0
     
@@ -42,7 +45,14 @@ elseif length(Fluo)>0 & length(Oxy)>0
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%f%f',...
         'delimiter',';','headerlines',2);
     isfluo=double(length(find(F~=999))~=0); isoxy=double(length(find(O~=999))~=0);
+    L=T.*NaN;
     
+elseif length(Light)>0
+    [tag,numProf,date,lon,lat,P,T,S,F,L] = ...
+        textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%f%f',...
+        'delimiter',';','headerlines',2);
+    isfluo=double(length(find(F~=999))~=0); islight=double(length(find(L~=999))~=0);
+    O=T.*NaN;
 end
 Ihead=find(numProf~=0);
 N=length(Ihead);
@@ -61,10 +71,10 @@ hi(:,10)=hi(:,2);
 
 PTi=cell(1,N); PSi=cell(1,N); 
 PFi=cell(1,N); POi=cell(1,N);
-
+PLi=cell(1,N);
 T(T==999)=NaN; S(S==999)=NaN;
 F(F==999)=NaN; O(O==999)=NaN;
-
+L(L==999)=NaN;
 Ihead2=[Ihead;length(P)+1];
 nprof=1; ntag=1; pold=0;
 for ii=1:N,
@@ -75,6 +85,7 @@ for ii=1:N,
     PSi{ii}=[P(I) S(I)];
     PFi{ii}=[P(I) F(I)];
     POi{ii}=[P(I) O(I)];
+    PLi{ii}=[P(I) L(I)];
     hi(ii,7)=P(Ihead2(ii+1)-1);
     hi(ii,8)=length(I);
     
@@ -85,6 +96,7 @@ I=find(hi(:,5)~=0);
 hi=hi(I,:);
 PTi=PTi(I); PSi=PSi(I);
 PFi=PFi(I); POi=POi(I);
+PLi=PLi(I);
 hs=hs(I);
 
 % correct dates: put them back to Matlab julian date norm
@@ -102,11 +114,12 @@ end
 hi=hi(I,:);
 PTi=PTi(I); PSi=PSi(I);
 PFi=PFi(I); POi=POi(I);
+PLi=PLi(I);
 hs=hs(I);
 
 %save fcell
 name_fcell=[conf.temporary_fcell info_deployment.EXP '_lr0_fcell.mat'];
-save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','EXP','PI','NATION','isoxy','isfluo');
+save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','PLi','EXP','PI','NATION','isoxy','isfluo','islight');
 
 %% save in Argo netcdf format
 if length(hi)>0

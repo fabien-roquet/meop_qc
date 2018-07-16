@@ -64,17 +64,17 @@ catch
     disp(['problem encountered while writing metadata in the ncARGO file :' smru_name])
 end
 
-K2=find(ismember(conf.table_tag_updates.smru_platform_code,smru_name));
-if length(K2)==1,
-    var = conf.table_tag_updates.Properties.VariableNames;
-    for kk=1:length(var)
-        if iscell(conf.table_tag_updates{K2,kk}),
-            ncwriteatt(name_prof,'/',var{kk},conf.table_tag_updates{K2,kk}{:});
-        end
-    end
-elseif length(K)>1,
-    disp(['problem: multiple entry for ' smru_name ' in metadata_update_table.csv']);
-end
+% K2=find(ismember(conf.table_tag_updates.smru_platform_code,smru_name));
+% if length(K2)==1,
+%     var = conf.table_tag_updates.Properties.VariableNames;
+%     for kk=1:length(var)
+%         if iscell(conf.table_tag_updates{K2,kk}),
+%             ncwriteatt(name_prof,'/',var{kk},conf.table_tag_updates{K2,kk}{:});
+%         end
+%     end
+% elseif length(K)>1,
+%     disp(['problem: multiple entry for ' smru_name ' in metadata_update_table.csv']);
+% end
 
 
 

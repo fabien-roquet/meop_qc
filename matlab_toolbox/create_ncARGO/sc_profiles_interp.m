@@ -9,6 +9,7 @@ TEMP_std_lev = NaN*std_lev;
 SALI_std_lev = NaN*std_lev;
 CHLA_std_lev = NaN*std_lev;
 DOXY_std_lev = NaN*std_lev;
+LIGHT_std_lev = NaN*std_lev;
 
 % [Sgrid,Tgrid] = meshgrid(10:50,-4:.5:25);
 % Dgrid = sw_dens0(Sgrid,Tgrid);
@@ -20,12 +21,14 @@ for kprof=1:N_prof,
     s=SALI(:,kprof);
     f=CHLA(:,kprof);
     o=DOXY(:,kprof);
-    
+    l=LIGHT(:,kprof);
+        
     d = sw_dens0(s,t);
     t_std = NaN*zeros(N_std,1);
     s_std = NaN*zeros(N_std,1);
     f_std = NaN*zeros(N_std,1);
     o_std = NaN*zeros(N_std,1);
+    l_std = NaN*zeros(N_std,1);
 %     t_1dbar=[];
 %     s_1dbar=[];
     
@@ -85,10 +88,24 @@ for kprof=1:N_prof,
         end
     end
     
+    if ~isempty(l)&length(find(~isnan(z.*l)))>1
+        z_in=z(~isnan(l) & ~isnan(z));
+        l_in=l(~isnan(l) & ~isnan(z));
+        [z_in,I]=sort(z_in);
+        l_in=l_in(I);
+        I=[find(z_in(1:end-1)~=z_in(2:end));length(z_in)];
+        z_in=z_in(I);
+        l_in=l_in(I);
+        if length(l_in)>5 %...expected to avoid isolated values
+            l_std = interp1(z_in,l_in,std_lev);
+            % o_1dbar = interp1(z_in,o_in,std_1dbar);
+        end
+    end
+    
     TEMP_std_lev(:,kprof) = t_std;
     SALI_std_lev(:,kprof) = s_std;
     CHLA_std_lev(:,kprof) = f_std;
     DOXY_std_lev(:,kprof) = o_std;
-
+    LIGHT_std_lev(:,kprof) = l_std;
 end
 
