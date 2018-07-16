@@ -72,7 +72,7 @@ are presented in :
 * The density inversion removal algorithm is described in :
   * Barker, P. M. and McDougall, T. J., 2017. Stabilizing Hydrographic Profiles with Minimal Change to the Water Masses. J. Atmos. Oceanic Technol., 34:1935-1945. doi: 10.1175/JTECH-D-16-0111.1
 * The thermal cell effect correction is described in :
-  * Mensah, V., Roquet, F., Lia Siegelman-Charbit, Picard, B., Pauthenet, E., Guinet, C., 2018.  A correction methodology for the thermal mass induced-errors of CTD tags mounted on marine mammals. J. Atmos. Oceanic Technol., 35:1237–1252 doi: 10.1175/JTECH-D-17-0141.1
+  * Mensah, V., Roquet, F., Siegelman-Charbit, L., Picard, B., Pauthenet, E., Guinet, C., 2018.  A correction methodology for the thermal mass induced-errors of CTD tags mounted on marine mammals. J. Atmos. Oceanic Technol., 35:1237–1252. doi: 10.1175/JTECH-D-17-0141.1
 
 
 ### National specificities :
