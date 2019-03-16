@@ -12,6 +12,7 @@ function Scorr = thermal_cell_correction (alpha,beta,dt,S,T,P)
 
 [nr np] = size(S);
 if nr < 3, Scorr = S; return; end
+if ~exist('direction','var'), direction=1; end
 
 C = gsw_C_from_SP(S(:),T(:),P(:));
 C = reshape(C,size(S));

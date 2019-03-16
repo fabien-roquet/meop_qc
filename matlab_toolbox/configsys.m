@@ -4,11 +4,11 @@ config = 'fabien';
 
 switch config,
     case 'fabien',
-        conf.maindir = '/Users/roquet/GoogleDrive/MEOP-CTD/';
+        conf.maindir = '/Users/roquet/Dropbox/MEOP/MEOP-CTD/';
         conf.matlabdir = '/Users/roquet/Documents/GitHub/meop_qc/matlab_toolbox/';
-        conf.inputdir= '/Users/roquet/GoogleDrive/SMUG_INPUT/all/';
-        conf.woddir  = '/Users/roquet/GoogleDrive/DATA/WOD_data/WOD_matlab_nc/';
-        conf.public  = '/Users/roquet/GoogleDrive/public/';
+        conf.inputdir= '/Users/roquet/Dropbox/MEOP/SMUG_INPUT/all/';
+        conf.woddir  = '/Users/roquet/Dropbox/MEOP/DATA/WOD_data/WOD_matlab_nc/';
+        conf.public  = '/Users/roquet/Dropbox/MEOP/public/';
         conf.pdflatex= '/Library/TeX/texbin/pdflatex';
     case 'baptistelinux',
         conf.maindir = '/media/ubuntu/SPPHD/MEOP/MEOP-CTD/';

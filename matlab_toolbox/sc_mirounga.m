@@ -13,11 +13,11 @@
 % modify ktag to set where to start in Itag0 list
 
 % % save state
-% save('workspace');
+% save(sprintf('%sworkspace.mat',conf.maindir));
 %
 % % load state
-% cd /Users/roquet/GoogleDrive/MEOP-CTD/
-% load('workspace.mat'); addpath(genpath(conf.matlabdir)); addpath(conf.datadir)
+% conf.maindir = '/Users/roquet/Dropbox/MEOP/MEOP-CTD/';
+% load(sprintf('%sworkspace.mat',conf.maindir)); addpath(genpath(conf.matlabdir)); addpath(conf.datadir)
 
 
 
@@ -28,8 +28,8 @@ if ~exist('resume','var') || resume == 0
     clear all; close all; conf=[];
     configsys;
     
-    conf.version     = 'MEOP-CTD_2018-04-10';
-    conf.version_old = 'MEOP-CTD_2017-11-11';
+    conf.version     = 'MEOP-CTD_2019-04-01';
+    conf.version_old = 'MEOP-CTD_2018-04-10';
     conf.update_input_data  = 0;   % input data are updated from SMUG_INPUT
     
     % init mirounga
@@ -39,11 +39,11 @@ if ~exist('resume','var') || resume == 0
     % Process all
     Itag0 = tags_processed(conf);
     
-    % Process list
-    list={
-        'ct101'
-        }';
-    Itag0=tags_processed(conf,list);
+    % % Process list
+    %list={
+    %    'ct101'
+    %    }';
+    %Itag0=tags_processed(conf,list);
     
     % % Process a given NATION
     % Itag0=tags_processed(conf,'AUSTRALIA');
