@@ -1,5 +1,8 @@
 function update_metadata(conf,EXP,one_smru_name)
 
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = '';
+end
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 
 % adjust metadata for lr0 and fr0

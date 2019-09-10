@@ -1,4 +1,5 @@
 function info_deployment=load_info_deployment(conf,EXP,one_smru_name)
+
 %% load metadata deployment :
 % EXP, PI, ODV name and directory name 
 
@@ -16,6 +17,11 @@ if ~ismember(EXP,conf.list_deployment_code)
     return
 end
 
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = '';
+end
+
+
 info_deployment.EXP      = EXP;
 info_deployment.PI       = conf.list_deployment{EXP,'pi_code'}{1};
 info_deployment.PI       = info_deployment.PI(info_deployment.PI~=' ');
@@ -30,10 +36,6 @@ info_deployment.process   = conf.list_deployment{EXP,'process'};
 info_deployment.public    = conf.list_deployment{EXP,'public'};
 info_deployment.task_done = conf.list_deployment{EXP,'task_done'};
 
-
-if ~exist('one_smru_name','var') % all tags from EXP deployment
-    one_smru_name = '';
-end
 
 info_deployment.list_tag = dir([info_deployment.dir one_smru_name '*_lr0_prof.nc']);
 info_deployment.list_tag_lr0 =dir([info_deployment.dir one_smru_name '*_lr0_prof.nc']);

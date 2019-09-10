@@ -1,5 +1,9 @@
 function create_fr0(conf,EXP,one_smru_name)
 
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = '';
+end
+
 info_deployment = load_info_deployment(conf,EXP,one_smru_name);
 
 % don't process it if no raw odv file

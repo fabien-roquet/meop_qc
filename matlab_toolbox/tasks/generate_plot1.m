@@ -1,4 +1,4 @@
-function generate_plot1(conf,EXP,smru_name)
+function generate_plot1(conf,EXP,one_smru_name)
 
 
 if isempty(conf),
@@ -6,13 +6,14 @@ if isempty(conf),
 end
 close all
 
-info_deployment=load_info_deployment(conf,EXP,smru_name);
-if ~exist('smru_name','var') % all tags from EXP deployment
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    info_deployment=load_info_deployment(conf,EXP);
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
     delete(sprintf('%s%s/*.png',conf.calibplotdir,info_deployment.EXP))
 else  % tag smru_tag only
+    info_deployment=load_info_deployment(conf,EXP,one_smru_name);
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
-    delete(sprintf('%s%s/calibration_%s_*.png',conf.calibplotdir,info_deployment.EXP,smru_name))
+    delete(sprintf('%s%s/calibration_%s_*.png',conf.calibplotdir,info_deployment.EXP,one_smru_name))
 end 
 
 

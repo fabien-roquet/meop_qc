@@ -10,9 +10,9 @@
   {
   "process_tags":0,
   "process_mode":"resume",
-  "generate_plot1":false,
+  "generate_plot1":true,
   "generate_plot2":false,
-  "global_diagnostics":true,
+  "global_diagnostics":false,
   "update_public_data":false
   },
 "selection":

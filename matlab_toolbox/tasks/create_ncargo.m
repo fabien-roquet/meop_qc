@@ -1,19 +1,20 @@
-function create_ncargo(conf,EXP,smru_name)
+function create_ncargo(conf,EXP,one_smru_name)
 
-info_deployment=load_info_deployment(conf,EXP,smru_name);
 
 % don't process it if no raw odv file
+info_deployment=load_info_deployment(conf,EXP);
 if ~exist([conf.rawdir info_deployment.nomfic]),
     error(sprintf('%s: no raw file. not processed.',EXP));
 end
 
-if ~exist('smru_name','var') % all tags from EXP deployment
-    smru_name = info_deployment.list_smru_name;
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = info_deployment.list_smru_name;
     disp(['(1)' EXP])
     delete([conf.logdir 'diary_' EXP '.txt'])
     diary([conf.logdir 'diary_' EXP '.txt'])
 else  % tag smru_tag only
-    disp(['(1)' smru_name])
+    info_deployment=load_info_deployment(conf,EXP,one_smru_name);
+    disp(['(1)' one_smru_name])
     diary([conf.logdir 'diary_' EXP '.txt'])
 end
 
@@ -30,7 +31,7 @@ else
 end
 
 %   3) init corrections/load adjustment coefficients
-info_deployment=load_info_deployment(conf,EXP,smru_name);
+info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 list_tag = info_deployment.list_smru_name;
 
 if ~any(startsWith(conf.table_coeff.Properties.RowNames,EXP)),
