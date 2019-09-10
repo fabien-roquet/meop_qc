@@ -16,6 +16,28 @@ function mirounga(varargin)
 % run update_input_data prior to sc_mirounga when you want to update raw data
 % sc_mirounga must be run from the directory matlab_toolbox
 
+%% initialization
+init_mirounga;
+
+%% Select tags : choose mode of selection in config.json
+EXPs = select_deployments(conf);
+
+%% options : choose options in config.json
+% conf.process_tags = 0 --> do not process tags
+% conf.process_tags = 1 --> create_ncargo     % process raw data
+% conf.process_tags = 2 --> create_fr0        % process fully-resolved datasets
+% conf.process_tags = 3 --> update_metadata   % set metadata in ncARGO files
+% conf.process_tags = 4 --> apply_adjustments % apply adjustments in ncARGO files
+% conf.process_tags = 5 --> apply_tlc         % apply thermal lag correction
+% conf.process_tags = 6 --> apply_tlc_fr      % apply thermal lag correction on full resolution data
+% conf.process_tags = 7 --> create_hr2        % create hr2 files for high-resolution data
+% conf.process_tags = 8 --> generate_odv4     % generate odv4 files (both normal and STD standard levels)
+% conf.process_mode       = 'resume';   % restart, resume, onestep
+% conf.generate_plot1     = 1;   % create adjustment plots
+% conf.generate_plot2     = 1;   % create diagnostic plots and pdfs
+% conf.global_diagnostics = 0;   % compute global maps
+% conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+
 %% Resume
 if exist('checkpoint.mat','file'),
     load('checkpoint.mat');
@@ -24,38 +46,6 @@ else
     checkpoint = 'none';
     kEXP0 = 1;
 end
-
-%% initialization
-init_mirounga;
-
-%% Select tags
-EXPs = select_deployments(conf);
-
-%% options
-conf.list_tasks = {
-    'create_ncargo',
-    'create_fr0',
-    'update_metadata',
-    'apply_adjustments',
-    'apply_tlc',
-    'apply_tlc_fr',
-    'create_hr2',
-    'generate_odv4'};
-
-% conf.process_tags = 0 --> do not process tags
-% conf.process_tags = 1 --> create_ncargo     % process raw data
-% conf.process_tags = 2 --> create_fr0        % process fully-resolved datasets
-% conf.process_tags = 3 --> update_metadata   % set metadata in ncARGO files
-% conf.process_tags = 4 --> apply_adjustments % apply adjustments in ncARGO files
-% conf.process_tags = 5 --> apply_tlc         % apply thermal lag correction
-% conf.process_tags = save('checkpoint.mat','checkpoint','kEXP'); 6 --> apply_tlc_fr      % apply thermal lag correction on full resolution data
-% conf.process_tags = 7 --> create_hr2        % create hr2 files for high-resolution data
-% conf.process_tags = 8 --> generate_odv4     % generate odv4 files (both normal and STD standard levels)
-% conf.process_mode       = 'resume';   % restart, resume, onestep
-% conf.generate_plot1     = 1;   % create adjustment plots
-% conf.generate_plot2     = 1;   % create diagnostic plots and pdfs
-% conf.global_diagnostics = 0;   % compute global maps
-% conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
 
 %% Execute the tasks
 if conf.process_tags & any(strcmp(checkpoint,{'none','process_tags'})),
@@ -90,7 +80,7 @@ if conf.process_tags & any(strcmp(checkpoint,{'none','process_tags'})),
         
         
     end
-    kEXP0=1; kEXP=1; checkpoint = 'none'; save('checkpoint.mat','checkpoint','kEXP');
+    delete('checkpoint.mat');
     
 end
 
@@ -102,7 +92,7 @@ if conf.generate_plot1 && any(strcmp(checkpoint,{'none','generate_plots1'})),
         EXP = EXPs.deployment_code{kEXP};
         generate_plot1(conf,EXP);
     end
-    kEXP0=1; kEXP=1; checkpoint = 'none'; save('checkpoint.mat','checkpoint','kEXP');
+    delete('checkpoint.mat');
 end
 
 %% Produce the plots 2
@@ -113,7 +103,7 @@ if conf.generate_plot2 && any(strcmp(checkpoint,{'none','generate_plots2'})),
         EXP = EXPs.deployment_code{kEXP};
         generate_plot2(conf,EXP);
     end
-    kEXP0=1; kEXP=1; checkpoint = 'none'; save('checkpoint.mat','checkpoint','kEXP');
+    delete('checkpoint.mat');
 end
 %     % comparaison CTD LR/CTD HR
 %     plot_all_profil=1;

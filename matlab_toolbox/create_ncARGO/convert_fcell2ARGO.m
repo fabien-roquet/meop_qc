@@ -1,4 +1,4 @@
-function convert_fcell2ARGO(conf,EXP,name_fcell,suffix,Nlevels)
+function convert_fcell2ARGO(conf,EXP,name_fcell,suffix,Nlevels,one_smru_name)
 % convert_fcell(ficin,ficout)
 %   conversion du format fcell au format argo
 
@@ -11,8 +11,17 @@ if exist('islight','var'),
 else
     islight=0;
 end
+
 fixed_levels=1;
-if nargin==4, fixed_levels=0; Nlevels=max(hi(:,8)); end
+if ~exist('Nlevels','var') || isempty(Nlevels),
+    fixed_levels=0; 
+    Nlevels=max(hi(:,8)); 
+end
+
+list_smru = conf.list_smru_platform_code;
+if ~exist('smru_name','var')
+    one_smru_name = '';
+end
 
 date_ref=datenum('19500101000000','yyyymmddHHMMSS');
 
@@ -84,18 +93,19 @@ end
 
 platform_number_cell=cellstr(platform_number(1:8,:)');
 list_tag = unique(platform_number_cell);
-Ntag=length(list_tag);
 
-list_smru = conf.list_smru_platform_code;
-
-for ii=1:Ntag,
+for ii=1:length(list_tag),
     
     I=find(strcmp(list_tag{ii},platform_number_cell));
     if ~fixed_levels,
         Nlevels=max([sum(any(~isnan(Temp(:,I)),2)) sum(any(~isnan(Sali(:,I)),2))]);
     end
-    smru_name=char(hs(I(1)));
+    
+    smru_name = char(hs(I(1)));
     K=find(strcmp(list_smru,smru_name));
+    if ~isempty(one_smru_name) && ~strcmp(one_smru_name,smru_name),
+        continue
+    end
     
     if length(K)>0
         

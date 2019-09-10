@@ -1,7 +1,7 @@
-function apply_adjustments(conf,EXP)
+function apply_adjustments(conf,EXP,one_smru_name)
 
 
-info_deployment=load_info_deployment(conf,EXP);
+info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 if ~exist(info_deployment.dir), return, end
 
 % apply offset

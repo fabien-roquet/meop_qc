@@ -6,26 +6,20 @@ if isempty(conf),
 end
 close all
 
-info_deployment=load_info_deployment(conf,EXP);
+info_deployment=load_info_deployment(conf,EXP,smru_name);
 if ~exist('smru_name','var') % all tags from EXP deployment
-    smru_name = info_deployment.list_smru_name;
-    Itag = 1:length(info_deployment.list_tag);
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
     delete(sprintf('%s%s/*.png',conf.calibplotdir,info_deployment.EXP))
 else  % tag smru_tag only
-    Itag = find(strcmp(smru_name,info_deployment.list_smru_name));
-    if isempty(Itag),
-        return
-    end
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
     delete(sprintf('%s%s/calibration_%s_*.png',conf.calibplotdir,info_deployment.EXP,smru_name))
-end
+end 
 
 
 %% visualization of TS plots
 conf_clim.lon=[];
 conf_clim.lat=[];
-for ii = Itag
+for ii = 1:length(info_deployment.list_tag)
     conf_clim.lon=[conf_clim.lon;ncread([info_deployment.dir info_deployment.list_tag(ii).name],'LONGITUDE')];
     conf_clim.lat=[conf_clim.lat;ncread([info_deployment.dir info_deployment.list_tag(ii).name],'LATITUDE')];
 end
@@ -40,7 +34,7 @@ argo_meop=load_MEOP(conf_clim);
 
 %% load seal deployment data
 Mgroup=[]; list_smru_platform={};list_platform_number={};
-for itag = Itag
+for itag = 1:length(info_deployment.list_tag)
     name_prof = sprintf('%s%s',info_deployment.dir,...
         strrep(info_deployment.list_tag(itag).name,'_lr0','_lr1'));
     if exist(name_prof,'file'),
@@ -103,7 +97,7 @@ else
 end
 
 %% compute comparison plots
-for itag = Itag
+for itag = 1:length(info_deployment.list_tag)
     
     %%
     conf_adjustement=[];

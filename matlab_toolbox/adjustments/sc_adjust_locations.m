@@ -19,7 +19,7 @@ conf.cls_locations_datemax_jul = datenum(conf.cls_locations_datemax);
 list_tag = info_deployment.list_tag;
 for index=1:length(list_tag),
     
-    smru_name = list_tag(index).name(1:end-12);
+    smru_name = info_deployment.list_smru_name{index};
     name_prof = sprintf('%s%s%s_prof.nc',info_deployment.dir,smru_name,suffix);
     if ~exist(name_prof,'file'), continue; end
     

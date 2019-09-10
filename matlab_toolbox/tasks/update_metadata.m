@@ -1,12 +1,12 @@
-function update_metadata(conf,EXP)
+function update_metadata(conf,EXP,one_smru_name)
 
-info_deployment=load_info_deployment(conf,EXP);
+info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 
 % adjust metadata for lr0 and fr0
 list_tag = info_deployment.list_tag;
 for index=1:length(list_tag),
     
-    smru_name = list_tag(index).name(1:end-12);
+    smru_name = info_deployment.list_smru_name{index};
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
     sc_write_global_attribute;
     
@@ -16,7 +16,7 @@ for index=1:length(list_tag),
     
 end
 
-info_deployment=load_info_deployment(conf,EXP);
+info_deployment = load_info_deployment(conf,EXP,one_smru_name);
 suffix = '_lr0';        sc_adjust_locations;
 suffix = '_hr0';        sc_adjust_locations;
 
@@ -24,7 +24,7 @@ suffix = '_hr0';        sc_adjust_locations;
 list_tag = info_deployment.list_tag;
 for index=1:length(list_tag),
     
-    smru_name = list_tag(index).name(1:end-12);
+    smru_name = info_deployment.list_smru_name{index};
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
     attr      = ncloadatt_struct(name_prof);
     nattr     = fieldnames(attr);

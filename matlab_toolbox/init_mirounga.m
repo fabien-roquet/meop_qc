@@ -10,6 +10,7 @@ conf.version     = d.version.CTDnew;
 conf.version_old = d.version.CTDold;
 conf.version_SMS = d.version.SMSnew;
 conf.select      = d.selection;
+conf.list_tasks  = d.list_tasks;
 addpath(genpath(conf.matlabdir))
 addpath(genpath(conf.pythondir))
 

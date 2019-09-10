@@ -4,23 +4,28 @@ EXP=info_deployment.EXP;
 PI=info_deployment.PI;
 NATION=info_deployment.NATION;
 
-list_tag = dir([info_deployment.dir,'*_lr0_prof.nc']);
+list_tag = info_deployment.list_tag;
 list_deployment_hr = conf.list_deployment_hr;
+
 for index=1:length(list_tag)
     
-    smru_name = list_tag(index).name(1:end-12);
-    [Lia,Locb]=ismember(smru_name,conf.list_deployment_hr{:,1});
-    if ~Lia, continue, end
-    
+    smru_name = info_deployment.list_smru_name{index};
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
-    num_file = list_deployment_hr{1,2}{Locb};
-    if ~exist(name_prof,'file'), continue, end
+    if ~any(strcmp(list_deployment_hr.Properties.RowNames,smru_name)) || ~exist(name_prof,'file')
+        continue
+    end
+    
+    num_file = list_deployment_hr{smru_name,'instr_id'};
+    file = [conf.rawdir_hr num2str(list_deployment_hr{smru_name,'year'}) '/'  num_file '_ctd.txt'];
+    if ~exist(file,'file'), 
+        disp(sprintf('%s not found',file)); 
+        continue, 
+    end
     
     Mqc = ARGO_load_qc(name_prof,1);
     data_att = ncloadatt_struct(name_prof);
     listatt = fieldnames(data_att);
-    file = [conf.rawdir_hr num2str(list_deployment_hr{1,3}(Locb)) '/'  num_file '_ctd.txt'];
-    if ~exist(file,'file'), disp(sprintf('%s not found',file)); continue, end
+    
     fid = fopen(file);
     tline = fgetl(fid);
     fclose(fid);
@@ -33,7 +38,7 @@ for index=1:length(list_tag)
     Light = strfind(tline,'PPFD');
     
     %% cas des balises qui n'enregistrent que la remontee de certaies profils
-    if list_deployment_hr{1,5}(Locb)==0
+    if list_deployment_hr{smru_name,'continuous'}==0
         
         if length(Fluo)==0 & length(Oxy)==0
             [date,P,T,S] = ...
@@ -348,13 +353,13 @@ for index=1:length(list_tag)
     hs=hs(I);
     
     %save fcell
-    name_fcell=[conf.temporary_fcell info_deployment.EXP '_fr0_fcell.mat'];
+    name_fcell=[conf.temporary_fcell smru_name '_fr0_fcell.mat'];
     save(name_fcell,'hi','hs','PTi','PSi','PFi','POi', 'PLi','EXP','PI','NATION','isoxy','isfluo','islight');
     
     %% save in Argo netcdf format
     if length(hi)>0
         suffix = 'fr0_prof.nc';
-        convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell,suffix,1000);
+        convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell,suffix,1000,smru_name);
     end
     
     

@@ -1,7 +1,7 @@
-function generate_odv4(conf,EXP)
+function generate_odv4(conf,EXP,one_smru_name)
 
 
-info_deployment = load_info_deployment(conf,EXP);
+info_deployment = load_info_deployment(conf,EXP,one_smru_name);
 list_tag = info_deployment.list_tag_hr1;
 
 for ii=1:length(list_tag)

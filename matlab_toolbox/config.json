@@ -23,6 +23,15 @@
   "nation":"",
   "deployment":["ct148","ct149"]
   },
+"list_tasks":[
+    "create_ncargo",
+    "create_fr0",
+    "update_metadata",
+    "apply_adjustments",
+    "apply_tlc",
+    "apply_tlc_fr",
+    "create_hr2",
+    "generate_odv4"],
 "configs":
   {
   "fabien":
@@ -42,7 +51,7 @@
     {
     "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
     "processdir":"/home/froqu/MEOP_process/",
-    "matlabdir":"/home/froqu/Dropbox/MEOP/meop_qc/matlab_toolbox/",
+    "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
     "pythondir":"/home/froqu/Dropbox/MEOP/meop_qc/python_toolbox/",
     "inputdir":"/home/froqu/Dropbox/MEOP/SMUG_INPUT/all/",
     "woddir":"/home/froqu/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
