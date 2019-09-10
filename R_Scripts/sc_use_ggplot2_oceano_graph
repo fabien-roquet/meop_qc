@@ -1,0 +1,111 @@
+library(ggplot2)
+library(reshape2)
+library(RColorBrewer)
+library(akima)
+library(directlabels)
+
+workdir <- "D:/MEOP/MEOP-CTD/final_dataset_prof/FRANCE/ft18/"
+setwd(workdir)
+file="ft18-13f-13_hr0_prof.nc"
+
+nc=nc_open(file)
+list_load=c("LONGITUDE","LATITUDE","TEMP","PRES","PSAL","JULD")
+MQC=list()
+for (i in 1:length(list_load)){
+temp_var=ncvar_get(nc,list_load[i])
+MQC[[list_load[i]]]=temp_var
+}
+nc_close(nc)
+date_origin=julian(1,1,1950)
+date_time=date_origin+MQC$JULD
+
+
+workdir <- "D:/formations/R"
+setwd(workdir)
+
+# profil temperature
+png(filename="profil_temperature_example.png")
+qplot(MQC$TEMP[,60],-MQC$PRES[,60],xlab="Temperature",ylab="Depth",color=MQC$TEMP[,60])+
+labs(color="T°C")
+dev.off()
+
+#all profil from 1 seal
+#need to create a dataframe
+resultat=NULL
+for (i in 1:dim(MQC$TEMP)[2]){
+	
+	m=cbind(MQC$PRES[,i]*0+MQC$JULD[i],MQC$PRES[,i]*0+MQC$LATITUDE[i],MQC$PRES[,i]*0+MQC$LONGITUDE[i],MQC$PRES[,i],MQC$TEMP[,i],MQC$PSAL[,i])
+	m=as.data.frame(m)
+	resultat=rbind(resultat,m)
+	
+}
+names(resultat)=c("JULD","LATITUDE","LONGITUDE","PRES","TEMP","PSAL")
+png(filename="all_profil_temperature_example.png")
+qplot(resultat[,1],-resultat[,2],xlab="Temperature",ylab="Depth",color=resultat[,1],geom="line")+
+labs(color="T°C")
+dev.off()
+
+#change color see option scale_color 
+png(filename="T_S_with_time.png")
+pp=ggplot(data=resultat, aes(x=TEMP,y=PSAL,color=JULD-JULD[1]))+geom_point()+labs(color="DAY")
+pp+scale_color_gradient(low="blue", high="red")
+dev.off()
+
+# we keep dataframe without NA 
+res2=subset(resultat,!is.na(resultat$TEMP))
+
+# graph temperature time depth with contour temperature
+png(filename="Test_time_serie_temperature.png")
+p=ggplot(res2,aes(x = JULD-JULD[1], y = -PRES,z=TEMP,color=TEMP))+
+geom_point()+geom_contour(color="black")+
+xlab("Day") +
+ylab("Depth (m)") +
+labs(color="Temp (C°)")
+p
+dev.off()
+
+
+#use package akima to interp in 2d
+xres <- 0.5 
+yres<-1
+a <- interp(x=res2$JULD-res2$JULD[1], y=-res2$PRES, z=res2$TEMP, 
+xo=seq(0,max(res2$JULD)-res2$JULD[1],by=xres), 
+yo=seq(-1000,0,by=yres), extrap=FALSE,linear=TRUE,duplicate="error")
+
+
+# VERSION no ggplot2
+png(filename="time_serie_interp_temperature_withoutggplot.png")
+image(a,col = terrain.colors(20),zlim=c(1,8))
+filled.contour(a, color.palette=terrain.colors,
+xlab="DAY",ylab="DEPTH",
+key.title = title(main = "TEMP (°C)",cex.main = 1))
+title(main="time serie temperatue")
+dev.off()
+
+# VERSION ggplot2
+xo=seq(0,max(res2$JULD)-res2$JULD[1],by=xres)
+yo=seq(-1000,0,by=yres)
+contour(x = xo, y = yo, z = a$z)
+#create data.frame to ggplot2
+data.fit=expand.grid(TIME=xo,PRES=yo)
+a.melt=melt(a$z)
+data.fit$TEMP=a.melt$value
+png(filename="time_serie_interp_temperature_ggplot.png")
+plot2 <- ggplot(data.fit, aes(x = TIME, y = PRES, z = TEMP)) +
+         geom_tile(aes(fill = TEMP)) +
+		 stat_contour(geom="polygon",aes(fill=..level..))+
+		 stat_contour(bins = 10,color="black")+
+		  theme(panel.grid=element_blank())+
+         xlab("DAY") +
+         ylab("DEPTH") +
+		 labs(color="T°C")
+		 #scale_fill_gradient(low="blue", high="red")
+dev.off()
+		 
+plot3=direct.label(plot2,list("bottom.pieces",colour='black'))
+png(filename="test.png")
+plot3
+dev.off()
+p4 = direct.label(plot2, list("far.from.others.borders", "calc.boxes", "enlarge.box", 
+      hjust = 1, vjust = 1, box.color = NA, fill = "transparent", "draw.rects"))	 
+       

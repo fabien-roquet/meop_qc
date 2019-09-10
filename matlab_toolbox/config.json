@@ -1,0 +1,81 @@
+{
+"config":"fabienlinux",
+"version":
+  {
+  "CTDnew":"MEOP-CTD_2019-08-16",
+  "CTDold":"MEOP-CTD_2018-04-10",
+  "SMSnew":"MEOP-SMS_2019-05-17"
+  },
+"tasks":
+  {
+  "process_tags":0,
+  "process_mode":"resume",
+  "generate_plot1":false,
+  "generate_plot2":false,
+  "global_diagnostics":true,
+  "update_public_data":false
+  },
+"selection":
+  {
+  "all_tags":true,
+  "unprocessed_tags":false,
+  "new_tags":false,
+  "nation":"",
+  "deployment":["ct148","ct149"]
+  },
+"configs":
+  {
+  "fabien":
+    {
+    "rawdir":"/Users/roquet/Dropbox/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"/Users/roquet/Dropbox/MEOP/MEOP-CTD/",
+    "matlabdir":"/Users/roquet/Dropbox/MEOP/meop_qc/matlab_toolbox/",
+    "pythondir":"/Users/roquet/Dropbox/MEOP/meop_qc/python_toolbox/",
+    "inputdir":"/Users/roquet/Dropbox/MEOP/SMUG_INPUT/all/",
+    "woddir":"/Users/roquet/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
+    "coradir":"/Users/roquet/Dropbox/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"/Users/roquet/Dropbox/DATA/MEOP_last_stable_version/",
+    "public":"/Users/roquet/Dropbox/MEOP/public/",
+    "pdflatex":"/Library/TeX/texbin/pdflatex"
+    },
+  "fabienlinux":
+    {
+    "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"/home/froqu/MEOP_process/",
+    "matlabdir":"/home/froqu/Dropbox/MEOP/meop_qc/matlab_toolbox/",
+    "pythondir":"/home/froqu/Dropbox/MEOP/meop_qc/python_toolbox/",
+    "inputdir":"/home/froqu/Dropbox/MEOP/SMUG_INPUT/all/",
+    "woddir":"/home/froqu/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
+    "coradir":"/home/froqu/Dropbox/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"/home/froqu/Dropbox/DATA/MEOP_last_stable_version/",
+    "public":"/home/froqu/Dropbox/MEOP/public/",
+    "pdflatex":"pdflatex"
+    },
+  "baptistelinux":
+    {
+    "rawdir":"/home/ubuntu/MiroungaDropbox/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"/home/ubuntu/MiroungaDropbox/MEOP/MEOP-CTD/",
+    "matlabdir":"/home/ubuntu/MiroungaDropbox/MEOP/meop_qc/matlab_toolbox/",
+    "pythondir":"/home/ubuntu/MiroungaDropbox/MEOP/meop_qc/python_toolbox/",
+    "inputdir":"/home/ubuntu/MiroungaDropbox/MEOP/SMUG_INPUT/all/",
+    "woddir":"/home/ubuntu/MiroungaDropbox/DATA/WOD_data/WOD_matlab_nc/",
+    "coradir":"/home/ubuntu/MiroungaDropbox/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"/home/ubuntu/MiroungaDropbox/DATA/MEOP_last_stable_version/",
+    "public":"/home/ubuntu/MiroungaDropbox/MEOP/public/",
+    "pdflatex":"pdflatex"
+    },
+  "baptistewindow":
+    {
+    "rawdir":"D:/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"D:/MEOP/MEOP-CTD/",
+    "matlabdir":"D:/MEOP/meop_qc/matlab_toolbox/",
+    "pythondir":"D:/MEOP/meop_qc/python_toolbox/",
+    "inputdir":"D:/MEOP/SMUG_INPUT/all/",
+    "woddir":"L:/MEOP/DATA/WOD_data/",
+    "coradir":"L:/MEOP/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"L:/MEOP/DATA/MEOP_last_stable_version/",
+    "public":"D:/MEOP/public/",
+    "pdflatex":"pdflatex"
+    }
+  }
+}
