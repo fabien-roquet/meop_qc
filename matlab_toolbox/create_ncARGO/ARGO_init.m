@@ -9,7 +9,7 @@ STRING8 = netcdf.defDim(ncid,'STRING8',8);
 STRING4 = netcdf.defDim(ncid,'STRING4',4);
 STRING2 = netcdf.defDim(ncid,'STRING2',2);
 N_PROF = netcdf.defDim(ncid,'N_PROF',Nprof);
-N_PARAM = netcdf.defDim(ncid,'N_PARAM',3+isfluo+isoxy);
+N_PARAM = netcdf.defDim(ncid,'N_PARAM',3+isfluo+isoxy+islight);
 N_LEVELS = netcdf.defDim(ncid,'N_LEVELS',Nlevels);
 N_CALIB = netcdf.defDim(ncid,'N_CALIB',1);
 %N_HISTORY = netcdf.defDim(ncid,'N_HISTORY',netcdf.getConstant('NC_UNLIMITED'));
@@ -341,6 +341,46 @@ if isoxy
     varid = netcdf.defVar(ncid,'DOXY_ADJUSTED_ERROR','float',[N_LEVELS N_PROF]);
     netcdf.putAtt(ncid,varid,'long_name','DISSOLVED OXYGEN');
     netcdf.putAtt(ncid,varid,'units','micromole/kg');
+    netcdf.putAtt(ncid,varid,'_FillValue',single(99999));
+    netcdf.putAtt(ncid,varid,'comment','Contains the error on the adjusted values as determined by the delayed mode QC process.');
+end
+
+if islight
+
+    varid = netcdf.defVar(ncid,'PROFILE_LIGHT_QC','char',N_PROF);
+    netcdf.putAtt(ncid,varid,'long_name','Global quality flag of LIGHT profile');
+    netcdf.putAtt(ncid,varid,'conventions','Argo reference table 2a');
+    netcdf.putAtt(ncid,varid,'_FillValue',' ');
+    
+    varid = netcdf.defVar(ncid,'LIGHT','float',[ N_LEVELS N_PROF]);
+    netcdf.putAtt(ncid,varid,'long_name','ln(PPFD)');
+    netcdf.putAtt(ncid,varid,'units','ln(µmol/m²/s)');
+    netcdf.putAtt(ncid,varid,'_FillValue',single(99999));
+    netcdf.putAtt(ncid,varid,'valid_min',0);
+    netcdf.putAtt(ncid,varid,'valid_max',600);
+    netcdf.putAtt(ncid,varid,'comment','In situ measurement');
+    
+    varid = netcdf.defVar(ncid,'LIGHT_QC','char',[ N_LEVELS N_PROF]);
+    netcdf.putAtt(ncid,varid,'long_name','quality flag');
+    netcdf.putAtt(ncid,varid,'conventions','Argo reference table 2');
+    netcdf.putAtt(ncid,varid,'_FillValue',' ');
+    
+    varid = netcdf.defVar(ncid,'LIGHT_ADJUSTED','float',[ N_LEVELS N_PROF]);
+    netcdf.putAtt(ncid,varid,'long_name','ln(PPFD)');
+    netcdf.putAtt(ncid,varid,'units','ln(µmol/m²/s)');
+    netcdf.putAtt(ncid,varid,'_FillValue',single(99999));
+    netcdf.putAtt(ncid,varid,'valid_min',0);
+    netcdf.putAtt(ncid,varid,'valid_max',600);
+    netcdf.putAtt(ncid,varid,'comment','In situ measurement');
+    
+    varid = netcdf.defVar(ncid,'LIGHT_ADJUSTED_QC','char',[ N_LEVELS N_PROF]);
+    netcdf.putAtt(ncid,varid,'long_name','quality flag');
+    netcdf.putAtt(ncid,varid,'conventions','Argo reference table 2');
+    netcdf.putAtt(ncid,varid,'_FillValue',' ');
+    
+    varid = netcdf.defVar(ncid,'LIGHT_ADJUSTED_ERROR','float',[N_LEVELS N_PROF]);
+    netcdf.putAtt(ncid,varid,'long_name','ln(PPFD)');
+    netcdf.putAtt(ncid,varid,'units','ln(µmol/m²/s)');
     netcdf.putAtt(ncid,varid,'_FillValue',single(99999));
     netcdf.putAtt(ncid,varid,'comment','Contains the error on the adjusted values as determined by the delayed mode QC process.');
 end

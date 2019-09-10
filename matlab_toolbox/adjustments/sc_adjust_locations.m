@@ -1,5 +1,21 @@
 %% script for adjustment of locations based on CLS post-processed data
 
+% adjust locations
+conf.list_cls_locations    = dir([conf.locdir,'*.smoothing.csv']);
+conf.ptt_cls_locations     = {};
+conf.cls_locations_datemin = {};
+conf.cls_locations_datemax = {};
+for kk=1:length(conf.list_cls_locations)
+    c = strsplit(conf.list_cls_locations(kk).name,{'_','.'});
+    conf.cls_locations_ptt{kk} = c{1};
+    conf.cls_locations_datemin{kk} = c{2};
+    conf.cls_locations_datemax{kk} = c{3};
+end
+conf.cls_locations_datemin_jul = datenum(conf.cls_locations_datemin);
+conf.cls_locations_datemax_jul = datenum(conf.cls_locations_datemax);
+
+
+%%
 list_tag = info_deployment.list_tag;
 for index=1:length(list_tag),
     
@@ -16,10 +32,11 @@ for index=1:length(list_tag),
     jul = ncread(name_prof,'JULD')+712224;
     datemin = min(jul);
     datemax = max(jul);
-    if strcmp(conf.platform{1,ktag}.loc_algorithm,'K')
+    ktag = find(ismember(conf.list_deployment_code,EXP));
+    if strcmp(conf.platform_json(ktag).loc_algorithm,'K')
         ncwrite   (name_prof,'POSITIONING_SYSTEM',repmat('K       ',Nprof,1)');
     end
-    if strcmp(conf.platform{1,ktag}.loc_algorithm,'L')
+    if strcmp(conf.platform_json(ktag).loc_algorithm,'L')
         ncwrite   (name_prof,'POSITIONING_SYSTEM',repmat('LS      ',Nprof,1)');
     end
     if length(lat)<3, continue, end

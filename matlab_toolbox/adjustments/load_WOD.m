@@ -1,4 +1,4 @@
-function data = load_WOD(conf)
+function argo_wod = load_WOD(conf)
 % load WOD data in Argo netCDF format
 %
 % conf is a struct variable with the following fields
@@ -7,7 +7,7 @@ function data = load_WOD(conf)
 %        one of the position is inside its area.
 
 
-data=[];
+argo_wod=[];
 conf.lon(conf.lon>180)=conf.lon(conf.lon>180)-360;
 
 for jj=1:8,
@@ -24,8 +24,8 @@ for jj=1:8,
                     disp(sprintf('%s does not exist and is needed',name_wod));
                 else
                     aux=ARGO_load(name_wod);
-                    if isempty(data), data = aux;
-                    else; data = ARGO_concat(data,aux);
+                    if isempty(argo_wod), argo_wod = aux;
+                    else; argo_wod = ARGO_concat(argo_wod,aux);
                     end
                 end
             end
@@ -34,8 +34,40 @@ for jj=1:8,
     end
     
 end
-if ~isempty(data)
-    data.LONGITUDE(data.LONGITUDE>180)=data.LONGITUDE(data.LONGITUDE>180)-360;
+if ~isempty(argo_wod)
+    argo_wod.LONGITUDE(argo_wod.LONGITUDE>180)=argo_wod.LONGITUDE(argo_wod.LONGITUDE>180)-360;
 end
 
+if any(conf.lat>-43 & conf.lat<-30 & conf.lon>120 & conf.lat<155)
+    load([conf.woddir '../CTD_imos_profil.mat']);
+    argo_wod=ARGO_concat(argo_wod,data);
+    load([conf.woddir '../Argos_imos_profil.mat']);
+    argo_wod=ARGO_concat(argo_wod,data);
+end
+
+% if (min(conf_clim.lat)>=-50 & max(conf_clim.lat)<=-30 & min(conf_clim.lon)>=120 & max(conf_clim.lon)<=50)
+%     dir_ctd_imos='../CALIBRATION/SARDI_data/IMOS_CTD/IMOS_-_Australian_National_Mooring_Network_(ANMN)_-_CTD_Profiles/';
+%     list_file=dir([dir_ctd_imos '*.nc']);
+%     data=[];
+%     for ii=1:length(list_file)
+%         aux=[];
+%         aux.PRES=ncread([dir_ctd_imos list_file(ii).name],'DEPTH');
+%         aux.LATITUDE=ncread([dir_ctd_imos list_file(ii).name],'LATITUDE');
+%         aux.LONGITUDE=ncread([dir_ctd_imos list_file(ii).name],'LONGITUDE');
+%         aux.JULD=ncread([dir_ctd_imos list_file(ii).name],'TIME')+datenum(1950,1,1);
+%         aux.TEMP=ncread([dir_ctd_imos list_file(ii).name],'TEMP');
+%         aux.PSAL=ncread([dir_ctd_imos list_file(ii).name],'PSAL');
+%         aux.platform_number{1}=ncreadatt([dir_ctd_imos list_file(ii).name],'/','instrument_serial_number');
+%         if size(aux.TEMP,1)==1
+%             aux.TEMP=aux.TEMP';
+%         end
+%         if size(aux.PSAL,1)==1
+%             aux.PSAL=aux.PSAL';
+%         end
+%         aux.np=size(aux.PRES,2);
+%         aux.nr=size(aux.PRES,1);
+%         data = ARGO_concat(data,aux);
+%
+%     end
+% end
 

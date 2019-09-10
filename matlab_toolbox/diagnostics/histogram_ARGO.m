@@ -4,7 +4,7 @@ function histogram_ARGO(argo_qc,hfig,printname)
 %
 % INPUT:
 % argo_qc: argo_qc in a struct variable, obtained through the function ARGO_load_qc
-% hfig: figure handle number. if 0, a new figure is opened.
+% hfig: figure handle number. if 0, the figure is not visible.
 % printname: print name. no print if empty string. suffix indicates the print
 %       format.
 
@@ -23,8 +23,10 @@ N=argo_qc.np;
 
 if exist('hfig','var') & hfig~=0
     figure(hfig);clf
+elseif hfig == 0
+    hfig = figure('visible','off');
 else
-    figure;hfig=gcf;clf
+    hfig=figure;
 end
 
 Pbot=argo_qc.JULD_LOCATION*NaN;
@@ -45,10 +47,10 @@ bar(xout',[n2;n-n2]','stacked');set(gca,'xlim',[0 1000]);
 title('BOTTOM PRES.');
 
 ax2=subplot(2,3,2);
-[n,xout]=hist(year(sum(Smask.*Tmask,1)~=0),2003.5:1:2017.5);
-[n2,xout2]=hist(year(sum(Smask+Tmask,1)~=0),2003.5:1:2017.5);
+[n,xout]=hist(year(sum(Smask.*Tmask,1)~=0),2003.5:1:2018.5);
+[n2,xout2]=hist(year(sum(Smask+Tmask,1)~=0),2003.5:1:2018.5);
 bar(xout',[n2;n-n2]','stacked');
-set(gca,'xlim',[2004 2017],'xtick',2004.5:4:2017.5, ...
+set(gca,'xlim',[2004 2018],'xtick',2004.5:4:2018.5, ...
     'xticklabel',{'04','08','12','16'})
 title('DATE')
 
@@ -91,5 +93,5 @@ elseif exist('printname','var')
     error('can''t read printing format');
 end
 
-
+close(hfig)
 

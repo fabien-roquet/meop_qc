@@ -1,16 +1,13 @@
 %% perform plots and pdf document on the general MEOP-CTD dataset
 
 do_plot_figure = 1;
-%do_plot_figure = 0;
+do_density_plot = 0;
+
 close all
 
 % sort deployments by NATION
-Itag_all=tags_processed(conf);
-[aux,Jtag]=sort({conf.start_date{Itag_all}});
-Itag_1=Itag_all(Jtag);
-[name_NATION,Ktag]=sort({conf.list_ficseals{Itag_1,5}});
-Itag_sort=Itag_1(Ktag);
-list_NATION=unique(name_NATION);
+EXP_all=tags_processed(conf);
+list_NATION=unique(EXP_all.country);
 
 %% plot map all
 
@@ -32,7 +29,7 @@ table_depl  = table({},{},[],[],[],[],'VariableNames',{'depl','group','ispublic'
 table_tag   = table({},{},{},[],[],[],{},{},{},{},{},{},{},{},{},'VariableNames',{'tag','depl','group','ispublic','NprofTS','NprofT','start_date','PTT','WMO','doi','body','platform_code','location','species','location_class'});
 
 if do_plot_figure
-    % total SH
+    % total SH, ispublic
     figure(1),clf,
     set(gcf, 'Color', 'w');
     set(gcf, 'units','centimeters','Position', [2 5 20 20]);
@@ -42,7 +39,7 @@ if do_plot_figure
         'XaxisLocation','top','linest','-');
     topoplot([-180 180 -90 -30],'m_map')
     hold on
-    % total NH
+    % total NH, ispublic
     figure(2),clf,
     set(gcf, 'Color', 'w');
     set(gcf, 'units','centimeters','Position', [15 15 20 20]);
@@ -52,7 +49,7 @@ if do_plot_figure
         'XaxisLocation','bottom','linest','-');
     topoplot([-180 180 30 90],'m_map')
     hold on
-    % total by nation
+    % total by nation, ispublic
     figure(3),clf,
     set(gcf, 'Color', 'w');
     set(gcf, 'units','centimeters','Position', [5 30 20 14]);
@@ -80,7 +77,7 @@ if do_plot_figure
         'XaxisLocation','bottom','linest','-');
     topoplot([-180 180 30 90],'m_map')
     hold on
-    % group SH
+    % group SH, ispublic
     figure(6),clf,
     set(gcf, 'Color', 'w');
     set(gcf, 'units','centimeters','Position', [50 5 20 20]);
@@ -90,7 +87,7 @@ if do_plot_figure
         'XaxisLocation','top','linest','-');
     topoplot([-180 180 -90 -30],'m_map')
     hold on
-    % group NH
+    % group NH, ispublic
     figure(7),clf,
     set(gcf, 'Color', 'w');
     set(gcf, 'units','centimeters','Position', [60 25 20 20]);
@@ -130,20 +127,24 @@ if do_plot_figure
 end
 
 for  kNATION=1:length(list_NATION),
+    
     NATION = list_NATION{kNATION};
-    Itag_sort_group = Itag_sort(strcmp(NATION,name_NATION));
-    if sum([conf.list_ficseals{Itag_sort_group,3}])==0, continue; end
+    EXPs=tags_processed(conf,NATION);
+    list_EXP = EXPs.deployment_code;
+    if ~any(EXPs.process==1), continue; end
+
     delete(H6); Nprof6=0;Ntag6=0;H6=[];nation6=[];Ndep6=[];
     delete(H7); Nprof7=0;Ntag7=0;H7=[];nation7=[];Ndep7=[];
-    col_group=linspecer(length(Itag_sort_group)); numcolgroup=0;
+    col_group=linspecer(length(list_EXP)); numcolgroup=0;
     table_total{1:2,2} = table_total{1:2,2} + 1;
-    if sum([conf.list_ficseals{Itag_sort_group,4}])~=0, table_total{3,2} = table_total{3,2} + 1; end
+    if any(EXPs.public==1), table_total{3,2} = table_total{3,2} + 1; end
     table_aux = cell2table({NATION,0,0,0,0,0,0,0,0});
     table_aux.Properties.VariableNames = table_group.Properties.VariableNames;
     table_group = [ table_group ; table_aux ];
     
-    for  kk=Itag_sort_group,
-        EXP = conf.lfic{kk};
+    for kEXP = 1:length(list_EXP),
+        
+        EXP = list_EXP{kEXP};
         numcolgroup=numcolgroup+1;
         disp(['process deployment: ' EXP]);
         info_deployment=load_info_deployment(conf,EXP);
@@ -151,7 +152,7 @@ for  kNATION=1:length(list_NATION),
         Ntag = length(list_tag);
         name_tag4 = {}; delete(H4); Nprof4=0;Ntag4=0;H4=[];nation4=[];Ndep4=[];
         name_tag5 = {}; delete(H5); Nprof5=0;Ntag5=0;H5=[];nation5=[];Ndep5=[];
-        ispublic=logical(info_deployment.ispublic);
+        ispublic=logical(info_deployment.public);
         table_total{1,3} = table_total{1,3} + 1;
         if ispublic,
             table_total{2,3} = table_total{2,3} + 1;
@@ -165,7 +166,10 @@ for  kNATION=1:length(list_NATION),
         table_depl = [ table_depl ; table_aux ];
         
         for jj=1:Ntag,
+            
             name_prof = sprintf('%s%s',info_deployment.dir,list_tag(jj).name);
+            smru_name = list_tag(jj).name(1:end-12);
+            
             M=ARGO_load_qc(name_prof,1);
             Mattr=ncloadatt_struct(name_prof);
             M.Tmask=double(M.TEMP_QC<2);
@@ -193,34 +197,47 @@ for  kNATION=1:length(list_NATION),
             table_aux.Properties.VariableNames = table_tag.Properties.VariableNames;
             table_tag = [ table_tag ; table_aux ];
             
-            % fig 1 & 4 & 6
-            if nanmean(M.LATITUDE)<-20
-                for ii=1:M.ntag,
-                    descr=M.list_descr{ii};
-                    K=find(strcmp(M.platform_number,descr) & sum(M.Tmask)'>0);
-                    if length(K)
-                        Ntag1=Ntag1+1;
-                        Nprof1=Nprof1+length(K);
-                        nation1{Ntag1,1}=info_deployment.NATION;
-                        Ndep1{Ntag1,1}=info_deployment.EXP;
-                        if do_plot_figure
-                            % fig 1
+            if M.ntag~=1, error('Should be only one tag per file'); end
+            descr=M.list_descr{1};
+            K=find(strcmp(M.platform_number,descr) & sum(M.Tmask)'>0);
+            if exist_continuous
+                Khr=find(strcmp(Mhr.platform_number,descr) & sum(Mhr.Tmask)'>0);
+            end
+            lon=M.LONGITUDE(K); lat=M.LATITUDE(K);
+            lon(lon>180)=lon(lon>180)-360;
+            LAT=[LAT;lat]; LON=[LON;lon]; DATE=[DATE;M.JULD_LOCATION(K)];
+            
+            if do_plot_figure
+                
+                if length(K)
+
+                    % fig 1 & 4 & 6 & 10 & 11 & 12
+                    if nanmean(M.LATITUDE)<-20
+                    
+                        % fig 1
+                        if ispublic
+                            Ntag1=Ntag1+1;
+                            Nprof1=Nprof1+length(K);
+                            nation1{Ntag1,1}=info_deployment.NATION;
+                            Ndep1{Ntag1,1}=info_deployment.EXP;
                             figure(1); m_proj('stereographic','lat',-90,'long',90,'radius',60); hold on
                             h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
-                            col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
+                            col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
                             set(h,'linewidth',.3,'color',col);
                             H1=[H1 h(1)];
-                            % fig 4
-                            Ntag4=Ntag4+1;
-                            Nprof4=Nprof4+length(K);
-                            nation4{Ntag4,1}=info_deployment.NATION;
-                            Ndep4{Ntag4,1}=info_deployment.EXP;
-                            name_tag4{Ntag4} = M.smru_platform_code;
-                            figure(4); m_proj('stereographic','lat',-90,'long',90,'radius',60); hold on
-                            h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
-                            set(h,'linewidth',.3);
-                            H4=[H4 h];
-                            % fig 6
+                        end
+                        % fig 4
+                        Ntag4=Ntag4+1;
+                        Nprof4=Nprof4+length(K);
+                        nation4{Ntag4,1}=info_deployment.NATION;
+                        Ndep4{Ntag4,1}=info_deployment.EXP;
+                        name_tag4{Ntag4} = M.smru_platform_code;
+                        figure(4); m_proj('stereographic','lat',-90,'long',90,'radius',60); hold on
+                        h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
+                        set(h,'linewidth',.3);
+                        H4=[H4 h];
+                        % fig 6
+                        if ispublic
                             Ntag6=Ntag6+1;
                             Nprof6=Nprof6+length(K);
                             nation6{Ntag6,1}=info_deployment.NATION;
@@ -230,39 +247,35 @@ for  kNATION=1:length(list_NATION),
                             col= col_group(numcolgroup,:);
                             set(h,'linewidth',.3,'color',col);
                             H6=[H6 h];
-                            if ismember(Mattr.species,{'Southern ellie','Ellies'})
-                                % fig 10
-                                Ntag10=Ntag10+1;
-                                Nprof10=Nprof10+length(K);
-                                nation10{Ntag10,1}=info_deployment.NATION;
-                                Ndep10{Ntag10,1}=info_deployment.EXP;                        
-                                figure(10); m_proj('stereographic','lat',-90,'long',90,'radius',60); hold on
-                                h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
-                                col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
-                                set(h,'linewidth',.3,'color',col);
-                                H10=[H10 h(1)];
-                            end
+                        end
+                        % fig 10
+                        if ismember(Mattr.species,{'Southern ellie','Ellies'})
+                            Ntag10=Ntag10+1;
+                            Nprof10=Nprof10+length(K);
+                            nation10{Ntag10,1}=info_deployment.NATION;
+                            Ndep10{Ntag10,1}=info_deployment.EXP;
+                            figure(10); m_proj('stereographic','lat',-90,'long',90,'radius',60); hold on
+                            h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
+                            col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
+                            set(h,'linewidth',.3,'color',col);
+                            H10=[H10 h(1)];
                         end
                     end
-                end
-            end
-            % fig 2 & 5 & 7
-            if nanmean(M.LATITUDE)>20
-                for ii=1:M.ntag,
-                    descr=M.list_descr{ii};
-                    K=find(strcmp(M.platform_number,descr) & sum(M.Tmask)'>0);
-                    if length(K)
-                        Ntag2=Ntag2+1;
-                        Nprof2=Nprof2+length(K);
-                        nation2{Ntag2,1}=info_deployment.NATION;
-                        Ndep2{Ntag2,1}=info_deployment.EXP;
-                        if do_plot_figure
-                            % fig 2
+                    
+                    % fig 2 & 5 & 7
+                    if nanmean(M.LATITUDE)>20
+                        % fig 2
+                        if ispublic
+                            Ntag2=Ntag2+1;
+                            Nprof2=Nprof2+length(K);
+                            nation2{Ntag2,1}=info_deployment.NATION;
+                            Ndep2{Ntag2,1}=info_deployment.EXP;
                             figure(2); m_proj('stereographic','lat',90,'long',90,'radius',60); hold on
                             h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
-                            col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
+                            col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
                             set(h,'linewidth',.3,'color',col);
-                            H2=[H2 h(1)];
+                                H2=[H2 h(1)];
+                            end
                             % fig 5
                             Ntag5=Ntag5+1;
                             Nprof5=Nprof5+length(K);
@@ -274,37 +287,32 @@ for  kNATION=1:length(list_NATION),
                             set(h,'linewidth',.3);
                             H5=[H5 h];
                             % fig 7
-                            Ntag7=Ntag7+1;
-                            Nprof7=Nprof7+length(K);
-                            nation7{Ntag7,1}=info_deployment.NATION;
-                            Ndep7{Ntag7,1}=info_deployment.EXP;
-                            figure(7); m_proj('stereographic','lat',90,'long',90,'radius',60); hold on
-                            h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
-                            col= col_group(numcolgroup,:);
-                            set(h,'linewidth',.3,'color',col);
-                            H7=[H7 h];
-                        end
+                            if ispublic
+                                Ntag7=Ntag7+1;
+                                Nprof7=Nprof7+length(K);
+                                nation7{Ntag7,1}=info_deployment.NATION;
+                                Ndep7{Ntag7,1}=info_deployment.EXP;
+                                figure(7); m_proj('stereographic','lat',90,'long',90,'radius',60); hold on
+                                h=m_plot(M.LONGITUDE(K),M.LATITUDE(K));
+                                col= col_group(numcolgroup,:);
+                                set(h,'linewidth',.3,'color',col);
+                                H7=[H7 h];
+                            end
                     end
-                end
-            end
-            % fig 3 & 8 & 9 & 10
-            for ii=1:M.ntag,
-                descr=M.list_descr{ii};
-                K=find(strcmp(M.platform_number,descr) & sum(M.Tmask)'>0);
-                if length(K)
-                    lon=M.LONGITUDE(K); lat=M.LATITUDE(K);
-                    lon(lon>180)=lon(lon>180)-360;
-                    LAT=[LAT;lat]; LON=[LON;lon]; DATE=[DATE;M.JULD_LOCATION(K)];
-                    Ntag3=Ntag3+1;
-                    Nprof3=Nprof3+length(K);
-                    nation3{Ntag3,1}=info_deployment.NATION;
-                    Ndep3{Ntag3,1}=info_deployment.EXP;
-                    if do_plot_figure
+                    
+                    % fig 3 & 8 & 9 & 10
+                    if ispublic
+                        
+                        % fig 3
+                        Ntag3=Ntag3+1;
+                        Nprof3=Nprof3+length(K);
+                        nation3{Ntag3,1}=info_deployment.NATION;
+                        Ndep3{Ntag3,1}=info_deployment.EXP;
                         figure(3);
-                        col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
+                        col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
                         h1=[]; h2=[];
                         lat2=lat; lon2=lon; lon2(lon2>110)=lon2(lon2>110)-360;
-                        if any(lon2<-160) & any(lon2>20), 
+                        if any(lon2<-160) & any(lon2>20),
                             h1=plot(lon2(lon2<-70),lat2(lon2<-70)); set(h1,'linewidth',.3,'color',col);
                             h2=plot(lon2(lon2>-70),lat2(lon2>-70)); set(h2,'linewidth',.3,'color',col);
                         else
@@ -315,56 +323,60 @@ for  kNATION=1:length(list_NATION),
                         elseif ~isempty(h2)
                             H3=[H3 h2(1)];
                         end
-                    end
-                    if ispublic
+                        
+                        % fig 8
                         Ntag8=Ntag8+1;
                         Nprof8=Nprof8+length(K);
                         nation8{Ntag8,1}=info_deployment.NATION;
                         Ndep8{Ntag8,1}=info_deployment.EXP;
-                        if do_plot_figure
-                            figure(8);
-                            col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
-                            h1=[]; h2=[];
-                            lat2=lat; lon2=lon; lon2(lon2>110)=lon2(lon2>110)-360;
-                            if any(lon2<-160) & any(lon2>20),
-                                h1=plot(lon2(lon2<-70),lat2(lon2<-70)); set(h1,'linewidth',.3,'color',col);
-                                h2=plot(lon2(lon2>-70),lat2(lon2>-70)); set(h2,'linewidth',.3,'color',col);
-                            else
-                                h1=plot(lon2,lat2); set(h1,'linewidth',.3,'color',col);
-                            end
-                            if ~isempty(h1)
-                                H8=[H8 h1(1)];
-                            elseif ~isempty(h2)
-                                H8=[H8 h2(1)];
-                            end
+                        figure(8);
+                        col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
+                        h1=[]; h2=[];
+                        lat2=lat; lon2=lon; lon2(lon2>110)=lon2(lon2>110)-360;
+                        if any(lon2<-160) & any(lon2>20),
+                            h1=plot(lon2(lon2<-70),lat2(lon2<-70)); set(h1,'linewidth',.3,'color',col);
+                            h2=plot(lon2(lon2>-70),lat2(lon2>-70)); set(h2,'linewidth',.3,'color',col);
+                        else
+                            h1=plot(lon2,lat2); set(h1,'linewidth',.3,'color',col);
                         end
+                        if ~isempty(h1)
+                            H8=[H8 h1(1)];
+                        elseif ~isempty(h2)
+                            H8=[H8 h2(1)];
+                        end
+                        
                     else
+                        
+                        % fig 9
                         Ntag9=Ntag9+1;
                         Nprof9=Nprof9+length(K);
                         nation9{Ntag9,1}=info_deployment.NATION;
                         Ndep9{Ntag9,1}=info_deployment.EXP;
-                        if do_plot_figure
-                            figure(9);
-                            col= conf.list_color(find(strcmp(conf.list_ficseals{kk,5},conf.list_group)),:);
-                            h1=[]; h2=[];
-                            lat2=lat; lon2=lon; lon2(lon2>110)=lon2(lon2>110)-360;
-                            if any(lon2<-160) & any(lon2>20),
-                                h1=plot(lon2(lon2<-70),lat2(lon2<-70)); set(h1,'linewidth',.3,'color',col);
-                                h2=plot(lon2(lon2>-70),lat2(lon2>-70)); set(h2,'linewidth',.3,'color',col);
-                            else
-                                h1=plot(lon2,lat2); set(h1,'linewidth',.3,'color',col);
-                            end
-                            if ~isempty(h1)
-                                H9=[H9 h1(1)];
-                            elseif ~isempty(h2)
-                                H9=[H9 h2(1)];
-                            end
+                        figure(9);
+                        col= conf.list_color(find(strcmp(NATION,conf.list_group)),:);
+                        h1=[]; h2=[];
+                        lat2=lat; lon2=lon; lon2(lon2>110)=lon2(lon2>110)-360;
+                        if any(lon2<-160) & any(lon2>20),
+                            h1=plot(lon2(lon2<-70),lat2(lon2<-70)); set(h1,'linewidth',.3,'color',col);
+                            h2=plot(lon2(lon2>-70),lat2(lon2>-70)); set(h2,'linewidth',.3,'color',col);
+                        else
+                            h1=plot(lon2,lat2); set(h1,'linewidth',.3,'color',col);
+                        end
+                        if ~isempty(h1)
+                            H9=[H9 h1(1)];
+                        elseif ~isempty(h2)
+                            H9=[H9 h2(1)];
                         end
                     end
+                    
                 end
+                
             end
+            
         end
+        
         if do_plot_figure
+            
             if Ntag4,
                 [NATION4,Icol4]=unique(nation4,'stable');
                 for kk=1:length(name_tag4),
@@ -377,6 +389,7 @@ for  kNATION=1:length(list_NATION),
                 eval(['export_fig ' nfile '.png -m5 -nocrop']);
                 delete(H4); H4=[];
             end
+            
             if Ntag5,
                 [NATION5,Icol5]=unique(nation5,'stable');
                 for kk=1:length(name_tag5),
@@ -389,9 +402,13 @@ for  kNATION=1:length(list_NATION),
                 eval(['export_fig ' nfile '.png -m5 -nocrop']);
                 delete(H5); H5=[];
             end
+            
         end
+        
     end
+    
     if do_plot_figure
+        
         if Ntag6,
             [name_dep6,Icol6]=unique(Ndep6,'stable');
             figure(6);
@@ -401,6 +418,7 @@ for  kNATION=1:length(list_NATION),
             eval(['export_fig ' nfile '.png -m5 -nocrop']);
             delete(H6); H6=[];
         end
+        
         if Ntag7,
             [name_dep7,Icol7]=unique(Ndep7,'stable');
             figure(7);
@@ -410,7 +428,9 @@ for  kNATION=1:length(list_NATION),
             eval(['export_fig ' nfile '.png -m5 -nocrop']);
             delete(H7); H7=[];
         end
+        
     end
+    
 end
 
 if do_plot_figure
@@ -477,133 +497,137 @@ if do_plot_figure
 end
 
 % save tables
-writetable(table_total,'info_total.csv');
-writetable(table_group,'info_groups.csv');
-writetable(table_depl ,'info_deployments.csv');
-writetable(table_tag  ,'info_tags.csv');
+writetable(table_total ,[conf.processdir 'info_total.csv']);
+writetable(table_group ,[conf.processdir 'info_groups.csv']);
+writetable(table_depl  ,[conf.processdir 'info_deployments.csv']);
+writetable(table_tag   ,[conf.processdir 'info_tags.csv']);
 
 
-% %% data density distribution
-xbin=(-250:110)';
-ybin=(-90:90)';
-[XBIN,YBIN]=meshgrid(xbin(1:end-1)+.5,ybin(1:end-1)+.5);
-LAT2=LAT; LON2=LON; LON2(LON2>110)=LON2(LON2>110)-360;
-COUNT=twodhist(LON2,LAT2,xbin,ybin); COUNT(COUNT==0)=NaN;
 
-wod_ctd_path=[conf.woddir '../data_from_CTD_Collection.nc'];
-data_ctd_wod = ncload_struct(wod_ctd_path,'latitude','longitude');
-LAT_WOD=[data_ctd_wod.latitude];
-LON_WOD=[data_ctd_wod.longitude];
-LAT_WOD2=LAT_WOD; LON_WOD2=LON_WOD; LON_WOD2(LON_WOD2>110)=LON_WOD2(LON_WOD2>110)-360;
-COUNT_CTD_WOD=twodhist(LON_WOD2,LAT_WOD2,xbin,ybin); COUNT_CTD_WOD(COUNT_CTD_WOD==0)=NaN;
-
-wod_pfl_path=[conf.woddir '../data_from_PFL_Collection.nc'];
-data_pfl_wod = ncload_struct(wod_pfl_path,'latitude','longitude');
-LAT_WOD=[data_pfl_wod.latitude];
-LON_WOD=[data_pfl_wod.longitude];
-LAT_WOD2=LAT_WOD; LON_WOD2=LON_WOD; LON_WOD2(LON_WOD2>110)=LON_WOD2(LON_WOD2>110)-360;
-COUNT_PFL_WOD=twodhist(LON_WOD2,LAT_WOD2,xbin,ybin); COUNT_PFL_WOD(COUNT_PFL_WOD==0)=NaN;
-
-% zonal accumulation
-figure(20),clf
-lat_plot=ybin(1:end-1)+.5;
-count_plot = nansum(COUNT,2);
-count_plot_wod_ctd = nansum(COUNT_CTD_WOD,2);
-count_plot_wod_pfl = nansum(COUNT_PFL_WOD,2);
-plot(lat_plot,count_plot,lat_plot,count_plot_wod_ctd,lat_plot,count_plot_wod_pfl)
-set(gca,'xlim',[-90 90],'ytick',0:5000:40000,'yticklabel',0:5000:40000)
-legend('MEOP-CTD','WOD13-CTD','WOD13-PFL')
-%title('Number of profiles per unit of latitude')
-xlabel('latitude'); ylabel('number of profiles (per unit of latitude)');
-nfile=sprintf('%sglobal/histogram',conf.mapsdir);
-print('-depsc2',nfile); 
-print('-dpdf',nfile); 
-eval(['export_fig ' nfile '.png -m5 -nocrop']);
-eval(['export_fig ' nfile '.pdf -m5 -nocrop']);
-% 
-% 
-% % total SH
-% figure(21),clf,
-% set(gcf, 'Color', 'w');
-% set(gcf, 'units','centimeters','Position', [2 5 20 20]);
-% m_proj('stereographic','lat',-90,'long',90,'radius',60);
-% m_grid('box','on','xtick',12,...
-%     'tickdir','out','ytick',[-90:10:-40],...
-%     'XaxisLocation','top','linest','-');
-% hold on
-% m_pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
-% topoplot([-180 180 -90 -30],0,2,'m_map')
-% colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
-% suptitle(sprintf('MEOP-CTD SH dataset : %d profiles, %d deployments, %d tags',Nprof1,length(unique(Ndep1)),Ntag1));
-% nfile=sprintf('%sglobal/density_SH',conf.mapsdir);
-% eval(['export_fig ' nfile '.png -m5 -nocrop']);
-% eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
-% 
-% % total NH
-% figure(22),clf,
-% set(gcf, 'Color', 'w');
-% set(gcf, 'units','centimeters','Position', [15 15 20 20]);
-% m_proj('stereographic','lat',90,'long',90,'radius',60);
-% m_grid('box','on','xtick',12,...
-%     'tickdir','out','ytick',[40:10:90],...
-%     'XaxisLocation','bottom','linest','-');
-% hold on
-% m_pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
-% topoplot([-180 180 30 90],0,2,'m_map')
-% colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
-% suptitle(sprintf('MEOP-CTD NH dataset : %d profiles, %d deployments, %d tags',Nprof2,length(unique(Ndep2)),Ntag2));
-% nfile=sprintf('%sglobal/density_NH',conf.mapsdir);
-% eval(['export_fig ' nfile '.png -m5 -nocrop']);
-% eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
-% 
-% total by nation
-figure(23),clf,
-set(gcf, 'Color', 'w');
-set(gcf, 'units','centimeters','Position', [5 30 20 14]);
-hold on
-pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
-topoplot([-250 110 -80 80],0,2); latratio(45)
-set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
-set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
-grid on
-colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
-suptitle(sprintf('MEOP-CTD dataset : %d profiles, %d deployments, %d tags',Nprof3,length(unique(Ndep3)),Ntag3));
-nfile=sprintf('%sglobal/density_global',conf.mapsdir);
-eval(['export_fig ' nfile '.png -m5 -nocrop']);
-eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
-% 
-% % total WOD13-CTD
-% figure(24),clf,
-% set(gcf, 'Color', 'w');
-% set(gcf, 'units','centimeters','Position', [5 30 20 14]);
-% hold on
-% pcolor(XBIN,YBIN,log10(COUNT_CTD_WOD)); shading flat; caxis([0 3]);
-% topoplot([-250 110 -80 80],0,2); latratio(45)
-% set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
-% set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
-% grid on
-% colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
-% suptitle(sprintf('WOD13-CTD dataset : %d profiles',length(data_ctd_wod.latitude)));
-% nfile=sprintf('%sglobal/density_ctd_wod13',conf.mapsdir);
-% eval(['export_fig ' nfile '.png -m5 -nocrop']);
-% eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
-% 
-% % total WOD13-PFL
-% figure(25),clf,
-% set(gcf, 'Color', 'w');
-% set(gcf, 'units','centimeters','Position', [5 30 20 14]);
-% hold on
-% pcolor(XBIN,YBIN,log10(COUNT_PFL_WOD)); shading flat; caxis([0 3]);
-% set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
-% set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
-% grid on
-% topoplot([-250 110 -80 80],0,2); latratio(45)
-% colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
-% suptitle(sprintf('WOD13-PFL dataset : %d profiles',length(data_pfl_wod.latitude)));
-% nfile=sprintf('%sglobal/density_pfl_wod13',conf.mapsdir);
-% eval(['export_fig ' nfile '.png -m5 -nocrop']);
-% eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
-
+if do_density_plot,
+    
+    % %% data density distribution
+    xbin=(-250:110)';
+    ybin=(-90:90)';
+    [XBIN,YBIN]=meshgrid(xbin(1:end-1)+.5,ybin(1:end-1)+.5);
+    LAT2=LAT; LON2=LON; LON2(LON2>110)=LON2(LON2>110)-360;
+    COUNT=twodhist(LON2,LAT2,xbin,ybin); COUNT(COUNT==0)=NaN;
+    
+    wod_ctd_path=[conf.woddir '../data_from_CTD_Collection.nc'];
+    data_ctd_wod = ncload_struct(wod_ctd_path,'latitude','longitude');
+    LAT_WOD=[data_ctd_wod.latitude];
+    LON_WOD=[data_ctd_wod.longitude];
+    LAT_WOD2=LAT_WOD; LON_WOD2=LON_WOD; LON_WOD2(LON_WOD2>110)=LON_WOD2(LON_WOD2>110)-360;
+    COUNT_CTD_WOD=twodhist(LON_WOD2,LAT_WOD2,xbin,ybin); COUNT_CTD_WOD(COUNT_CTD_WOD==0)=NaN;
+    
+    wod_pfl_path=[conf.woddir '../data_from_PFL_Collection.nc'];
+    data_pfl_wod = ncload_struct(wod_pfl_path,'latitude','longitude');
+    LAT_WOD=[data_pfl_wod.latitude];
+    LON_WOD=[data_pfl_wod.longitude];
+    LAT_WOD2=LAT_WOD; LON_WOD2=LON_WOD; LON_WOD2(LON_WOD2>110)=LON_WOD2(LON_WOD2>110)-360;
+    COUNT_PFL_WOD=twodhist(LON_WOD2,LAT_WOD2,xbin,ybin); COUNT_PFL_WOD(COUNT_PFL_WOD==0)=NaN;
+    
+    % zonal accumulation
+    figure(20),clf
+    lat_plot=ybin(1:end-1)+.5;
+    count_plot = nansum(COUNT,2);
+    count_plot_wod_ctd = nansum(COUNT_CTD_WOD,2);
+    count_plot_wod_pfl = nansum(COUNT_PFL_WOD,2);
+    plot(lat_plot,count_plot,lat_plot,count_plot_wod_ctd,lat_plot,count_plot_wod_pfl)
+    set(gca,'xlim',[-90 90],'ytick',0:5000:40000,'yticklabel',0:5000:40000)
+    legend('MEOP-CTD','WOD13-CTD','WOD13-PFL')
+    %title('Number of profiles per unit of latitude')
+    xlabel('latitude'); ylabel('number of profiles (per unit of latitude)');
+    nfile=sprintf('%sglobal/histogram',conf.mapsdir);
+    print('-depsc2',nfile);
+    print('-dpdf',nfile);
+    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    eval(['export_fig ' nfile '.pdf -m5 -nocrop']);
+    %
+    %
+    % % total SH
+    % figure(21),clf,
+    % set(gcf, 'Color', 'w');
+    % set(gcf, 'units','centimeters','Position', [2 5 20 20]);
+    % m_proj('stereographic','lat',-90,'long',90,'radius',60);
+    % m_grid('box','on','xtick',12,...
+    %     'tickdir','out','ytick',[-90:10:-40],...
+    %     'XaxisLocation','top','linest','-');
+    % hold on
+    % m_pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
+    % topoplot([-180 180 -90 -30],0,2,'m_map')
+    % colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
+    % suptitle(sprintf('MEOP-CTD SH dataset : %d profiles, %d deployments, %d tags',Nprof1,length(unique(Ndep1)),Ntag1));
+    % nfile=sprintf('%sglobal/density_SH',conf.mapsdir);
+    % eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    % eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    %
+    % % total NH
+    % figure(22),clf,
+    % set(gcf, 'Color', 'w');
+    % set(gcf, 'units','centimeters','Position', [15 15 20 20]);
+    % m_proj('stereographic','lat',90,'long',90,'radius',60);
+    % m_grid('box','on','xtick',12,...
+    %     'tickdir','out','ytick',[40:10:90],...
+    %     'XaxisLocation','bottom','linest','-');
+    % hold on
+    % m_pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
+    % topoplot([-180 180 30 90],0,2,'m_map')
+    % colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
+    % suptitle(sprintf('MEOP-CTD NH dataset : %d profiles, %d deployments, %d tags',Nprof2,length(unique(Ndep2)),Ntag2));
+    % nfile=sprintf('%sglobal/density_NH',conf.mapsdir);
+    % eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    % eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    %
+    % total by nation
+    figure(23),clf,
+    set(gcf, 'Color', 'w');
+    set(gcf, 'units','centimeters','Position', [5 30 20 14]);
+    hold on
+    pcolor(XBIN,YBIN,log10(COUNT)); shading flat; caxis([0 3]);
+    topoplot([-250 110 -80 80],0,2); latratio(45)
+    set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
+    set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
+    grid on
+    colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
+    suptitle(sprintf('MEOP-CTD dataset : %d profiles, %d deployments, %d tags',Nprof3,length(unique(Ndep3)),Ntag3));
+    nfile=sprintf('%sglobal/density_global',conf.mapsdir);
+    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    %
+    % % total WOD13-CTD
+    % figure(24),clf,
+    % set(gcf, 'Color', 'w');
+    % set(gcf, 'units','centimeters','Position', [5 30 20 14]);
+    % hold on
+    % pcolor(XBIN,YBIN,log10(COUNT_CTD_WOD)); shading flat; caxis([0 3]);
+    % topoplot([-250 110 -80 80],0,2); latratio(45)
+    % set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
+    % set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
+    % grid on
+    % colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
+    % suptitle(sprintf('WOD13-CTD dataset : %d profiles',length(data_ctd_wod.latitude)));
+    % nfile=sprintf('%sglobal/density_ctd_wod13',conf.mapsdir);
+    % eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    % eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    %
+    % % total WOD13-PFL
+    % figure(25),clf,
+    % set(gcf, 'Color', 'w');
+    % set(gcf, 'units','centimeters','Position', [5 30 20 14]);
+    % hold on
+    % pcolor(XBIN,YBIN,log10(COUNT_PFL_WOD)); shading flat; caxis([0 3]);
+    % set(gca,'xtick',[-240:60:60],'xticklabel',{'120E','180E','120W','60W','0E','60E'});
+    % set(gca,'ytick',[-80:20:80],'yticklabel',{'80S','60S','40S','20S','0N','20N','40N','60N','80N'});
+    % grid on
+    % topoplot([-250 110 -80 80],0,2); latratio(45)
+    % colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
+    % suptitle(sprintf('WOD13-PFL dataset : %d profiles',length(data_pfl_wod.latitude)));
+    % nfile=sprintf('%sglobal/density_pfl_wod13',conf.mapsdir);
+    % eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    % eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    
+end
 
 %%
 

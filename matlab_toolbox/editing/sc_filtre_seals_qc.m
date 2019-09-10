@@ -1,6 +1,18 @@
 plot_diags=0;
 N1=0; N2=0;
 
+minT=conf.table_param{EXP,'minT'};
+maxT=conf.table_param{EXP,'maxT'};
+maxT=conf.table_param{EXP,'maxT'};
+minS=conf.table_param{EXP,'minS'};
+maxS=conf.table_param{EXP,'maxS'};
+min_Nprof=conf.table_param{EXP,'min_Nprof'};
+
+%% lat/lon/date
+
+[Mqc,nn]=remove_profiles(info_deployment,smru_name,'index',find(isnan(Mqc.LATITUDE.*Mqc.LONGITUDE.*Mqc.JULD)),suffix);
+
+
 %% outliers
 
 nT=nansum(double(Mqc.TEMP_QC<=1));
@@ -18,8 +30,8 @@ if nn5, disp(sprintf('Bad locations (lat=0): %d profiles',nn5)), end
 
 nS=nansum(double(Mqc.PSAL_QC<2));
 
-%[Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,'index',find(nS<=4&nS>0),suffix);
-[Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,'index',find(nS<=8&nS>0),suffix);
+[Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,'index',find(nS<=5&nS>0),suffix);
+%[Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,'index',find(nS<=8&nS>0),suffix);
 [Mqc,nn2]=remove_Sprofiles(info_deployment,smru_name,'Smin',minS,suffix);
 [Mqc,nn3]=remove_Sprofiles(info_deployment,smru_name,'Smax',maxS,suffix);
 %I=find(Mqc.PSAL_QC<=1 & Mqc.TEMP_QC>1); remove_Sdata;
@@ -82,10 +94,12 @@ N2=N2+nn1+nn2;
 nT=nansum(double(Mqc.TEMP_QC(:,:)<=1));
 if length(find(nT>5))<min_Nprof & length(find(nT>5))>0,
     Mqc = remove_tag(info_deployment,smru_name);
+    conf.table_coeff{smru_name,'remove'} = 1;
+    name_file=[conf.csv_config 'table_coeff.csv'];
+    writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
+else
+    ARGO_save_qc(name_prof,Mqc,0);
+    disp(sprintf('%s: %d profiles and %d Sprofiles removed',smru_name,N1,N2));    
 end
-
-%%
-ARGO_save_qc(name_prof,Mqc,0);
-disp(sprintf('%s: %d profiles and %d Sprofiles removed',smru_name,N1,N2));
 
 

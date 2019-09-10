@@ -1,4 +1,4 @@
-function convert_ARGO2ODV4(argo_data,path)
+function convert_ARGO2ODV4(argo_data,path,name)
 
 
 warning off
@@ -14,6 +14,7 @@ if isempty(index) || sum(index(:))==0, return, end
 
 isfluo=0; if isfield(argo_data,'CHLA'), isfluo=1; end
 isoxy=0;  if isfield(argo_data,'DOXY'), isoxy=1;  end
+islight=0;  if isfield(argo_data,'LIGHT'), islight=1;  end
 if isfluo
     CHLA=argo_data.CHLA;
     Fmask=double(argo_data.CHLA_QC==1);
@@ -24,8 +25,14 @@ if isoxy
     Omask=double(argo_data.DOXY_QC==1);
     index=index+Omask;
 end
+if islight
+    LIGHT=argo_data.LIGHT;
+    Lmask=double(argo_data.LIGHT_QC==1);
+    index=index+Lmask;
+end
+
 cruise=argo_data.smru_platform_code;
-I=1:length(argo_data.JULD);%find(strcmp(argo_data.smru_name,cruise));
+I=1:length(argo_data.JULD);
 
 fid=fopen(path,'w');
 fprintf(fid,'// created: %s\n',datestr(now));
@@ -35,6 +42,9 @@ if isfluo
     if isoxy,
         mode=1;
         fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF	Oxygen [umol/l]	QF');
+    elseif islight,
+        mode=5;
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF Light [ln(PPFD)] QF');
     else
         mode=2;
         fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF');
@@ -77,6 +87,13 @@ for ii=1:length(I),
         if isoxy
             if Omask(pp,I(ii)),
                 fprintf(fid,'%8.4f\t0\t',DOXY(pp,I(ii)));
+            else
+                fprintf(fid,'\t1\t');
+            end
+        end
+         if islight
+            if Lmask(pp,I(ii)),
+                fprintf(fid,'%8.4f\t0\t',LIGHT(pp,I(ii)));
             else
                 fprintf(fid,'\t1\t');
             end

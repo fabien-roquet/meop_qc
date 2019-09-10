@@ -1,11 +1,7 @@
 % build a latex file recapitulating general information for each deployments
 % sort deployments by NATION
-Itag_all=tags_processed(conf);
-[aux,Jtag]=sort({conf.start_date{Itag_all}});
-Itag_1=Itag_all(Jtag);
-[name_NATION,Ktag]=sort({conf.list_ficseals{Itag_1,5}});
-Itag_sort=Itag_1(Ktag);
-list_NATION=unique(name_NATION);
+EXP_all=tags_processed(conf);
+list_NATION=unique(EXP_all.country);
 
 %%
 if exist([conf.mapsdir 'global/map_global.png'],'file') & exist([conf.mapsdir 'global/map_SH.png'],'file')

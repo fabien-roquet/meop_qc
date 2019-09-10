@@ -45,7 +45,7 @@ for kk=1:N,
     end
 end
 
-% lissage température
+% lissage tempï¿½rature
 Ld=time;Pd=pres;Xd=zti;
 Ld2=(1:corr:floor(max(Ld)))';Pd2=pres;Xd2=NaN*zeros(length(Pd2),length(Ld2));
 for nt=1:length(Ld2),
@@ -86,12 +86,14 @@ zs2=Xd2;
 [t,p]=meshgrid(Ld2,Pd2);
 
 % trace transects
-if exist('hfig','var')&hfig~=0
-    figure(hfig);colormap(jet)
+if exist('hfig','var') & hfig~=0
+    figure(hfig); clf
+elseif hfig==0
+    hfig = figure('visible','off');
 else
-    figure;hfig=gcf;colormap(jet)
+    hfig = figure;
 end
-clf
+colormap(jet)
 
 H=[];
 
@@ -102,7 +104,7 @@ axes('position',[pos(1) .96 pos(3) .02]); axis off;
 pcolor([Ccontour;Ccontour]); shading flat
 set(gca,'fontsize',8,'ytick',[],'xtick',[]);
 
-axes(h2);cla,hold on,box on
+set(gcf,'CurrentAxes',h2);cla,hold on,box on
 if any(~isnan(zt2(:))) & length(Ld2)>1
     h22=pcolor(t,p,zt2);shading flat;H=[H h22];%colorbar;
     [Cs,h22]=contour(t,p,zt2,Tcontour,'linecolor','k');H=[H h22];
@@ -117,11 +119,11 @@ if any(~isnan(zt2(:))) & length(Ld2)>1
     xlim=get(gca,'xlim');ylim=get(gca,'ylim');
     text(xlim(1)+.05*(xlim(2)-xlim(1)),ylim(1)+.95*(ylim(2)-ylim(1)),'IN-SITU TEMP');
 else
-    axes(h2), axis off
+    set(gcf,'CurrentAxes',h2), axis off
 end
 
 if any(~isnan(zs2(:))) & length(Ld2)>1
-    axes(h4),cla,hold on,box on
+    set(gcf,'CurrentAxes',h4),cla,hold on,box on
     h23=pcolor(t,p,zs2);shading flat;H=[H h23];%colorbar;
     [Cs,h23]=contour(t,p,zs2,Fcontour,'linecolor','k');H=[H h23];
     set(gca,'XLim',[min(Ccontour) max(Ccontour)],'Ylim',[0 pmax],...
@@ -134,7 +136,7 @@ if any(~isnan(zs2(:))) & length(Ld2)>1
     xlim=get(gca,'xlim');ylim=get(gca,'ylim');
     text(xlim(1)+.05*(xlim(2)-xlim(1)),ylim(1)+.95*(ylim(2)-ylim(1)),'DOXY');
 else
-    axes(h4), axis off
+    set(gcf,'CurrentAxes',h4), axis off
 end
     
 % print figure
@@ -152,4 +154,4 @@ elseif exist('printname','var')
     error('can''t read printing format');
 end
 
-
+close(hfig)

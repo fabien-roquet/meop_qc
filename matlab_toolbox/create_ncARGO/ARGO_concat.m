@@ -44,11 +44,18 @@ else
                         argo_data=setfield(argo_data,fldNames1{iFld},tmp);
                     catch
                         tmp=zeros(np1+np2,1)*NaN;
-                        tmp(1:np1)=tmp1;
+                        try; tmp(1:np1)=tmp1; catch
+                            1
+                        end
                         if isempty(tmp2), tmp2=NaN*zeros(np2,1); end
                         tmp(np1+1:np1+np2)=tmp2;
                         argo_data=setfield(argo_data,fldNames1{iFld},tmp);
                     end
+                end
+            elseif ischar(tmp1(1))
+                if strcmp(fldNames1{iFld},'PLATFORM_NUMBER') | strcmp(fldNames1{iFld},'PI_NAME')
+                    tmp = [tmp1 tmp2];
+                    argo_data=setfield(argo_data,fldNames1{iFld},tmp);
                 end
             end
         end

@@ -15,14 +15,20 @@ function [argo_qc,nn] = remove_profiles (info_deployment, smru_name, criterion_t
 %   lat_max :  value gives the maximum valid latitude
 %I=find(strcmp(conf.metadata(:,2),smru_name));
 
+argo_qc=[];
 if ~exist('suffix','var'),
+    if ~exist('criterion_type','var')
+        remove_profiles (info_deployment, smru_name, 'all', [],'_fr0');
+    elseif ~any(strcmp(criterion_type,{'index','date_min','date_max'}))
+        remove_profiles (info_deployment, smru_name, criterion_type, value,'_fr0');
+    end
     suffix='_lr0';
 end
 
 smru_name = strrep(smru_name,'_lr0','');
 name_prof = sprintf('%s%s%s_prof.nc',info_deployment.dir,smru_name,suffix);
 if ~exist(name_prof,'file'), return; end
-
+    
 argo_qc=ARGO_load_qc(name_prof,0);
 
 if ~exist('criterion_type','var')
@@ -30,8 +36,11 @@ if ~exist('criterion_type','var')
     I=1:length(argo_qc.JULD);
 else
     I=[];
+    if length(value)==2 & isnan(value(2)), value = value(1); end
     switch criterion_type
         
+        case 'all'
+            I=1:length(argo_qc.JULD);
         case 'index',
             I=value;
         case 'Pmin',
@@ -46,6 +55,12 @@ else
             I=find(any(argo_qc.PSAL<value));
         case 'Smax',
             I=find(any(argo_qc.PSAL>value));
+        case 'Dmin',
+            D = sw_dens0(argo_qc.PSAL,argo_qc.TEMP)-1000;
+            I=find(any(D<value));
+        case 'Dmax',
+            D = sw_dens0(argo_qc.PSAL,argo_qc.TEMP)-1000;
+            I=find(any(D>value));
         case 'P+S-',
             I=find(any(argo_qc.PRES>value(1) & argo_qc.PSAL<value(2)));
         case 'P+S+',

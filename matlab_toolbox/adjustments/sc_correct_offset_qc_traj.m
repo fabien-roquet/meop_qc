@@ -1,5 +1,5 @@
 clear Mqc;
-info=ncinfo(name_prof);
+info = ncinfo(name_prof);
 variables=[];
 for ll=1:length(info.Variables)
     variables{ll}=info.Variables(ll).Name;

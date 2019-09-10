@@ -46,6 +46,16 @@ if ~adjusted,
         ncwrite(name_prof,'DOXY_ADJUSTED_QC',data);
     end
     
+     if isfield(argo_qc,'LIGHT')
+        a=argo_qc.LIGHT_QC;
+        for kk=0:9,
+            a(a==kk)=48+kk;
+        end
+        data = char(a);
+        ncwrite(name_prof,'LIGHT_QC',data);
+        ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data);
+    end
+    
 else
     
     a=argo_qc.PRES_QC;
@@ -88,6 +98,15 @@ else
         ncwrite(name_prof,'DOXY_ADJUSTED_QC',data);
     end
     
+    if isfield(argo_qc,'LIGHT')
+        a=argo_qc.LIGHT_QC;
+        for kk=0:9,
+            a(a==kk)=48+kk;
+        end
+        data = char(a);
+        ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data);
+    end
+    
 end
 
 %% update descriptive attributes
@@ -108,6 +127,12 @@ if isfield(argo_qc,'DOXY')
     NO=length(find(nansum(argo_qc.DOXY_QC==1)~=0));
 end
 ncwriteatt(name_prof,'/','number_doxy_profiles',NO);
+
+NO=0;
+if isfield(argo_qc,'LIGHT')
+    NO=length(find(nansum(argo_qc.LIGHT_QC==1)~=0));
+end
+ncwriteatt(name_prof,'/','number_light_profiles',NO);
 
 Lat=argo_qc.LATITUDE;
 Lon=argo_qc.LONGITUDE;

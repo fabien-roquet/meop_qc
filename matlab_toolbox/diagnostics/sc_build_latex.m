@@ -1,8 +1,8 @@
 % build a latex file using raw data
 
-plotdir = [conf.plotdir,info_deployment.NATION,'/',EXP,'/'];
-list_plot=dir(sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode));
+plotdir = [conf.plotdir,EXP,'/'];
 
+list_plot=dir(sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode));
 if length(list_plot)==0,
     
     disp(['no plots ' sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode) ]);

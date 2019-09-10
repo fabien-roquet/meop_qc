@@ -5,10 +5,11 @@ PI=info_deployment.PI;
 NATION=info_deployment.NATION;
 
 list_tag = dir([info_deployment.dir,'*_lr0_prof.nc']);
+list_deployment_hr = conf.list_deployment_hr;
 for index=1:length(list_tag)
     
     smru_name = list_tag(index).name(1:end-12);
-    [Lia,Locb]=ismember(smru_name,list_deployment_hr{:,1});
+    [Lia,Locb]=ismember(smru_name,conf.list_deployment_hr{:,1});
     if ~Lia, continue, end
     
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
@@ -19,39 +20,52 @@ for index=1:length(list_tag)
     data_att = ncloadatt_struct(name_prof);
     listatt = fieldnames(data_att);
     file = [conf.rawdir_hr num2str(list_deployment_hr{1,3}(Locb)) '/'  num_file '_ctd.txt'];
+    if ~exist(file,'file'), disp(sprintf('%s not found',file)); continue, end
     fid = fopen(file);
     tline = fgetl(fid);
     fclose(fid);
     
     %% chargement du fichier ctd haute resolution
-    clear F O;
-    isfluo=0; isoxy=0;
-    Fluo = strfind(tline,'Fluo');
-    Oxy =strfind(tline,'Oxy');
+    clear F O L;
+    isfluo=0; isoxy=0; islight=0;
+    Fluo = [strfind(tline,'Fluo') strfind(tline,'FLUORO')];
+    Oxy = strfind(tline,'Oxy');
+    Light = strfind(tline,'PPFD');
     
     %% cas des balises qui n'enregistrent que la remontee de certaies profils
     if list_deployment_hr{1,5}(Locb)==0
         
         if length(Fluo)==0 & length(Oxy)==0
             [date,P,T,S] = ...
-                textread(file,'%s%f%f%*f%f',...
+                textread(file,'%s%f%f%*f%f%*[^\n]',...
                 'delimiter','\t','headerlines',1);
             F=T.*NaN;
             O=T.*NaN;
+            L=T.*NaN;
+            
+        elseif strcmp(smru_name,'ct139-F932BAT-13')
+            [date,P,T,S,F] = ...
+                textread(file,'%s%f%*f%*f%f%*f%f%f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            O = T.*NaN;
+            L = T.*NaN;
+            date=replace(date,'2013','2017');
             
         elseif length(Fluo)>0 & length(Oxy)==0
             [date,P,T,S,F] = ...
-                textread(file,'%s%f%f%*f%f%f',...
+                textread(file,'%s%f%f%*f%f%f%*[^\n]',...
                 'delimiter','\t','headerlines',1);
             isfluo=double(length(find(F~=999))~=0);
             O=T.*NaN;
+            L=T.*NaN;
             
         elseif length(Fluo)==0 & length(Oxy)>0
             [date,P,T,S,O] = ...
-                textread(file,'%s%f%f%*f%f%f',...
+                textread(file,'%s%f%f%*f%f%f%*[^\n]',...
                 'delimiter','\t','headerlines',1);
             isoxy=double(length(find(O~=999))~=0);
             F=T.*NaN;
+            L=T.*NaN;
             
         end
         
@@ -82,9 +96,10 @@ for index=1:length(list_tag)
         grilleHdsal=NaN*zeros(6000,N);
         grilleHdfluo=NaN*zeros(6000,N);
         grilleHdoxy=NaN*zeros(6000,N);
+        grilleHdlight=NaN*zeros(6000,N);
         
         plongee=[];
-        plongee=[P(1:Ihead(1)),T(1:Ihead(1)),S(1:Ihead(1)),F(1:Ihead(1)),O(1:Ihead(1))];
+        plongee=[P(1:Ihead(1)),T(1:Ihead(1)),S(1:Ihead(1)),F(1:Ihead(1)),O(1:Ihead(1)),L(1:Ihead(1))];
         [m,J]=max(plongee(:,1));
         plongee(1:J-1,:)=[];
         [profil,ia,ic]=unique(plongee(:,1));
@@ -93,11 +108,11 @@ for index=1:length(list_tag)
         grilleHdsal(1:length(profil),1)=plongee(ia,3);
         grilleHdfluo(1:length(profil),1)=plongee(ia,4);
         grilleHdoxy(1:length(profil),1)=plongee(ia,5);
-        
+        grilleHdlight(1:length(profil),1)=plongee(ia,6);
         for ii=2:N
             plongee=[];
             plongee=[P(Ihead(ii-1)+1:Ihead(ii)),T(Ihead(ii-1)+1:Ihead(ii)),S(Ihead(ii-1)+1:Ihead(ii))...
-                ,F(Ihead(ii-1)+1:Ihead(ii)),O(Ihead(ii-1)+1:Ihead(ii))];
+                ,F(Ihead(ii-1)+1:Ihead(ii)),O(Ihead(ii-1)+1:Ihead(ii)),L(Ihead(ii-1)+1:Ihead(ii))];
             [m,J]=max(plongee(:,1));
             plongee(1:J-1,:)=[];
             [profil,ia,ic]=unique(plongee(:,1));
@@ -106,21 +121,60 @@ for index=1:length(list_tag)
             grilleHdsal(1:length(profil),ii)=plongee(ia,3);
             grilleHdfluo(1:length(profil),ii)=plongee(ia,4);
             grilleHdoxy(1:length(profil),ii)=plongee(ia,5);
+            grilleHdlight(1:length(profil),ii)=plongee(ia,6);
         end
         
     else % cas des balises qui enregistrent en continue durant tout le trajet
-        
-        [date,P,T,S] = ...
-            textread(file,'%s%f%f%*f%f%*f',...
-            'delimiter','\t','headerlines',1);
-        F = T.*NaN;
-        O = T.*NaN;
-        date = datenum(date,'yyyy/mm/dd HH:MM:SS');
+        if length(Light)==0
+            [date,P,T,S] = ...
+                textread(file,'%s%f%f%*f%f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            F = T.*NaN;
+            O = T.*NaN;
+            L= T.*NaN;
+            date = datenum(date,'yyyy/mm/dd HH:MM:SS');
+        elseif strcmp(EXP,'ct132')
+            [date,P,T,S,L] = ...
+                textread(file,'%s%f%f%*f%f%f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            F = T.*NaN;
+            O = T.*NaN;
+            date = datenum(date,'yyyy/mm/dd HH:MM:SS');
+            islight=1;
+        elseif strcmp(smru_name,'ct112-034-14')
+            [date,P,T,S] = ...
+                textread(file,'%s%f%*f%*f%f%*f%f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            F = T.*NaN;
+            O = T.*NaN;
+            L = T.*NaN;
+            date = datenum(date,'yyyy/mm/dd HH:MM:SS');  
+        elseif length(Fluo)==0 % verifier la colonne lumiÃ¨re car elle change souvent de place
+            [date,P,T,S,L] = ...
+                textread(file,'%s%f%*f%*f%f%*f%f%f%*f%*f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            F = T.*NaN;
+            O = T.*NaN;
+            date = datenum(date,'yyyy/mm/dd HH:MM:SS');
+            islight=1;
+        else
+            [date,P,T,S,F,L] = ...
+                textread(file,'%s%f%*f%*f%f%*f%f%f%f%*f%*[^\n]',...
+                'delimiter','\t','headerlines',1);
+            O = T.*NaN;
+            date = datenum(date,'yyyy/mm/dd HH:MM:SS');
+            islight=1;
+            isfluo=1;
+        end
         
         % soucis dans les fichiers tres haute resolution la salinite a des
-        % valeurs completements fausses a  la remontee ( svt egale a 0 ou negative)
+        % valeurs completements fausses aï¿½ la remontee ( svt egale a 0 ou negative)
         S(S<3)=NaN;
-        tdr=[date,P,T,S];
+        if isfluo==0
+            tdr=[date,P,T,S,L];
+        else
+             tdr=[date,P,T,S,L,F];
+        end
         
         % fonction de detection des plongees (identique a celle utilisee pour les tdr)
         [statdives,info_ana_dives,statdivestxt,datadives,datadivestxt,chg,daindexes] = ...
@@ -136,8 +190,10 @@ for index=1:length(list_tag)
             ind(ik) = chg(2,ik);
         end
         I = find(~isnan(lat) & ~isnan(lon));
-        lat = interp1(date(ind(I)),lat(I),date(chg(2,:)),'linear','extrap');
-        lon = interp1(date(ind(I)),lon(I),date(chg(2,:)),'linear','extrap');
+%         lat = interp1(date(ind(I)),lat(I),date(chg(2,:)),'linear','extrap');
+%         lon = interp1(date(ind(I)),lon(I),date(chg(2,:)),'linear','extrap');
+        lat = interp1(date(ind(I)),lat(I),date(chg(2,:)));
+        lon = interp1(date(ind(I)),lon(I),date(chg(2,:)));
         n0 = length(find(date(chg(2,:))-Mqc.JULD(1)<1))+length(find(date(chg(2,:))-Mqc.JULD(end)>1));
         if n0, 
             disp([smru_name ': warning! location of ' num2str(n0) ' fr_profiles were extrapolated']);
@@ -150,6 +206,7 @@ for index=1:length(list_tag)
         grilleHdsal=NaN*zeros(6000,length(statdives));
         grilleHdfluo=NaN*zeros(6000,length(statdives));
         grilleHdoxy=NaN*zeros(6000,length(statdives));
+        grilleHdlight=NaN*zeros(6000,length(statdives));
         for ii=1:length(statdives)-1
             plongee=[];
             plongee=tdr(daindexes(2,ii):chg(2,ii),:);
@@ -159,6 +216,10 @@ for index=1:length(list_tag)
             grilleHdtemp(1:length(profil),ii)=plongee(ia,3);
             grilleHdpres(1:length(profil),ii)=profil;
             grilleHdsal(1:length(profil),ii)=plongee(ia,4);
+            grilleHdlight(1:length(profil),ii)=plongee(ia,5);
+            if isfluo
+                grilleHdfluo(1:length(profil),ii)=plongee(ia,6);
+            end
         end
         plongee=[];
         plongee=tdr(daindexes(2,end):chg(2,end),:);
@@ -168,7 +229,10 @@ for index=1:length(list_tag)
         grilleHdtemp(1:length(profil),N)=plongee(ia,3);
         grilleHdpres(1:length(profil),N)=profil;
         grilleHdsal(1:length(profil),N)=plongee(ia,4);
-        
+        grilleHdlight(1:length(profil),N)=plongee(ia,5);
+        if isfluo
+            grilleHdfluo(1:length(profil),N)=plongee(ia,6);
+        end
     end
     
     %% Save traj files
@@ -181,26 +245,29 @@ for index=1:length(list_tag)
     prof_sal_interp=NaN*zeros(length(prof),length(N));
     prof_fluo_interp=NaN*zeros(length(prof),length(N));
     prof_oxy_interp=NaN*zeros(length(prof),length(N));
-    
+    prof_light_interp=NaN*zeros(length(prof),length(N));
     
     for ll=1:N
         I=find(~isnan(grilleHdpres(:,ll)));
-        if length(I)>2
+        if length(I)>=2
             [pressinter,ia,ic]=unique(grilleHdpres(I,ll));
             tempinter=[];
             salinter=[];
             fluointer=[];
             oxyinter=[];
+            lightinter=[];
             for kk=1:length(pressinter)
                 tempinter(kk,1)=grilleHdtemp(ia(kk),ll);
                 salinter(kk,1)=grilleHdsal(ia(kk),ll);
                 fluointer(kk,1)=grilleHdfluo(ia(kk),ll);
                 oxyinter(kk,1)=grilleHdoxy(ia(kk),ll);
-            end
+                lightinter(kk,1)=grilleHdlight(ia(kk),ll);
+          end
             prof_temp_interp(:,ll)=interp1(pressinter,tempinter,prof);
             prof_sal_interp(:,ll)=interp1(pressinter,salinter,prof);
             prof_fluo_interp(:,ll)=interp1(pressinter,fluointer,prof);
             prof_oxy_interp(:,ll)=interp1(pressinter,oxyinter,prof);
+            prof_light_interp(:,ll)=interp1(pressinter,lightinter,prof);
         elseif length(I)==1
             [m,J]=min(abs(grilleHdpres(I(1),ll)-prof));
             prof_temp_interp(:,ll)=NaN;
@@ -211,6 +278,8 @@ for index=1:length(list_tag)
             prof_fluo_interp(J,ll)=grilleHdfluo(I(1),ll);
             prof_oxy_interp(:,ll)=NaN;
             prof_oxy_interp(J,ll)=grilleHdoxy(I(1),ll);
+            prof_light_interp(:,ll)=NaN;
+            prof_light_interp(J,ll)=grilleHdlight(I(1),ll);
             
         end
         prof_pres_interp(:,ll)=prof;
@@ -230,15 +299,16 @@ for index=1:length(list_tag)
     hi(:,10)=hi(:,2);
     
     PTi=cell(1,N); PSi=cell(1,N);
-    PFi=cell(1,N); POi=cell(1,N);
+    PFi=cell(1,N); POi=cell(1,N); PLi=cell(1,N);
     
     P=prof_pres_interp;
     T=prof_temp_interp;
     S=prof_sal_interp;
     F=prof_fluo_interp;
     O=prof_oxy_interp;
+    L=prof_light_interp;
     T(T==999)=NaN; S(S==999)=NaN;
-    F(F==999)=NaN; O(O==999)=NaN;
+    F(F==999)=NaN; O(O==999)=NaN; L(L==999)=NaN;
     
     Ihead2=[Ihead;length(P)+1];
     nprof=1; ntag=1; pold=0;
@@ -248,6 +318,7 @@ for index=1:length(list_tag)
         PSi{ii}=[P(:,ii) S(:,ii)];
         PFi{ii}=[P(:,ii) F(:,ii)];
         POi{ii}=[P(:,ii) O(:,ii)];
+        PLi{ii}=[P(:,ii) L(:,ii)];
         hi(ii,8)=sum(~isnan(T(:,3)));
         
     end
@@ -256,7 +327,7 @@ for index=1:length(list_tag)
     I=find(hi(:,5)~=0);
     hi=hi(I,:);
     PTi=PTi(I); PSi=PSi(I);
-    PFi=PFi(I); POi=POi(I);
+    PFi=PFi(I); POi=POi(I); PLi=PLi(I);
     hs=hs(I);
     
     % correct dates: put them back to Matlab julian date norm
@@ -273,12 +344,12 @@ for index=1:length(list_tag)
     end
     hi=hi(I,:);
     PTi=PTi(I); PSi=PSi(I);
-    PFi=PFi(I); POi=POi(I);
+    PFi=PFi(I); POi=POi(I); PLi=PLi(I);
     hs=hs(I);
     
     %save fcell
     name_fcell=[conf.temporary_fcell info_deployment.EXP '_fr0_fcell.mat'];
-    save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','EXP','PI','NATION','isoxy','isfluo');
+    save(name_fcell,'hi','hs','PTi','PSi','PFi','POi', 'PLi','EXP','PI','NATION','isoxy','isfluo','islight');
     
     %% save in Argo netcdf format
     if length(hi)>0

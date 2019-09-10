@@ -15,6 +15,12 @@ end
 if isfield(Mgroup,'CYCLE_NUMBER')
     Mtemp.CYCLE_NUMBER=Mtemp.CYCLE_NUMBER(I);
 end
+if isfield(Mgroup,'PLATFORM_NUMBER')
+    Mtemp.PLATFORM_NUMBER=Mtemp.PLATFORM_NUMBER(:,I);
+end
+if isfield(Mgroup,'PI_NAME')
+    Mtemp.PI_NAME=Mtemp.PI_NAME(:,I);
+end
 if isfield(Mgroup,'JULD')
     Mtemp.JULD=Mtemp.JULD(I);
 end
@@ -27,6 +33,12 @@ end
 if isfield(Mgroup,'PSAL')
     Mtemp.PSAL=Mtemp.PSAL(:,I);
 end
+if isfield(Mgroup,'CHLA')
+    Mtemp.CHLA=Mtemp.CHLA(:,I);
+end
+if isfield(Mgroup,'DOXY')
+    Mtemp.DOXY=Mtemp.DOXY(:,I);
+end
 if isfield(Mgroup,'PRES_QC')
     Mtemp.PRES_QC=Mtemp.PRES_QC(:,I);
 end
@@ -35,6 +47,12 @@ if isfield(Mgroup,'TEMP_QC')
 end
 if isfield(Mgroup,'PSAL_QC')
     Mtemp.PSAL_QC=Mtemp.PSAL_QC(:,I);
+end
+if isfield(Mgroup,'CHLA_QC')
+    Mtemp.CHLA_QC=Mtemp.CHLA_QC(:,I);
+end
+if isfield(Mgroup,'DOXY_QC')
+    Mtemp.DOXY_QC=Mtemp.DOXY_QC(:,I);
 end
 if isfield(Mgroup,'np')
     Mtemp.np=length(I);
@@ -55,10 +73,12 @@ if isfield(Mgroup,'index_tag')
     Mtemp.index_tag(:)=1;
 end
 if isfield(Mgroup,'platform_number')
+    try
     F=find(strcmp(Mgroup.platform_number(I(1)),Mtemp.list_platform_number));
     Mtemp.list_descr=Mtemp.list_platform_number(F);
     Mtemp.list_platform_number = Mtemp.list_platform_number(F);
     Mtemp.list_smru_platform = Mtemp.list_smru_platform(F);
+    end
 end
 if isfield(Mgroup,'geospatial_lat_min')
     Mtemp.geospatial_lat_min= Mtemp.geospatial_lat_min;

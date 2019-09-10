@@ -98,6 +98,15 @@ for jj=1:length(n), % bug if only one color !
     J=find(bin==jj);
     if n(jj),
         
+        for ii=1:length(J),
+            try
+            I1 = find(~isnan(P(:,J(ii))));
+            I2 = find(~isnan(P(:,J(ii)).*T(:,J(ii))));
+            T(I1,J(ii)) = interp1(P(I2,J(ii)),T(I2,J(ii)),P(I1,J(ii)));
+            I3 = find(~isnan(P(:,J(ii)).*S(:,J(ii))));
+            S(I1,J(ii)) = interp1(P(I3,J(ii)),S(I3,J(ii)),P(I1,J(ii)));
+            end
+        end
         Pts=[P(:,J);zeros(1,n(jj))*NaN];  Pts=Pts(:);
         Tts=[T(:,J);zeros(1,n(jj))*NaN];  Tts=Tts(:);
         Sts=[S(:,J);zeros(1,n(jj))*NaN];  Sts=Sts(:);
