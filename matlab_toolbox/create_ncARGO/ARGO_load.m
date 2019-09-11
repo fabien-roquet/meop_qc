@@ -88,14 +88,13 @@ argo_data.JULD=argo_data.JULD+datenum(1950,1,1);
 argo_data.np=size(argo_data.PRES,2);
 argo_data.nr=size(argo_data.PRES,1);
 argo_data.platform_number = cellstr(argo_data.PLATFORM_NUMBER');
-[list_descr,m,n]=unique(argo_data.platform_number);
+[list_descr,m,n] = unique(cellstr(argo_data.platform_number'),'stable');
+argo_data.ntag      =length(list_descr);
 argo_data.list_descr=list_descr;
+argo_data.index_tag = n;
 for kk=1:length(list_descr),
-    I=find(strcmp(list_descr{kk},argo_data.platform_number));
-    argo_data.nprof(kk) = length(I);
-    argo_data.index_tag(I) = kk;
+    argo_data.nprof(kk) = length(find(n==kk));
 end
-argo_data.ntag=length(list_descr);
 
 
 if isfield(argo_data,'SMRU_NAME')

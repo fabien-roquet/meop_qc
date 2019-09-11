@@ -1,3 +1,4 @@
+function conf = init_mirounga()
 %% initialization of the mirounga processing system
 
 d = jsondecode(fileread('config.json'));

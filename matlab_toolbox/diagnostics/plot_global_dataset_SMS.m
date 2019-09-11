@@ -2,7 +2,7 @@ function plot_global_dataset_SMS(conf)
 %% perform plots and pdf document on the general MEOP-CTD dataset
 
 if isempty(conf),
-    init_mirounga;
+    conf = init_mirounga;
 end
 
 do_plot_figure = 1;

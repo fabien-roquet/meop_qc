@@ -1,7 +1,7 @@
 function generate_plot2(conf,EXP,smru_name)
 
 if isempty(conf),
-    init_mirounga;
+    conf = init_mirounga;
 end
 close all
 

@@ -4,7 +4,7 @@ function info_deployment=load_info_deployment(conf,EXP,one_smru_name)
 % EXP, PI, ODV name and directory name 
 
 if isempty(conf),
-    init_mirounga;
+    conf = init_mirounga;
 end
 
 if iscell(EXP) && length(EXP)==1,

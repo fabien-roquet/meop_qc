@@ -1,19 +1,36 @@
 function generate_plot1(conf,EXP,one_smru_name)
 
 
-if isempty(conf),
-    init_mirounga;
+if isstr(conf),
+    plot1_mode = conf;
+    conf = init_mirounga;
+    conf.plot1_mode = plot1_mode;
+elseif isempty(conf),
+    conf = init_mirounga;
 end
+
+if ~isfield(conf,'plot1_mode')
+    conf.plot1_mode = 'fast';
+end
+
 close all
 
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     info_deployment=load_info_deployment(conf,EXP);
+    if isempty(info_deployment.list_smru_name)
+        return
+    end
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
     delete(sprintf('%s%s/*.png',conf.calibplotdir,info_deployment.EXP))
+    disp(['calibration plots: ' EXP]);
 else  % tag smru_tag only
     info_deployment=load_info_deployment(conf,EXP,one_smru_name);
+    if isempty(info_deployment.list_smru_name)
+        return
+    end
     [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
     delete(sprintf('%s%s/calibration_%s_*.png',conf.calibplotdir,info_deployment.EXP,one_smru_name))
+    disp(['calibration plots: ' one_smru_name]);
 end 
 
 
@@ -28,9 +45,10 @@ end
 conf_clim.woddir=conf.woddir;
 conf_clim.coradir=conf.coradir;
 conf_clim.meopdir=conf.meopdir;
-argo_wod =load_WOD(conf_clim);
-argo_cora =load_CORA(conf_clim);
-argo_meop=load_MEOP(conf_clim);
+
+argo_wod  = []; %load_WOD(conf_clim);
+argo_cora = load_CORA(conf_clim);
+argo_meop = load_MEOP(conf_clim);
 
 
 %% load seal deployment data
@@ -140,36 +158,38 @@ for itag = 1:length(info_deployment.list_tag)
     conf_adjustement.pause=0;
     conf_adjustement.Tlim=[temp_min temp_max]; 
     conf_adjustement.Slim=[sal_min sal_max];
-    %  conf_adjustement.list_tag=1;
     conf_adjustement.hfig = 0;
     
     conf_adjustement.nomfig=sprintf('%s/%s/calibration_%s_0.png',...
         conf.calibplotdir,info_deployment.EXP,smru_name);
-    conf_adjustement.argo_wod = argo_wod;
-    conf_adjustement.argo_cora = argo_cora;
-    conf_adjustement.argo_meop= argo_meop;
+    
+    if ~isempty(argo_wod), conf_adjustement.argo_wod = argo_wod; end
+    if ~isempty(argo_cora), conf_adjustement.argo_cora = argo_cora; end
+    if ~isempty(argo_meop), conf_adjustement.argo_meop= argo_meop; end
+    
     conf_adjustement.argo_qc2 = Mgroup;
     conf_adjustement.nomfig2=sprintf('%s/%s/calibration_%s_other_tags.png',...
         conf.calibplotdir,info_deployment.EXP,smru_name);
     TS_diags_comparison(conf_adjustement);
-    conf_adjustement=rmfield(conf_adjustement,'argo_qc2');
     
-    J=1:conf_adjustement.Nprof_diags:conf_adjustement.N_profiles;
     
-    if J(end)~=conf_adjustement.N_profiles
-        J(end+1)=conf_adjustement.N_profiles;
-    end
-    
-    for jj=1:length(J)-1
-        Msmall = extract_profil(Mtemp,J(jj):J(jj+1)-1);
-        if conf_adjustement.offset
-            conf_adjustement.offset=Offset(J(jj):J(jj+1)-1);
+    if ~strcmp(conf.plot1_mode,'fast')
+        conf_adjustement=rmfield(conf_adjustement,'argo_qc2');
+        J=1:conf_adjustement.Nprof_diags:conf_adjustement.N_profiles;
+        if J(end)~=conf_adjustement.N_profiles
+            J(end+1)=conf_adjustement.N_profiles;
         end
-        conf_adjustement.argo_qc = Msmall;
-        conf_adjustement.nomfig=sprintf('%s%s/calibration_%s_%03d_part%02d.png',...
-            conf.calibplotdir,info_deployment.EXP,...
-            smru_name,conf_adjustement.Nprof_diags,jj);
-        TS_diags_comparison(conf_adjustement);
+        for jj=1:length(J)-1
+            Msmall = extract_profil(Mtemp,J(jj):J(jj+1)-1);
+            if conf_adjustement.offset
+                conf_adjustement.offset=Offset(J(jj):J(jj+1)-1);
+            end
+            conf_adjustement.argo_qc = Msmall;
+            conf_adjustement.nomfig=sprintf('%s%s/calibration_%s_%03d_part%02d.png',...
+                conf.calibplotdir,info_deployment.EXP,...
+                smru_name,conf_adjustement.Nprof_diags,jj);
+            TS_diags_comparison(conf_adjustement);
+        end
     end
     
     %%

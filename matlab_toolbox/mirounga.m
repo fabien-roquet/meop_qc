@@ -17,7 +17,7 @@ function mirounga(varargin)
 % sc_mirounga must be run from the directory matlab_toolbox
 
 %% initialization
-init_mirounga;
+conf = init_mirounga;
 
 %% Select tags : choose mode of selection in config.json
 EXPs = select_deployments(conf);

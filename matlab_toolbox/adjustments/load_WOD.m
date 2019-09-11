@@ -6,8 +6,11 @@ function argo_wod = load_WOD(conf)
 %    lat and lon : position of data needed. A WOD data tile is loaded if at least
 %        one of the position is inside its area.
 
-
 argo_wod=[];
+if isempty(conf),
+    return
+end
+
 conf.lon(conf.lon>180)=conf.lon(conf.lon>180)-360;
 
 for jj=1:8,
@@ -20,9 +23,7 @@ for jj=1:8,
             if lon_limit(1)>181, lon_limit=lon_limit-360; end
             if any(conf.lon>lon_limit(1) & conf.lon<lon_limit(2))
                 name_wod=sprintf('%sWOD_lon%02d_lat%02d_prof.nc',conf.woddir,ii,jj);
-                if ~exist(name_wod,'file')
-                    disp(sprintf('%s does not exist and is needed',name_wod));
-                else
+                if exist(name_wod,'file')
                     aux=ARGO_load(name_wod);
                     if isempty(argo_wod), argo_wod = aux;
                     else; argo_wod = ARGO_concat(argo_wod,aux);
@@ -34,6 +35,7 @@ for jj=1:8,
     end
     
 end
+
 if ~isempty(argo_wod)
     argo_wod.LONGITUDE(argo_wod.LONGITUDE>180)=argo_wod.LONGITUDE(argo_wod.LONGITUDE>180)-360;
 end

@@ -68,13 +68,12 @@ end
 argo_data.np=length(argo_data.JULD);
 argo_data.nr=size(argo_data.PRES,1);
 [list_descr,m,n]=unique(cellstr(argo_data.platform_number'),'stable');
-for kk=1:length(list_descr),
-    I=find(strcmp(list_descr{kk},argo_data.platform_number));
-    argo_data.nprof(kk) = length(I);
-    argo_data.index_tag(I) = kk;
-end
-argo_data.ntag=length(list_descr);
+argo_data.ntag      =length(list_descr);
 argo_data.list_descr=list_descr;
+argo_data.index_tag = n;
+for kk=1:length(list_descr),
+    argo_data.nprof(kk) = length(find(n==kk));
+end
 
 if isfield(argo_data,'PRES_ADJUSTED')
     argo_data.Pmask=double(~isnan(argo_data.PRES_ADJUSTED));

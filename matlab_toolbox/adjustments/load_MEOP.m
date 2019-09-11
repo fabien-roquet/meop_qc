@@ -8,6 +8,10 @@ function data = load_WOD(conf)
 
 
 data=[];
+if isempty(conf),
+    return
+end
+
 conf.lon(conf.lon>180)=conf.lon(conf.lon>180)-360;
 
 for jj=1:8,

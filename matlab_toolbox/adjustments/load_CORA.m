@@ -8,6 +8,10 @@ function argo = load_CORA(conf)
 
 
 argo=[];
+if isempty(conf),
+    return
+end
+
 conf.lon(conf.lon>180)=conf.lon(conf.lon>180)-360;
 if ~exist(conf.coradir,'dir')
     error('Unable to find location of CORA files')

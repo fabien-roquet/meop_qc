@@ -23,6 +23,15 @@ function conf = TSdiags_comparison(conf)
 % OUTPUT
 % H: vector list of graphical handles
 
+if isfield(conf,'hfig') & conf.hfig~=0
+    figure(conf.hfig); clf
+elseif conf.hfig==0
+    conf.hfig = figure('visible','off');
+else
+    conf.hfig = figure;
+end
+
+
 if conf.argo_qc.np==0
     close(conf.hfig)
     return
@@ -182,14 +191,6 @@ end
 
 
 %% initialisation
-
-if isfield(conf,'hfig') & conf.hfig~=0
-    figure(conf.hfig); clf
-elseif conf.hfig==0
-    conf.hfig = figure('visible','off');
-else
-    conf.hfig = figure;
-end
 
 ax1=axes('position',[0 .55 .25 .4]);axis off
 

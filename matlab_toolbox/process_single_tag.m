@@ -4,7 +4,7 @@ function process_single_tag(one_smru_name)
 I = strfind(one_smru_name,'-');
 EXP = one_smru_name(1:I(1)-1);
 
-init_mirounga;
+conf = init_mirounga;
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 
 for ktask = 1:length(conf.list_tasks),
