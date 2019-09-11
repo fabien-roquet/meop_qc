@@ -101,6 +101,7 @@ if conf.generate_plot2 && any(strcmp(checkpoint,{'none','generate_plots2'})),
     for kEXP = kEXP0:length(EXPs.deployment_code),
         save('checkpoint.mat','checkpoint','kEXP');
         EXP = EXPs.deployment_code{kEXP};
+        conf.plot1_mode='detailed';
         generate_plot2(conf,EXP);
     end
     delete('checkpoint.mat');

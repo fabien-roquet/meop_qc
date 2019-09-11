@@ -53,9 +53,11 @@ if ~exist('Flim','var') | length(Dlim)~=2
 end
 
 if exist('hfig','var') & hfig~=0
-    figure(hfig);
+    figure(hfig);clf
+elseif hfig == 0
+    hfig = figure('visible','off');
 else
-    figure;hfig=gcf;
+    hfig=figure;
 end
 
 %% initialisation

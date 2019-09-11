@@ -16,3 +16,4 @@ for ktask = 1:length(conf.list_tasks),
 end
 
 generate_plot1(conf,EXP,one_smru_name);
+generate_plot2(conf,EXP,one_smru_name);

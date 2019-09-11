@@ -5,14 +5,13 @@ if ~ismember(mode,{'raw','adj'}),
 end
 
 close all
-list_tag = dir([info_deployment.dir '*' suffix '_prof.nc']);
+list_tag = info_deployment.list_tag;
 plotdir = [conf.plotdir,EXP,'/'];
 [s, mess, messid] = mkdir(plotdir);
-delete(sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode))
-delete(sprintf('%s*%s_transect_%s.png',plotdir,suffix,mode))
 
 for ii=1:length(list_tag),
     %%
+    
     name_prof = sprintf('%s%s',info_deployment.dir,list_tag(ii).name);
     calib = ncload_struct(name_prof,'SCIENTIFIC_CALIB_COEFFICIENT');
     

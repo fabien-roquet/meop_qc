@@ -1,29 +1,24 @@
-function generate_plot2(conf,EXP,smru_name)
+function generate_plot2(conf,EXP,one_smru_name)
 
 if isempty(conf),
     conf = init_mirounga;
 end
 close all
 
-info_deployment=load_info_deployment(conf,EXP);
-if ~exist('smru_name','var') % all tags from EXP deployment
-    smru_name = info_deployment.list_smru_name;
-    Itag = 1:length(info_deployment.list_tag);
-    [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
-    delete(sprintf('%s%s/*.png',conf.calibplotdir,info_deployment.EXP))
-else  % tag smru_tag only
-    Itag = find(strcmp(smru_name,info_deployment.list_smru_name));
-    if isempty(Itag),
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    info_deployment=load_info_deployment(conf,EXP);
+    if isempty(info_deployment.list_smru_name)
         return
     end
-    [s,mess,messid] = mkdir(sprintf('%s%s',conf.calibplotdir,info_deployment.EXP));
-    delete(sprintf('%s%s/calibration_%s_*.png',conf.calibplotdir,info_deployment.EXP,smru_name))
+else  % tag smru_tag only
+    info_deployment=load_info_deployment(conf,EXP,one_smru_name);
+    if isempty(info_deployment.list_smru_name)
+        return
+    end
 end
 
-
+%% load configuration of plots
 do_figure='on';
-info_deployment=load_info_deployment(conf,EXP);
-
 plot_conf=[];
 if ~any(strcmp(conf.table_param.Properties.RowNames,EXP)),
     plot_conf.temp_error=0.1;
@@ -56,6 +51,9 @@ for field = fields
         plot_conf = rmfield(plot_conf,field{1});
     end
 end
+
+
+%% do the plots
 
 if length(info_deployment.list_tag_lr0)
     suffix = '_lr0'; mode = 'raw';
