@@ -5,7 +5,7 @@ if ~ismember(mode,{'raw','adj'}),
 end
 
 close all
-list_tag = info_deployment.list_tag;
+list_tag = getfield(info_deployment,['list_tag' suffix]);
 plotdir = [conf.plotdir,EXP,'/'];
 [s, mess, messid] = mkdir(plotdir);
 

@@ -1,4 +1,4 @@
-function mirounga(varargin)
+function mirounga(mode)
 %% sc_mirounga: front-end script to process seal data
 % F. Roquet, B. Picard 2019
 
@@ -18,9 +18,17 @@ function mirounga(varargin)
 
 %% initialization
 conf = init_mirounga;
+checkpoint_file = [conf.processdir 'checkpoint.mat'];
 
 %% Select tags : choose mode of selection in config.json
 EXPs = select_deployments(conf);
+if exist('mode','var') & strcmp(mode,'restart all')
+    for kEXP = 1:length(EXPs.deployment_code),
+        EXP = EXPs.deployment_code{kEXP};
+        conf.list_deployment{EXP,'task_done'} = 0;
+    end
+    writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);
+end
 
 %% options : choose options in config.json
 % conf.process_tags = 0 --> do not process tags
@@ -39,8 +47,8 @@ EXPs = select_deployments(conf);
 % conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
 
 %% Resume
-if exist('checkpoint.mat','file'),
-    load('checkpoint.mat');
+if exist(checkpoint_file,'file'),
+    load(checkpoint_file);
     kEXP0 = kEXP;
 else
     checkpoint = 'none';
@@ -49,11 +57,11 @@ end
 
 %% Execute the tasks
 if conf.process_tags & any(strcmp(checkpoint,{'none','process_tags'})),
-
+        
     checkpoint = 'process_tags';
     for kEXP = kEXP0:length(EXPs.deployment_code),
         
-        save('checkpoint.mat','checkpoint','kEXP');
+        save(checkpoint_file,'checkpoint','kEXP');
 
         EXP = EXPs.deployment_code{kEXP};
         info_deployment=load_info_deployment(conf,EXP);
@@ -80,7 +88,7 @@ if conf.process_tags & any(strcmp(checkpoint,{'none','process_tags'})),
         
         
     end
-    delete('checkpoint.mat');
+    delete(checkpoint_file);
     
 end
 
@@ -88,23 +96,23 @@ end
 if conf.generate_plot1 && any(strcmp(checkpoint,{'none','generate_plots1'})),
     checkpoint = 'generate_plots1';
     for kEXP = kEXP0:length(EXPs.deployment_code),
-        save('checkpoint.mat','checkpoint','kEXP');
+        save(checkpoint_file,'checkpoint','kEXP');
         EXP = EXPs.deployment_code{kEXP};
         generate_plot1(conf,EXP);
     end
-    delete('checkpoint.mat');
+    delete(checkpoint_file);
 end
 
 %% Produce the plots 2
 if conf.generate_plot2 && any(strcmp(checkpoint,{'none','generate_plots2'})),
     checkpoint = 'generate_plots2';
     for kEXP = kEXP0:length(EXPs.deployment_code),
-        save('checkpoint.mat','checkpoint','kEXP');
+        save(checkpoint_file,'checkpoint','kEXP');
         EXP = EXPs.deployment_code{kEXP};
         conf.plot1_mode='detailed';
         generate_plot2(conf,EXP);
     end
-    delete('checkpoint.mat');
+    delete(checkpoint_file);
 end
 %     % comparaison CTD LR/CTD HR
 %     plot_all_profil=1;

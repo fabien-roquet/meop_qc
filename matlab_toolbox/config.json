@@ -8,11 +8,11 @@
   },
 "tasks":
   {
-  "process_tags":0,
+  "process_tags":8,
   "process_mode":"resume",
   "generate_plot1":true,
-  "generate_plot2":false,
-  "global_diagnostics":false,
+  "generate_plot2":true,
+  "global_diagnostics":true,
   "update_public_data":false
   },
 "selection":
@@ -50,7 +50,7 @@
   "fabienlinux":
     {
     "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
-    "processdir":"/home/froqu/MEOP_process/",
+    "processdir":"/home/froqu/MEOP_process_2/",
     "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
     "pythondir":"/home/froqu/Dropbox/MEOP/meop_qc/python_toolbox/",
     "inputdir":"/home/froqu/Dropbox/MEOP/SMUG_INPUT/all/",

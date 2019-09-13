@@ -31,17 +31,18 @@ for kprof=1:N_prof,
     l_std = NaN*zeros(N_std,1);
 %     t_1dbar=[];
 %     s_1dbar=[];
-    
+
+    t_in_T=[];
     if ~isempty(t)&length(find(~isnan(z.*t)))>1
-        z_in=z(~isnan(t) & ~isnan(z));
-        t_in=t(~isnan(t) & ~isnan(z));
-        [z_in,I]=sort(z_in);
-        t_in=t_in(I);
-        I=[find(z_in(1:end-1)~=z_in(2:end));length(z_in)];
-        z_in=z_in(I);
-        t_in=t_in(I);
-        if length(t_in)>5 %...expected to avoid isolated values
-            t_std = interp1(z_in,t_in,std_lev);
+        z_in_T=z(~isnan(t) & ~isnan(z));
+        t_in_T=t(~isnan(t) & ~isnan(z));
+        [z_in_T,I]=sort(z_in_T);
+        t_in_T=t_in_T(I);
+        I=[find(z_in_T(1:end-1)~=z_in_T(2:end));length(z_in_T)];
+        z_in_T=z_in_T(I);
+        t_in_T=t_in_T(I);
+        if length(t_in_T)>5 %...expected to avoid isolated values
+            t_std = interp1(z_in_T,t_in_T,std_lev);
             % t_1dbar = interp1(z_in,t_in,std_1dbar);
         end
     end
@@ -56,10 +57,18 @@ for kprof=1:N_prof,
         s_in=s_in(I);
         if length(s_in)>5 %...expected to avoid isolated values
             s_std = interp1(z_in,s_in,std_lev);
-            % s_1dbar = interp1(z_in,s_in,std_1dbar);
+            % use gsw_SA_CT_interp for S and T instead of linear interp if possible
+            if length(t_in_T)>5
+                z_in_TS = sort(unique([z_in_T;z_in]));
+                t_in_TS = interp1(std_lev,t_std,z_in_TS);
+                s_in_TS = interp1(std_lev,s_std,z_in_TS);
+                [s_std, t_std] = gsw_SA_CT_interp(s_in_TS,t_in_TS,z_in_TS,std_lev);
+                % s_1dbar = interp1(z_in,s_in,std_1dbar);
+            end
+            
         end
     end
-    
+        
     if ~isempty(f)&length(find(~isnan(z.*f)))>1
         z_in=z(~isnan(f) & ~isnan(z));
         f_in=f(~isnan(f) & ~isnan(z));

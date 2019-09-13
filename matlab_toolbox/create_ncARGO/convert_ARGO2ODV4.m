@@ -41,21 +41,21 @@ mode=0;
 if isfluo
     if isoxy,
         mode=1;
-        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF	Oxygen [umol/l]	QF');
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [ï¿½C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF	Oxygen [umol/l]	QF');
     elseif islight,
         mode=5;
-        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF Light [ln(PPFD)] QF');
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [ï¿½C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF Light [ln(PPFD)] QF');
     else
         mode=2;
-        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF');
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [ï¿½C]	QF	Salinity [psu]	QF  Chlorophyll-A [mg/m3]	QF');
     end
 else
     if isoxy,
         mode=3;
-        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF  Oxygen [umol/l]	QF');
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [ï¿½C]	QF	Salinity [psu]	QF  Oxygen [umol/l]	QF');
     else
         mode=4;
-        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [°C]	QF	Salinity [psu]	QF');
+        fprintf(fid,'%s\n','Cruise	Station	Type	mon/day/yr	hh:mm	Longitude [degrees_east]	Latitude [degrees_north]	Depth [m]	QF	Temperature [ï¿½C]	QF	Salinity [psu]	QF');
     end
 end
 
@@ -64,41 +64,43 @@ for ii=1:length(I),
     station=sprintf('%04d',ii);
     date=datestr(argo_data.JULD(I(ii)),'mm/dd/yyyy\tHH:MM');
     lon=argo_data.LONGITUDE(I(ii));    lat=argo_data.LATITUDE(I(ii));
+    str0 = sprintf('%s\t%s\tC\t%s\t%6.3f\t%6.3f\t',cruise,station,date,lon,lat);
+    pres = PRES(:,I(ii));
+    temp = TEMP(:,I(ii));
+    sali = SALI(:,I(ii));
     for pp=1:argo_data.nr,
         if index(pp,I(ii))==0, continue, end;
-        fprintf(fid,'%s\t%s\tC\t%s\t%6.3f\t%6.3f\t%4.1f\t0\t',cruise,station,date,lon,lat,PRES(pp,I(ii)));
-        if Tmask(pp,I(ii)),
-            fprintf(fid,'%8.4f\t0\t',TEMP(pp,I(ii)));
+        if Tmask(pp,I(ii))*Smask(pp,I(ii)),
+            str = sprintf('%s%4.1f\t0\t%8.4f\t0\t%8.4f\t0\t',str0,pres(pp),temp(pp),sali(pp));
+        elseif Tmask(pp,I(ii))
+            str = sprintf('%s%4.1f\t0\t%8.4f\t0\t\t1\t',str0,pres(pp),temp(pp));
+        elseif Smask(pp,I(ii))
+            str = sprintf('%s%4.1f\t0\t\t1\t%8.4f\t0\t',str0,pres(pp),sali(pp));
         else
-            fprintf(fid,'\t1\t');
-        end
-        if Smask(pp,I(ii)),
-            fprintf(fid,'%8.4f\t0\t',SALI(pp,I(ii)));
-        else
-            fprintf(fid,'\t1\t');
+            str = sprintf('%s%4.1f\t0\t\t1\t\t1\t',str0,pres(pp));
         end
         if isfluo
             if Fmask(pp,I(ii)),
-                fprintf(fid,'%8.4f\t0\t',CHLA(pp,I(ii)));
+                str = sprintf('%s%8.4f\t0\t',str,CHLA(pp,I(ii)));
             else
-                fprintf(fid,'\t1\t');
+                str = sprintf('%s\t1\t',str);
             end
         end
         if isoxy
             if Omask(pp,I(ii)),
-                fprintf(fid,'%8.4f\t0\t',DOXY(pp,I(ii)));
+                str = sprintf('%s%8.4f\t0\t',str,DOXY(pp,I(ii)));
             else
-                fprintf(fid,'\t1\t');
+                str = sprintf('%s\t1\t',str);
             end
         end
          if islight
             if Lmask(pp,I(ii)),
-                fprintf(fid,'%8.4f\t0\t',LIGHT(pp,I(ii)));
+                str = sprintf('%s%8.4f\t0\t',str,LIGHT(pp,I(ii)));
             else
-                fprintf(fid,'\t1\t');
+                str = sprintf('%s\t1\t',str);
             end
         end
-        fprintf(fid,'\n');
+        fprintf(fid,'%s\n',str);
     end
 end
 fclose(fid);

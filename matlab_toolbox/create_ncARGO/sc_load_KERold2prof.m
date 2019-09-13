@@ -16,7 +16,7 @@ ltag=unique(hs);
 %% save in Argo netcdf format
 if length(hi)>0
     suffix = 'lr0_prof.nc';
-    convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell2,suffix,[],smru_name);
+    convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell2,suffix,[],one_smru_name);
 end
 
 disp(sprintf('\t%d tags',length(ltag)));

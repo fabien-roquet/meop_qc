@@ -209,8 +209,6 @@ if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_param = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
-conf.table_param = mergevars(conf.table_param,{'Tlim_1','Tlim_2'},'NewVariableName','Tlim');
-conf.table_param = mergevars(conf.table_param,{'Slim_1','Slim_2'},'NewVariableName','Slim');
 
 name_file=[conf.csv_config 'table_salinity_offsets.csv'];
 if ~exist(name_file,'file')

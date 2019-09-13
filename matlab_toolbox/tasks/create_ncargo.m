@@ -1,6 +1,11 @@
 function create_ncargo(conf,EXP,one_smru_name)
 
 
+if isempty(conf),
+    conf = init_mirounga;
+end
+
+
 % don't process it if no raw odv file
 info_deployment=load_info_deployment(conf,EXP);
 if ~exist([conf.rawdir info_deployment.nomfic]),
@@ -8,7 +13,7 @@ if ~exist([conf.rawdir info_deployment.nomfic]),
 end
 
 if ~exist('one_smru_name','var') % all tags from EXP deployment
-    one_smru_name = info_deployment.list_smru_name;
+    one_smru_name = '';
     disp(['(1)' EXP])
     delete([conf.logdir 'diary_' EXP '.txt'])
     diary([conf.logdir 'diary_' EXP '.txt'])

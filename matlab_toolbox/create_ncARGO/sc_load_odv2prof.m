@@ -131,7 +131,7 @@ save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','PLi','EXP','PI','NATION','iso
 %% save in Argo netcdf format
 if length(hi)>0
     suffix = 'lr0_prof.nc';
-    convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell,suffix,[],smru_name);
+    convert_fcell2ARGO(conf,info_deployment.EXP,name_fcell,suffix,[],one_smru_name);
 end
 
 disp(sprintf('\t%d tags',length(ltag)));

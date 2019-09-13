@@ -71,6 +71,14 @@ if length(info_deployment.list_tag_lr1)
     sc_build_latex;
 end
 
+if length(info_deployment.list_tag_lr1)
+    suffix = '_hr1'; mode = 'adj';
+    disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+    sc_plot_data_tags;
+    sc_plot_data_deploy;
+    sc_build_latex;
+end
+
 if length(info_deployment.list_tag_hr2)
     suffix = '_hr2'; mode = 'adj';
     disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);

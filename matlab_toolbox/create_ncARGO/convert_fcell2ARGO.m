@@ -19,7 +19,7 @@ if ~exist('Nlevels','var') || isempty(Nlevels),
 end
 
 list_smru = conf.list_smru_platform_code;
-if ~exist('smru_name','var')
+if ~exist('one_smru_name','var')
     one_smru_name = '';
 end
 
@@ -103,7 +103,7 @@ for ii=1:length(list_tag),
     
     smru_name = char(hs(I(1)));
     K=find(strcmp(list_smru,smru_name));
-    if ~isempty(one_smru_name) && ~strcmp(one_smru_name,smru_name),
+    if ~isempty(one_smru_name) & ~strcmp(one_smru_name,smru_name),
         continue
     end
     

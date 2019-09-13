@@ -1,5 +1,9 @@
 function generate_odv4(conf,EXP,one_smru_name)
 
+if isempty(conf),
+    conf = init_mirounga;
+end
+
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
 end
