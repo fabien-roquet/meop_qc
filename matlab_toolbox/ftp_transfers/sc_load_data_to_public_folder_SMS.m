@@ -29,10 +29,10 @@ for  kNATION=1:length(list_NATION),
         Ntag = length(list_tag_fr1);
         for jj=1:Ntag,
             
-            ncfile_fr1 = sprintf('%s%s/%s/%s',conf.datadir,NATION,EXP,list_tag_fr1(jj).name);
+            ncfile_fr1 = sprintf('%s%s',info_deployment.dir,list_tag_fr1(jj).name);
             smru_name = list_tag_fr1(jj).name(1:end-12);
             exist_continuous = conf.hr_continuous(find(strcmp(smru_name,conf.hr_smru_name)));
-            trajfile = sprintf('%s%s/%s/%s_traj.nc',conf.datadir_traj,NATION,EXP,smru_name);
+            trajfile = sprintf('%s%s_traj.nc',info_deployment.dir,smru_name);
             
             if ~exist_continuous | ~exist(ncfile_fr1,'file'), continue; end
             
@@ -43,7 +43,7 @@ for  kNATION=1:length(list_NATION),
             
             [status,message] = copyfile('README_licenseODbl.txt',[folder_output_SMS NATION],'f');
             [status,message] = copyfile( ...
-                sprintf('%s%s/%s_fr1_doc_adj.pdf',conf.texdir,NATION,EXP),...
+                sprintf('%s%s_fr1_doc_adj.pdf',conf.texdir,EXP),...
                 [folder_output_SMS NATION '/PDF/'],'f');
             [status,message] = copyfile(ncfile_fr1,[folder_output_SMS NATION '/ncARGO_prof/' smru_name '_SMS_prof.nc'],'f');
             [status,message] = copyfile(trajfile,[folder_output_SMS NATION '/ncARGO_traj/' smru_name '_SMS_traj.nc'],'f');

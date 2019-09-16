@@ -1,7 +1,6 @@
 
 %% Creation du fichier nc timeseries
-ficout = sprintf('%s%s/%s/%s%s',conf.datadir_traj,NATION,EXP,smru_name,'_traj.nc');
-[s,mess,messid] = mkdir(sprintf('%s%s/%s',conf.datadir_traj,NATION,EXP));
+ficout = sprintf('%s/%s_traj.nc',info_deployment.dir,smru_name);
 delete(ficout);
 %     prof_pres_cor=P-(P*coef.p1+coef.p2);
 %     prof_temp_cor=T-(prof_pres_cor*coef.t1+coef.t2);

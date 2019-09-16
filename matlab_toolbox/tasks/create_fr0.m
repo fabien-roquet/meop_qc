@@ -19,7 +19,7 @@ sc_load_ctdhr2prof;
 list_tag = info_deployment.list_tag;
 for index=1:length(list_tag),
     
-    smru_name = info_deployment.list_smru_name{index};
+    smru_name = list_tag(index).name(1:end-12);
     
     suffix = '_fr0';
     name_prof = sprintf('%s%s%s_prof.nc',info_deployment.dir,smru_name,suffix);

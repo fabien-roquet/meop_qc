@@ -12,21 +12,23 @@ if ~exist([conf.rawdir info_deployment.nomfic]),
     error(sprintf('%s: no raw file. not processed.',EXP));
 end
 
+%   1) create directory
+[s,mess,messid] = mkdir(info_deployment.dir);
+
+%  open diary file
+diary_file = [info_deployment.dir EXP '_diary.txt'];
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
     disp(['(1)' EXP])
-    delete([conf.logdir 'diary_' EXP '.txt'])
-    diary([conf.logdir 'diary_' EXP '.txt'])
+    if exist(diary_file,'file'), delete(diary_file); end
+    diary(diary_file)
 else  % tag smru_tag only
     info_deployment=load_info_deployment(conf,EXP,one_smru_name);
     disp(['(1)' one_smru_name])
-    diary([conf.logdir 'diary_' EXP '.txt'])
+    diary(diary_file)
 end
 
 % add deployment
-
-%   1) create directory
-[s,mess,messid] = mkdir([conf.datadir,info_deployment.NATION,'/',info_deployment.EXP]);
 
 %   2) create ncARGO file lr0
 if ismember(info_deployment.EXP,{'ct3','ct7','ct11','wd3'})

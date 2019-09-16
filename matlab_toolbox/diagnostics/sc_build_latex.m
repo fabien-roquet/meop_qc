@@ -74,8 +74,6 @@ else
     delete('*_doc_*.aux');
     delete('*_doc_*.log');
     
-    savedir = sprintf('%s%s/',conf.texdir,info_deployment.NATION);
-    [s,mess,messid] = mkdir(savedir);
-    movefile(sprintf('%s%s_doc_%s.pdf',namefile,suffix,mode),savedir);
+    movefile(sprintf('%s%s_doc_%s.pdf',namefile,suffix,mode),conf.texdir);
     
 end

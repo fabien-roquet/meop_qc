@@ -31,9 +31,7 @@ for index=1:length(list_tag),
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
     attr      = ncloadatt_struct(name_prof);
     nattr     = fieldnames(attr);
-    [s,mess,messid] = mkdir([conf.datadir_ODV , info_deployment.NATION,'/',EXP,'/']);
-    metaname  = [conf.datadir_ODV , ...
-        info_deployment.NATION,'/',EXP,'/', smru_name, '_METADATA.txt'];
+    metaname  = [info_deployment.dir, smru_name, '_METADATA.txt'];
     delete(metaname);
     if isempty(nattr), continue, end
     fid       = fopen(metaname,'w');

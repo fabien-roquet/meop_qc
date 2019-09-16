@@ -110,7 +110,7 @@ for ii=1:length(list_tag),
     if length(K)>0
         
         Nprof=length(I);
-        ficoutind = sprintf('%s%s/%s/%s_%s',conf.datadir,NATION,EXP,smru_name,suffix);
+        ficoutind = sprintf('%s%s/%s_%s',conf.datadir,EXP,smru_name,suffix);
         
         if exist(ficoutind), delete(ficoutind); end
         if ~exist('isfluo','var'), isfluo = 0; end

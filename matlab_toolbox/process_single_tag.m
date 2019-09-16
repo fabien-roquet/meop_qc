@@ -1,13 +1,10 @@
 function process_single_tag(one_smru_name)
 % run all the procedure for one tag only
 
+conf = init_mirounga;
+
 I = strfind(one_smru_name,'-');
 EXP = one_smru_name(1:I(1)-1);
-info_deployment=load_info_deployment(conf,EXP);
-info_deployment.list_smru_name;
-
-
-conf = init_mirounga;
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 
 create_ncargo(conf,EXP,one_smru_name);

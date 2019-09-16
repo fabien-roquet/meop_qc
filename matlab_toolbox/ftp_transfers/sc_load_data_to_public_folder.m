@@ -71,14 +71,14 @@ for  kNATION=1:length(list_NATION),
             Ntag = length(list_tag);
             for jj=1:Ntag,
                 
-                ncfile = sprintf('%s%s/%s/%s',conf.datadir,NATION,EXP,list_tag(jj).name);
+                ncfile = sprintf('%s%s',info_deployment.dir,list_tag(jj).name);
                 smru_name = list_tag(jj).name(1:end-12);
                 ncfile_final = strrep(list_tag(jj).name, '_lr1', '');
                 ncfile_hr1 = strrep(ncfile, '_lr1', '_hr1');
                 ncfile_hr2 = strrep(ncfile, '_lr1', '_hr2');
-                odvfile  = sprintf('%s%s/%s/%s_ODV.txt',conf.datadir_ODV,NATION,EXP,smru_name);
-                odvfile2 = sprintf('%s%s/%s/%s_ODV.txt.zip',conf.datadir_ODV,NATION,EXP,smru_name);
-                metafile = sprintf('%s%s/%s/%s_METADATA.txt',conf.datadir_ODV,NATION,EXP,smru_name);
+                odvfile  = sprintf('%s%s_ODV.txt',info_deployment.dir,smru_name);
+                odvfile2 = sprintf('%s%s_ODV.txt.zip',info_deployment.dir,smru_name);
+                metafile = sprintf('%s%s_METADATA.txt',info_deployment.dir,smru_name);
                 
                 if exist(ncfile_hr2,'file')
                     [status,message] = copyfile(ncfile_hr2,[folder_output NATION '/DATA_ncARGO/' ncfile_final],'f');

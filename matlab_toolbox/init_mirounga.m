@@ -13,7 +13,6 @@ conf.version_SMS = d.version.SMSnew;
 conf.select      = d.selection;
 conf.list_tasks  = d.list_tasks;
 addpath(genpath(conf.matlabdir))
-addpath(genpath(conf.pythondir))
 
 %%
 
@@ -21,10 +20,6 @@ conf.locdir          = [conf.rawdir 'original_cls_locations/'];
 conf.rawdir_hr       = [conf.rawdir 'original_hr_datasets/'];
 
 conf.datadir         = [conf.processdir 'final_dataset_prof/'];
-conf.datadir_traj    = [conf.processdir 'final_dataset_traj/'];
-conf.datadir_ODV     = [conf.processdir 'final_dataset_csv/'];
-
-conf.logdir          = [conf.processdir 'log/'];
 conf.mapsdir         = [conf.processdir 'maps/'];
 conf.texdir          = [conf.processdir 'doc_latex/'];
 conf.plotdir         = [conf.processdir 'plots/'];
@@ -38,11 +33,7 @@ conf.temporary_tex   = [conf.processdir 'temporary/tex/'];
 conf.temporary_fcell = [conf.processdir 'temporary/fcell/'];
 
 %%
-[s,mess,messid] = mkdir(conf.logdir);
 [s,mess,messid] = mkdir(conf.datadir);
-[s,mess,messid] = mkdir(conf.datadir_traj);
-[s,mess,messid] = mkdir(conf.datadir_ODV);
-[s,mess,messid] = mkdir(conf.logdir);
 [s,mess,messid] = mkdir(conf.mapsdir);
 [s,mess,messid] = mkdir([conf.mapsdir 'deployments']);
 [s,mess,messid] = mkdir([conf.mapsdir 'groups']);

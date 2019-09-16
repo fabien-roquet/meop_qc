@@ -91,7 +91,7 @@ else
     ax6=findobj('position',[.65 .05 .3 .4]);
 end
 
-axes(ax1);
+set(gcf,'CurrentAxes',ax1);
 H=[H text(0.5,0.5,descr_str, ...
     'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',12)];
 
@@ -118,20 +118,20 @@ for jj=1:length(n), % bug if only one color !
         Ts_pot=sw_ptmp(Ss,Ts,Ps,0);
         Ds=sw_dens(Ss,Ts_pot,0)-1000;
         
-        axes(ax2);H=[H plot(Tt,Pt,'-','color',col(jj,:))];set(gca,'xlim',Tlim)
-        axes(ax3);H=[H plot(Ss,Ps,'-','color',col(jj,:))];set(gca,'xlim',Slim)
-        axes(ax4);H=[H plot(Ds,Ps,'-','color',col(jj,:))];set(gca,'xlim',Dlim)
-        axes(ax5);
+        set(gcf,'CurrentAxes',ax2);H=[H plot(Tt,Pt,'-','color',col(jj,:))];set(gca,'xlim',Tlim)
+        set(gcf,'CurrentAxes',ax3);H=[H plot(Ss,Ps,'-','color',col(jj,:))];set(gca,'xlim',Slim)
+        set(gcf,'CurrentAxes',ax4);H=[H plot(Ds,Ps,'-','color',col(jj,:))];set(gca,'xlim',Dlim)
+        set(gcf,'CurrentAxes',ax5);
         H=[H m_plot(argo_qc.LONGITUDE(J),argo_qc.LATITUDE(J),'.',...
                     'color',col(jj,:),'markersize',5)];
         
-        axes(ax6);
+        set(gcf,'CurrentAxes',ax6);
         H=[H plot(Ss,Ts_pot,'-','color',col(jj,:))];
                 
     end
 end
 
-axes(ax6);H=[H set_tsdiag(Slim,Tlim,0)];
+set(gcf,'CurrentAxes',ax6);H=[H set_tsdiag(Slim,Tlim,0)];
 
 
 % print figure

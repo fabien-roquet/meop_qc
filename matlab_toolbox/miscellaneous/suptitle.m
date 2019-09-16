@@ -86,7 +86,7 @@ ha=axes('pos',[0 1 1 1],'visible','off','Tag','suptitle');
 ht=text(.5,titleypos-1,str);set(ht,'horizontalalignment','center');
 set(ht,'FontWeight','normal');
 set(gcf,'nextplot',np);
-axes(haold);
+set(gcf,'CurrentAxes',haold);
 
 %
 % 24/11/1003 : Modif. C. Kermabon.

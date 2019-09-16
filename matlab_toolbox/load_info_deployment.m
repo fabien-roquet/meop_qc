@@ -30,7 +30,7 @@ info_deployment.nomfic   = [EXP '_ODV.txt'];
 if ismember(EXP,{'ct3','ct7','ct11','wd3'}),  
     info_deployment.nomfic   = [EXP '_fcell.mat']; 
 end
-info_deployment.dir      = [conf.datadir,info_deployment.NATION,'/',EXP,'/'];
+info_deployment.dir      = [conf.datadir,EXP,'/'];
 
 info_deployment.process   = conf.list_deployment{EXP,'process'};
 info_deployment.public    = conf.list_deployment{EXP,'public'};
