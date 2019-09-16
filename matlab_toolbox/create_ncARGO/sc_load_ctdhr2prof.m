@@ -16,7 +16,8 @@ for index=1:length(list_tag)
     end
     
     num_file = list_deployment_hr{smru_name,'instr_id'};
-    file = [conf.rawdir_hr num2str(list_deployment_hr{smru_name,'year'}) '/'  num_file '_ctd.txt'];
+    year     = list_deployment_hr{smru_name,'year'};
+    file     = sprintf('%s%d/%d_ctd.txt',conf.rawdir_hr,year,num_file);;
     if ~exist(file,'file'), 
         disp(sprintf('%s not found',file)); 
         continue, 

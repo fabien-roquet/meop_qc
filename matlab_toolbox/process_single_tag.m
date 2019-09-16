@@ -3,17 +3,21 @@ function process_single_tag(one_smru_name)
 
 I = strfind(one_smru_name,'-');
 EXP = one_smru_name(1:I(1)-1);
+info_deployment=load_info_deployment(conf,EXP);
+info_deployment.list_smru_name;
+
 
 conf = init_mirounga;
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 
-for ktask = 1:length(conf.list_tasks),
-    
-    task = conf.list_tasks{ktask};
-    fprintf('(%d) %s on %s\n',ktask,task,one_smru_name);
-    feval(task,conf,EXP,one_smru_name);
-    
-end
+create_ncargo(conf,EXP,one_smru_name);
+create_fr0(conf,EXP,one_smru_name);
+update_metadata(conf,EXP,one_smru_name);
+apply_adjustments(conf,EXP,one_smru_name);
+apply_tlc(conf,EXP,one_smru_name);
+apply_tlc_fr(conf,EXP,one_smru_name);
+create_hr2(conf,EXP,one_smru_name);
+generate_odv4(conf,EXP,one_smru_name);
 
 generate_plot1(conf,EXP,one_smru_name);
 generate_plot2(conf,EXP,one_smru_name);

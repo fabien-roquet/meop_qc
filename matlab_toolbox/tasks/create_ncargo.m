@@ -52,7 +52,8 @@ end
 if ~any(strcmp(conf.table_param.Properties.RowNames,EXP)),
     
     temp_error=0.1; psal_error=0.2; minT=-3; maxT=32; minS= 4; maxS=40; min_Nprof= 30;
-    conf.table_param(EXP,:)={temp_error psal_error minT maxT minS maxS min_Nprof [NaN NaN NaN NaN] [NaN NaN] [NaN NaN] 1000 200 0 [] []};
+    pmax = 1000; pmax_fluo = 200; is_lon_centre_180 = 0;
+    conf.table_param(EXP,:)={temp_error psal_error minT maxT minS maxS min_Nprof pmax pmax_fluo is_lon_centre_180};
     name_file=[conf.csv_config 'table_param.csv'];
     writetable(conf.table_param,name_file,'WriteRowNames',1,'Delimiter',',');
     
