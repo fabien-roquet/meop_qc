@@ -32,7 +32,7 @@ for index=1:length(list_tag),
     attr      = ncloadatt_struct(name_prof);
     nattr     = fieldnames(attr);
     metaname  = [info_deployment.dir, smru_name, '_METADATA.txt'];
-    delete(metaname);
+     delete(metaname);
     if isempty(nattr), continue, end
     fid       = fopen(metaname,'w');
     for kk=1:length(nattr),
