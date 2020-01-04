@@ -1,10 +1,10 @@
-function mirounga_diags()
+function mirounga_diags(mode)
 %% mirounga: front-end script to process seal data
 % F. Roquet, B. Picard 2019
 %
-% function mirounga_diags()
-%  mode: by default, mode='resume'. Start over from the checkpoint, if there is one.
-%  mode='restart all': fresh start. All computations are re-done.
+% function mirounga_diags(mode)
+%  mode: by default, mode=''. 
+%  mode={'generate_plot1','generate_plot2','global_diagnostics','update_public_data'} to perform only one task.
 % if the processing fails, resume by simply calling again 'mirounga_diags'
 % set the file config_diags.json to select the system configuration
 % mirounga must be run from the directory matlab_toolbox
@@ -16,17 +16,46 @@ function mirounga_diags()
 
 %% initialization
 conf = init_mirounga;
-checkpoint_file = [conf.processdir 'checkpoint_diags.mat'];
+if not(exist('mode','var')), 
+    checkpoint_file = [conf.processdir 'checkpoint_diags' mode '.mat'];
+    mode='';
+else
+    checkpoint_file = [conf.processdir 'checkpoint_diags_' mode '.mat'];
+end
 
 %% Select tags : choose mode of selection in config_diags.json
 conf.selection = conf.selection_diags;
 EXPs = select_deployments(conf);
 
-%% options : choose options in config_diags.json
-% conf.generate_plot1     = 1;   % create adjustment plots
-% conf.generate_plot2     = 1;   % create diagnostic plots and pdfs
+%% options : choose options in config_diags.json or provide a mode in argument
+% conf.generate_plot1     = 0;   % create adjustment plots
+% conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
 % conf.global_diagnostics = 0;   % compute global maps
 % conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+switch mode,
+    case 'generate_plot1',
+        conf.generate_plot1     = 1;   % create adjustment plots
+        conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
+        conf.global_diagnostics = 0;   % compute global maps
+        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+    case 'generate_plot2',
+        conf.generate_plot1     = 0;   % create adjustment plots
+        conf.generate_plot2     = 1;   % create diagnostic plots and pdfs
+        conf.global_diagnostics = 0;   % compute global maps
+        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+    case 'global_diagnostics',
+        conf.generate_plot1     = 0;   % create adjustment plots
+        conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
+        conf.global_diagnostics = 1;   % compute global maps
+        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+    case 'update_public_data',
+        conf.generate_plot1     = 0;   % create adjustment plots
+        conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
+        conf.global_diagnostics = 0;   % compute global maps
+        conf.update_public_data = 1;   % upload adjusted datasets on public ftp folder
+    otherwise,
+end
+    
 
 %% Resume
 if exist(checkpoint_file,'file'),
