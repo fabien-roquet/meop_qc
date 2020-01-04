@@ -1,39 +1,25 @@
 {
-"config":"fabienlinux",
+"config":"",
 "version":
   {
-  "CTDnew":"MEOP-CTD_2019-08-16",
+  "CTDnew":"MEOP-CTD_2020-01-02",
   "CTDold":"MEOP-CTD_2018-04-10",
   "SMSnew":"MEOP-SMS_2019-05-17"
   },
-"tasks":
-  {
-  "process_tags":8,
-  "process_mode":"resume",
-  "generate_plot1":true,
-  "generate_plot2":true,
-  "global_diagnostics":true,
-  "update_public_data":false
-  },
-"selection":
-  {
-  "all_tags":true,
-  "unprocessed_tags":false,
-  "new_tags":false,
-  "nation":"",
-  "deployment":["ct148","ct149"]
-  },
-"list_tasks":[
-    "create_ncargo",
-    "create_fr0",
-    "update_metadata",
-    "apply_adjustments",
-    "apply_tlc",
-    "apply_tlc_fr",
-    "create_hr2",
-    "generate_odv4"],
 "configs":
   {
+  "mxroquet":
+    {
+    "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"/home/froqu/MEOP_process/",
+    "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
+    "inputdir":"/home/froqu/Dropbox/MEOP/SMUG_INPUT/all/",
+    "woddir":"/home/froqu/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
+    "coradir":"/home/froqu/Dropbox/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"/home/froqu/Dropbox/DATA/MEOP_last_stable_version/",
+    "public":"/home/froqu/Dropbox/MEOP/public/",
+    "pdflatex":"pdflatex"
+    },
   "fabien":
     {
     "rawdir":"/Users/roquet/Dropbox/MEOP/MEOP-CTD/original_datasets/",
@@ -45,18 +31,6 @@
     "meopdir":"/Users/roquet/Dropbox/DATA/MEOP_last_stable_version/",
     "public":"/Users/roquet/Dropbox/MEOP/public/",
     "pdflatex":"/Library/TeX/texbin/pdflatex"
-    },
-  "fabienlinux":
-    {
-    "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
-    "processdir":"/home/froqu/MEOP_process_2/",
-    "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
-    "inputdir":"/home/froqu/Dropbox/MEOP/SMUG_INPUT/all/",
-    "woddir":"/home/froqu/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
-    "coradir":"/home/froqu/Dropbox/DATA/CORA_data/CORA_ncfiles/",
-    "meopdir":"/home/froqu/Dropbox/DATA/MEOP_last_stable_version/",
-    "public":"/home/froqu/Dropbox/MEOP/public/",
-    "pdflatex":"pdflatex"
     },
   "baptistelinux":
     {

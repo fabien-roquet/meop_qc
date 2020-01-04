@@ -1,17 +1,17 @@
 function EXPs = select_deployments(conf)
 
-if isfield(conf.select,'deployment') && ~isempty(conf.select.deployment)
-    EXPs = tags_processed(conf,conf.select.deployment);
+if isfield(conf.selection,'deployment') && ~isempty(conf.selection.deployment)
+    EXPs = tags_processed(conf,conf.selection.deployment);
 end
-if conf.select.nation
-    EXPs_aux = tags_processed(conf,conf.select.nation);
+if conf.selection.nation
+    EXPs_aux = tags_processed(conf,conf.selection.nation);
     if EXPs & EXP_aux
         EXPs = union(EXPs_aux(~ismember(EXPs_aux,EXPs),:),EXPs);
     else
         EXPs = EXPs_aux;
     end
 end
-if conf.select.new_tags
+if conf.selection.new_tags
     EXPs_aux = tags_processed(conf,'newtags');
     if EXPs & EXP_aux
         EXPs = union(EXPs_aux(~ismember(EXPs_aux,EXPs),:),EXPs);
@@ -19,7 +19,7 @@ if conf.select.new_tags
         EXPs = EXPs_aux;
     end
 end
-if conf.select.unprocessed_tags
+if conf.selection.unprocessed_tags
     EXPs_aux = tags_processed(conf,'unprocessed_tags');
     if EXPs & EXP_aux
         EXPs = union(EXPs_aux(~ismember(EXPs_aux,EXPs),:),EXPs);
@@ -27,7 +27,7 @@ if conf.select.unprocessed_tags
         EXPs = EXPs_aux;
     end
 end
-if conf.select.all_tags
+if conf.selection.all_tags
     EXPs = tags_processed(conf);
 end
 

@@ -1,18 +1,35 @@
 function conf = init_mirounga()
-%% initialization of the mirounga processing system
 
-d = jsondecode(fileread('config.json'));
+
+%% initialization of the mirounga processing system
+d = jsondecode(fileread('configs.json'));
+if isempty(d.config),
+    [ret, name] = system('hostname');   
+    if ret ~= 0,
+        if ispc, name = getenv('COMPUTERNAME'); else; name = getenv('HOSTNAME'); end
+    end
+    d.config = strtrim(lower(name));
+end
 conf = getfield(d.configs,d.config);
+conf.version     = d.version.CTDnew;
+conf.version_old = d.version.CTDold;
+conf.version_SMS = d.version.SMSnew;
+addpath(genpath(conf.matlabdir))
+
+d = jsondecode(fileread('config_processing.json'));
 tasks = fieldnames(d.tasks);
 for kk=1:length(tasks),
     conf = setfield(conf,tasks{kk},getfield(d.tasks,tasks{kk}));
 end
-conf.version     = d.version.CTDnew;
-conf.version_old = d.version.CTDold;
-conf.version_SMS = d.version.SMSnew;
-conf.select      = d.selection;
+conf.selection   = d.selection;
 conf.list_tasks  = d.list_tasks;
-addpath(genpath(conf.matlabdir))
+
+d = jsondecode(fileread('config_diags.json'));
+tasks = fieldnames(d.tasks_diags);
+for kk=1:length(tasks),
+    conf = setfield(conf,tasks{kk},getfield(d.tasks_diags,tasks{kk}));
+end
+conf.selection_diags      = d.selection_diags;
 
 %%
 
@@ -218,6 +235,8 @@ if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_filter = readtable(name_file,'ReadRowNames',0,'Delimiter',',');
+
+end
 
 
 

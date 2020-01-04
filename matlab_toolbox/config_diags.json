@@ -1,0 +1,17 @@
+{
+"tasks_diags":
+  {
+  "generate_plot1":true,
+  "generate_plot2":true,
+  "global_diagnostics":true,
+  "update_public_data":false
+  },
+"selection_diags":
+  {
+  "all_tags":true,
+  "unprocessed_tags":false,
+  "new_tags":false,
+  "nation":"",
+  "deployment":["ct148","ct149"]
+  }
+}

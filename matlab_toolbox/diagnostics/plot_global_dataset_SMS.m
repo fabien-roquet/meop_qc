@@ -32,10 +32,13 @@ Nprof12=0;Ntag12=0;H12=[];nation12=[];Ndep12=[];name_tag12 = {};
 table_tag_hr= table({},{},{},[],[],[],{},{},{},{},{},{},{},{},{},'VariableNames',{'tag','depl','group','ispublic','NprofTS','NprofT','start_date','PTT','WMO','doi','body','platform_code','location','species','location_class'});
 
 if do_plot_figure
+    
+    set(0, 'DefaultFigureVisible', 'off');
+
     % group SH, continuous data
-    figure(11),clf,
-    set(gcf, 'Color', 'w');
-    set(gcf, 'units','centimeters','Position', [25 5 20 20]);
+    hf(11) = figure(11);clf,
+    set(hf(11), 'Color', 'w');
+    set(hf(11), 'units','centimeters','Position', [25 5 20 20]);
     m_proj('stereographic','lat',-90,'long',90,'radius',60);
     m_grid('box','on','xtick',12,...
         'tickdir','out','ytick',[-90:10:-40],...
@@ -43,9 +46,9 @@ if do_plot_figure
     topoplot([-180 180 -90 -30],'m_map')
     hold on
     % deployment SH, continuous data
-    figure(12),clf,
-    set(gcf, 'Color', 'w');
-    set(gcf, 'units','centimeters','Position', [25 5 20 20]);
+    hf(12) = figure(12);clf,
+    set(hf(12), 'Color', 'w');
+    set(hf(12), 'units','centimeters','Position', [25 5 20 20]);
     m_proj('stereographic','lat',-90,'long',90,'radius',60);
     m_grid('box','on','xtick',12,...
         'tickdir','out','ytick',[-90:10:-40],...
@@ -144,7 +147,7 @@ for  kNATION=1:length(list_NATION),
                 for kk=1:length(name_tag12),
                     name_tag12{kk}=strrep(name_tag12{kk},'_','\_');
                 end
-                figure(12);
+                set(0, 'currentfigure', hf(12));
                 suptitle(sprintf('Deployment %s (%s), SMS data : %d profiles, %d tags',info_deployment.EXP,NATION12{1},Nprof12,Ntag12));
                 h=legend(H12,name_tag12,'fontsize',8,'Location','bestoutside'); H12=[H12 h];
                 nfile=sprintf('%sdeployments/%s_SMS_mapSH',conf.mapsdir,strtrim(EXP));
@@ -158,7 +161,7 @@ for  kNATION=1:length(list_NATION),
     if do_plot_figure
         if Ntag11,
             [name_dep11,Icol11]=unique(Ndep11,'stable');
-            figure(11);
+            set(0, 'currentfigure', hf(11));
             suptitle(sprintf('Group %s : %d profiles, %d deployments, %d tags',NATION,Nprof11,length(name_dep11),Ntag11));
             h=legend(H11(Icol11),name_dep11,'fontsize',8,'Location','bestoutside'); H11=[H11 h];
             nfile=sprintf('%sgroups/%s_SMS_mapSH',conf.mapsdir,strtrim(NATION));

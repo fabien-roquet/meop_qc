@@ -1,5 +1,10 @@
 function update_metadata(conf,EXP,one_smru_name)
 
+
+if isempty(conf),
+    conf = init_mirounga;
+end
+
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
 end
@@ -29,10 +34,16 @@ for index=1:length(list_tag),
     
     smru_name = info_deployment.list_smru_name{index};
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
+    info = ncinfo(name_prof);
+    str = jsonencode(info.Attributes);
+    metaname  = [info_deployment.dir, smru_name, '_METADATA.json'];
+    fid       = fopen(metaname,'w');
+    fprintf(fid,'%s',str);
+    fclose (fid);
+
+    metaname  = [info_deployment.dir, smru_name, '_METADATA.txt'];
     attr      = ncloadatt_struct(name_prof);
     nattr     = fieldnames(attr);
-    metaname  = [info_deployment.dir, smru_name, '_METADATA.txt'];
-     delete(metaname);
     if isempty(nattr), continue, end
     fid       = fopen(metaname,'w');
     for kk=1:length(nattr),

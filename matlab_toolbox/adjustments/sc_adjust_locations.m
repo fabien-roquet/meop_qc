@@ -100,13 +100,13 @@ for index=1:length(list_tag),
         newlon(Ibad) = interp1(jul1,lon1,jul(Ibad));
     end
     
-    figure(1),clf,plot(newlon,newlat,'+-',lon,lat)
+    figure('visible','off'),clf,plot(newlon,newlat,'+-',lon,lat)
     if length(Inan)~=0, title(sprintf('%8s %s : with missing data',ptt,smru_name))
     else, title(sprintf('%8s %s',ptt,smru_name))
     end
     legend('new','old')
     format_figure_centred([12 12])
-    plotdir = [conf.plotdir,info_deployment.NATION,'/',info_deployment.EXP,'/'];
+    plotdir = [conf.plotdir,info_deployment.EXP,'/'];
     [s,mess,messid] = mkdir(plotdir);
     print(sprintf('%slocation_%s%s_%08s',plotdir,smru_name,suffix,ptt),'-dpng','-r300')
     
