@@ -14,6 +14,7 @@ end
 if ~ismember(EXP,conf.list_deployment_code)
     info_deployment.EXP      = EXP;
     info_deployment.list_tag = [];
+    error([EXP ' is not a valid deployment code. Update list_deployment.csv']);
     return
 end
 

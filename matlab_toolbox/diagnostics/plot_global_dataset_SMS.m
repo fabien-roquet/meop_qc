@@ -151,7 +151,7 @@ for  kNATION=1:length(list_NATION),
                 suptitle(sprintf('Deployment %s (%s), SMS data : %d profiles, %d tags',info_deployment.EXP,NATION12{1},Nprof12,Ntag12));
                 h=legend(H12,name_tag12,'fontsize',8,'Location','bestoutside'); H12=[H12 h];
                 nfile=sprintf('%sdeployments/%s_SMS_mapSH',conf.mapsdir,strtrim(EXP));
-                eval(['export_fig ' nfile '.png -m5 -nocrop']);
+                print(nfile,'-dpng','-r300');
                 delete(H12); H12=[];
             end
         end
@@ -165,7 +165,7 @@ for  kNATION=1:length(list_NATION),
             suptitle(sprintf('Group %s : %d profiles, %d deployments, %d tags',NATION,Nprof11,length(name_dep11),Ntag11));
             h=legend(H11(Icol11),name_dep11,'fontsize',8,'Location','bestoutside'); H11=[H11 h];
             nfile=sprintf('%sgroups/%s_SMS_mapSH',conf.mapsdir,strtrim(NATION));
-            eval(['export_fig ' nfile '.png -m5 -nocrop']);
+            print(nfile,'-dpng','-r300');
             delete(H11); H11=[];
         end
     end

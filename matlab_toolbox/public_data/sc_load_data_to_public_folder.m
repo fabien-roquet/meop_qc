@@ -14,10 +14,6 @@ folder_output = sprintf('%s%s/',conf.public,conf.version);
 [status,message] = copyfile(sprintf('%sglobal/map_SH.png',conf.mapsdir),folder_output,'f');
 [status,message] = copyfile(sprintf('%sglobal/map_NH.png',conf.mapsdir),folder_output,'f');
 
-[status,message] = copyfile([conf.processdir 'info_tags_sms.csv'],folder_output_SMS,'f');
-[status,message] = copyfile('README_licenseODbl.txt',folder_output_SMS,'f');
-[status,message] = copyfile(sprintf('%sglobal/map_SMS.png',conf.mapsdir),folder_output_SMS,'f');
-
 EXP_all=tags_processed(conf);
 list_NATION=unique(EXP_all.country);
 
@@ -39,12 +35,12 @@ for  kNATION=1:length(list_NATION),
     data1 = readtable([conf.processdir 'info_tags.csv']);
     data2 = data1(strcmp(data1.group,NATION),:);
     data3 = data2(data2.ispublic==1,:);
-    writetable(data3,[folder_output NATION 'info_tags_' NATION '.csv']);
+    writetable(data3,[folder_output NATION '/info_tags_' NATION '.csv']);
     
     data1 = readtable([conf.processdir 'info_deployments.csv']);
     data2 = data1(strcmp(data1.group,NATION),:);
     data3 = data2(data2.ispublic==1,:);
-    writetable(data3,[folder_output NATION 'info_deployments_' NATION '.csv']);
+    writetable(data3,[folder_output NATION '/info_deployments_' NATION '.csv']);
     
     [status,message] = copyfile('README_licenseODbl.txt',[folder_output NATION],'f');
     [status,message] = copyfile(sprintf('%sgroups/%s_*.png',conf.mapsdir,NATION),[folder_output NATION],'f');

@@ -4,13 +4,18 @@ function conf = init_mirounga()
 %% initialization of the mirounga processing system
 d = jsondecode(fileread('configs.json'));
 if isempty(d.config),
-    [ret, name] = system('hostname');   
-    if ret ~= 0,
-        if ispc, name = getenv('COMPUTERNAME'); else; name = getenv('HOSTNAME'); end
+    if ispc, name = getenv('COMPUTERNAME');
+    elseif ismac, name = [getenv('USER') '_mac'];
+    else name = [getenv('USER') '_linux'];
     end
     d.config = strtrim(lower(name));
+    d.config = strrep(d.config,'.','_');    
 end
-conf = getfield(d.configs,d.config);
+try
+    conf = getfield(d.configs,d.config);
+catch
+    error([d.config ' is not a supported config. modify configs.json']);
+end
 conf.version     = d.version.CTDnew;
 conf.version_old = d.version.CTDold;
 conf.version_SMS = d.version.SMSnew;

@@ -44,7 +44,7 @@ list_tag = info_deployment.list_smru_name;
 if ~any(startsWith(conf.table_coeff.Properties.RowNames,EXP)),
     
     for ktag = 1:length(list_tag),
-        conf.table_coeff{list_tag{ktag},:}=zeros(1,6);
+        conf.table_coeff{list_tag{ktag},:}=[zeros(1,6) NaN];
     end
     name_file=[conf.csv_config 'table_coeff.csv'];
     writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');

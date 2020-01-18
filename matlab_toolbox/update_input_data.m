@@ -1,29 +1,10 @@
 %% conf.update_input_data=1
+function update_input_data
 
+diary_file = ['list_deployments_updated_' datestr(now,'yyyymmdd_HHMMSS') '.txt'];
+diary(diary_file);
 clear all; close all;
-
-%config = 'fabien';
-config = 'fabienlinux';
-%config = 'baptistelinux';
-%config = 'baptistewindow';
-
-name_json = ['../python_toolbox/config.json'];
-filetext = fileread(name_json);
-d = jsondecode(filetext);
-
-conf = getfield(d.config,config);
-tasks = fieldnames(d.tasks);
-for kk=1:length(tasks),
-    conf = setfield(conf,tasks{kk},getfield(d.tasks,tasks{kk}));
-end
-conf.version     = d.version.CTDnew;
-conf.version_old = d.version.CTDold;
-conf.version_SMS = d.version.SMSnew;
-
-addpath(genpath(conf.matlabdir))
-addpath(genpath(conf.pythondir))
-
-conf.json            = [conf.pythondir 'config_scripts/json_files/'];
+conf = init_mirounga();
 
 % update deployment.json
 fic = dir([conf.json 'deployment2.json']); datefic = fic.datenum;
@@ -55,7 +36,7 @@ for kk=1:length(ldir),
                     end
                 end
                 copyfile([prefix '.txt'],conf.rawdir)
-                disp([ldir(kk).name 'raw ODV file updated']);
+                disp(ldir(kk).name);
             end
         else
             unzip([prefix '.zip'],sprintf('%s%s',conf.inputdir,ldir(kk).name));
@@ -66,12 +47,15 @@ for kk=1:length(ldir),
                 if fic1.bytes ~= fic3.bytes
                     copyfile([prefix2 '.txt'],[prefix2 '_' datestr(now,'yyyymmdd') '.txt']);
                     copyfile([prefix '.txt'],conf.rawdir)
-                    disp([ldir(kk).name 'raw ODV file updated']);
+                    disp(ldir(kk).name);
                 end
             else
                 copyfile([prefix '.txt'],conf.rawdir)
-                disp([ldir(kk).name 'raw ODV file updated']);
+                disp(ldir(kk).name);
             end
         end
     end
 end
+
+diary off
+

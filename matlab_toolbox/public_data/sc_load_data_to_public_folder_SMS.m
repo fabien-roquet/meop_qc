@@ -8,6 +8,7 @@ folder_output_SMS = sprintf('%s%s/',conf.public,conf.version_SMS);
 [status,message] = copyfile('README_licenseODbl.txt',folder_output_SMS,'f');
 [status,message] = copyfile('info_tags_sms.csv',folder_output_SMS,'f');
 [status,message] = copyfile(sprintf('%sgroups/FRANCE_SMS_mapSH.png',conf.mapsdir),[folder_output_SMS 'map_MEOP-SMS.png'],'f');
+[status,message] = copyfile(sprintf('%sglobal/map_SMS.png',conf.mapsdir),folder_output_SMS,'f');
 
 EXP_all=tags_processed(conf);
 list_NATION=unique(EXP_all.country);

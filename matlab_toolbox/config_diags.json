@@ -4,7 +4,8 @@
   "generate_plot1":true,
   "generate_plot2":true,
   "global_diagnostics":true,
-  "update_public_data":false
+  "update_public_CTD":false,
+  "update_public_SMS":false
   },
 "selection_diags":
   {

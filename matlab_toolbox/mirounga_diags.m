@@ -1,10 +1,10 @@
-function mirounga_diags(mode)
+function mirounga_diags(mode,nation)
 %% mirounga: front-end script to process seal data
 % F. Roquet, B. Picard 2019
 %
 % function mirounga_diags(mode)
 %  mode: by default, mode=''. 
-%  mode={'generate_plot1','generate_plot2','global_diagnostics','update_public_data'} to perform only one task.
+%  mode={'generate_plot1','generate_plot2','global_diagnostics','update_public_CTD','update_public_SMS'} to perform only one task.
 % if the processing fails, resume by simply calling again 'mirounga_diags'
 % set the file config_diags.json to select the system configuration
 % mirounga must be run from the directory matlab_toolbox
@@ -15,44 +15,69 @@ function mirounga_diags(mode)
 
 
 %% initialization
+
 conf = init_mirounga;
+
 if not(exist('mode','var')), 
     checkpoint_file = [conf.processdir 'checkpoint_diags' mode '.mat'];
     mode='';
-else
+    nation='';
+elseif not(exist('nation','var')), 
     checkpoint_file = [conf.processdir 'checkpoint_diags_' mode '.mat'];
+    nation='';
+else
+    checkpoint_file = [conf.processdir 'checkpoint_diags_' mode '_' nation '.mat'];
 end
+
 
 %% Select tags : choose mode of selection in config_diags.json
 conf.selection = conf.selection_diags;
+if not(isempty(nation)),
+    conf.selection.all_tags = 0;
+    conf.selection.unprocessed_tags = 0;
+    conf.selection.new_tags = 0;
+    conf.selection.deployment = [];
+    conf.selection.nation = nation;
+end
 EXPs = select_deployments(conf);
 
 %% options : choose options in config_diags.json or provide a mode in argument
 % conf.generate_plot1     = 0;   % create adjustment plots
 % conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
 % conf.global_diagnostics = 0;   % compute global maps
-% conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+% conf.update_public_CTD  = 0;   % upload adjusted datasets on public ftp folder
+% conf.update_public_SMS  = 0;   % upload adjusted datasets on public ftp folder
 switch mode,
     case 'generate_plot1',
         conf.generate_plot1     = 1;   % create adjustment plots
         conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
         conf.global_diagnostics = 0;   % compute global maps
-        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_CTD  = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_SMS  = 0;   % upload adjusted datasets on public ftp folder
     case 'generate_plot2',
         conf.generate_plot1     = 0;   % create adjustment plots
         conf.generate_plot2     = 1;   % create diagnostic plots and pdfs
         conf.global_diagnostics = 0;   % compute global maps
-        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_CTD  = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_SMS  = 0;   % upload adjusted datasets on public ftp folder
     case 'global_diagnostics',
         conf.generate_plot1     = 0;   % create adjustment plots
         conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
         conf.global_diagnostics = 1;   % compute global maps
-        conf.update_public_data = 0;   % upload adjusted datasets on public ftp folder
-    case 'update_public_data',
+        conf.update_public_CTD  = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_SMS  = 0;   % upload adjusted datasets on public ftp folder
+    case 'update_public_CTD',
         conf.generate_plot1     = 0;   % create adjustment plots
         conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
         conf.global_diagnostics = 0;   % compute global maps
-        conf.update_public_data = 1;   % upload adjusted datasets on public ftp folder
+        conf.update_public_CTD  = 1;   % upload adjusted datasets on public ftp folder
+        conf.update_public_SMS  = 0;   % upload adjusted datasets on public ftp folder
+    case 'update_public_SMS',
+        conf.generate_plot1     = 0;   % create adjustment plots
+        conf.generate_plot2     = 0;   % create diagnostic plots and pdfs
+        conf.global_diagnostics = 0;   % compute global maps
+        conf.update_public_CTD  = 0;   % upload adjusted datasets on public ftp folder
+        conf.update_public_SMS  = 1;   % upload adjusted datasets on public ftp folder
     otherwise,
 end
     
@@ -108,18 +133,35 @@ end
 
 
 %% load data on public folder
-if conf.update_public_data
+if conf.update_public_CTD
     
-    disp('Transfer to public ftp');
-    
+    disp('Transfer MEOP-CTD to public ftp');
     sc_load_data_to_public_folder;
-    sc_load_data_to_public_folder_SMS;
-    folder_output = sprintf('%s%s/',conf.public,version);
+
+    disp('Zip folders');    
+    folder_output = sprintf('%s%s/',conf.public,conf.version);
+    EXP_all=tags_processed(conf);
+    list_NATION=unique(EXP_all.country);
     for kk = 1:length(list_NATION)
         NATION = list_NATION{kk};
-        zip(sprintf('%s%s_%s.zip',conf.public,version,NATION),sprintf('%s%s/%s',conf.public,version,NATION));
+        if isfolder(sprintf('%s%s/%s',conf.public,conf.version,NATION)),
+            zip(sprintf('%s%s_%s.zip',conf.public,conf.version,NATION),...
+                sprintf('%s%s/%s',conf.public,conf.version,NATION));
+        end
     end
-    zip(sprintf('%s%s_ALL.zip',conf.public,version),sprintf('%s%s',conf.public,version));
+    zip(sprintf('%s%s_ALL.zip',conf.public,conf.version),sprintf('%s%s',conf.public,conf.version));
+    
+end
+
+%% load data on public folder
+if conf.update_public_SMS
+    
+    disp('Transfer MEOP-SMS to public ftp');
+    sc_load_data_to_public_folder_SMS;
+    
+    disp('Zip folders');    
+    folder_output = sprintf('%s%s/',conf.public,conf.version_SMS);
+    zip(sprintf('%s%s_ALL.zip',conf.public,conf.version_SMS),sprintf('%s%s',conf.public,conf.version_SMS));
     
 end
 

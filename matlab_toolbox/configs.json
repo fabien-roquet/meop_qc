@@ -4,11 +4,12 @@
   {
   "CTDnew":"MEOP-CTD_2020-01-02",
   "CTDold":"MEOP-CTD_2018-04-10",
-  "SMSnew":"MEOP-SMS_2019-05-17"
+  "SMSnew":"MEOP-SMS_2020-01-02",
+  "SMSold":"MEOP-SMS_2019-05-17"
   },
 "configs":
   {
-  "mxroquet":
+  "froqu_linux":
     {
     "rawdir":"/home/froqu/Dropbox/MEOP/MEOP-CTD/original_datasets/",
     "processdir":"/home/froqu/MEOP_process/",
@@ -19,6 +20,18 @@
     "meopdir":"/home/froqu/Dropbox/DATA/MEOP_last_stable_version/",
     "public":"/home/froqu/Dropbox/MEOP/public/",
     "pdflatex":"pdflatex"
+    },
+  "roquet_mac":
+    {
+    "rawdir":"/Users/roquet/Dropbox/MEOP/MEOP-CTD/original_datasets/",
+    "processdir":"/Volumes/Home Directory/MEOP_process/",
+    "matlabdir":"/Volumes/Home Directory/GitHub/meop_qc/matlab_toolbox/",
+    "inputdir":"/Users/roquet/Dropbox/MEOP/SMUG_INPUT/all/",
+    "woddir":"/Users/roquet/Dropbox/DATA/WOD_data/WOD_matlab_nc/",
+    "coradir":"/Users/roquet/Dropbox/DATA/CORA_data/CORA_ncfiles/",
+    "meopdir":"/Users/roquet/Dropbox/DATA/MEOP_last_stable_version/",
+    "public":"/Users/roquet/Dropbox/MEOP/public/",
+    "pdflatex":"/Library/TeX/texbin/pdflatex"
     },
   "fabien":
     {

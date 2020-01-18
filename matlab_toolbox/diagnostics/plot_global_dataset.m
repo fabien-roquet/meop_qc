@@ -394,7 +394,8 @@ for  kNATION=1:length(list_NATION),
                 suptitle(sprintf('Deployment %s (%s) : %d profiles, %d tags',info_deployment.EXP,NATION4{1},Nprof4,Ntag4));
                 h=legend(H4,name_tag4,'fontsize',8,'Location','bestoutside'); H4=[H4 h];
                 nfile=sprintf('%sdeployments/%s_mapSH',conf.mapsdir,strtrim(EXP));
-                eval(['export_fig ' nfile '.png -m5 -nocrop']);
+                print(nfile,'-dpng','-r300');
+                %eval(['export_fig ' nfile '.png -m5 -nocrop']);
                 delete(H4); H4=[];
             end
             
@@ -407,7 +408,8 @@ for  kNATION=1:length(list_NATION),
                 suptitle(sprintf('Deployment %s (%s) : %d profiles, %d tags',info_deployment.EXP,NATION5{1},Nprof5,Ntag5));
                 h=legend(H5,name_tag5,'fontsize',8,'Location','bestoutside'); H5=[H5 h];
                 nfile=sprintf('%sdeployments/%s_mapNH',conf.mapsdir,strtrim(EXP));
-                eval(['export_fig ' nfile '.png -m5 -nocrop']);
+                print(nfile,'-dpng','-r300');
+                %eval(['export_fig ' nfile '.png -m5 -nocrop']);
                 delete(H5); H5=[];
             end
             
@@ -423,7 +425,8 @@ for  kNATION=1:length(list_NATION),
             suptitle(sprintf('Group %s : %d profiles, %d deployments, %d tags',NATION,Nprof6,length(name_dep6),Ntag6));
             h=legend(H6(Icol6),name_dep6,'fontsize',8,'Location','bestoutside'); H6=[H6 h];
             nfile=sprintf('%sgroups/%s_mapSH',conf.mapsdir,strtrim(NATION));
-            eval(['export_fig ' nfile '.png -m5 -nocrop']);
+            print(nfile,'-dpng','-r300');
+            %eval(['export_fig ' nfile '.png -m5 -nocrop']);
             delete(H6); H6=[];
         end
         
@@ -433,7 +436,8 @@ for  kNATION=1:length(list_NATION),
             suptitle(sprintf('Group %s : %d profiles, %d deployments, %d tags',NATION,Nprof7,length(name_dep7),Ntag7));
             h=legend(H7(Icol7),name_dep7,'fontsize',8,'Location','bestoutside'); H7=[H7 h];
             nfile=sprintf('%sgroups/%s_mapNH',conf.mapsdir,strtrim(NATION));
-            eval(['export_fig ' nfile '.png -m5 -nocrop']);
+            print(nfile,'-dpng','-r300');
+            %eval(['export_fig ' nfile '.png -m5 -nocrop']);
             delete(H7); H7=[];
         end
         
@@ -450,7 +454,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(1)); suptitle(sprintf('MEOP-CTD SH dataset : %d profiles, %d deployments, %d tags',Nprof1,dep1,Ntag1));
     legend(H1,NATION1','fontsize',8,'Location','bestoutside');
     nfile=sprintf('%sglobal/map_SH',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     %eval(['export_fig ' nfile '_1.pdf -m5 -nocrop -painters']);
     
     % fig 2
@@ -460,8 +465,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(2)); suptitle(sprintf('MEOP-CTD NH dataset : %d profiles, %d deployments, %d tags',Nprof2,dep2,Ntag2));
     legend(H2,NATION2','fontsize',8,'Location','bestoutside');
     nfile=sprintf('%sglobal/map_NH',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
-    eval(['export_fig ' nfile '.png -m10 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     
     % fig 3
     [NATION3,Icol3]=unique(nation3,'stable');
@@ -470,8 +475,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(3)); suptitle(sprintf('MEOP-CTD dataset : %d profiles, %d deployments, %d tags',Nprof3,dep3,Ntag3));
     legend(H3,NATION3','fontsize',8,'Location','NorthEast');
     nfile=sprintf('%sglobal/map_global',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
-    eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     
     % fig 8
     [NATION8,Icol8]=unique(nation8,'stable');
@@ -480,7 +485,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(8)); suptitle(sprintf('MEOP-CTD public dataset : %d profiles, %d deployments, %d tags',Nprof8,dep8,Ntag8));
     legend(H8,NATION8','fontsize',8,'Location','NorthEast');
     nfile=sprintf('%sglobal/map_global_public',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     
     % fig 9
     [NATION9,Icol9]=unique(nation9,'stable');
@@ -489,7 +495,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(9)); suptitle(sprintf('MEOP-CTD private dataset : %d profiles, %d deployments, %d tags',Nprof9,dep9,Ntag9));
     legend(H9,NATION9','fontsize',8,'Location','NorthEast');
     nfile=sprintf('%sglobal/map_global_private',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     
     % fig 10
     [NATION10,Icol10]=unique(nation10,'stable');
@@ -498,7 +505,8 @@ if do_plot_figure
     set(0, 'currentfigure', fh(10)); suptitle(sprintf('MEOP-CTD SH ellies : %d profiles, %d deployments, %d tags',Nprof10,dep10,Ntag10));
     legend(H10,NATION10','fontsize',8,'Location','bestoutside');
     nfile=sprintf('%sglobal/map_SH_ellies',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     %eval(['export_fig ' nfile '_1.pdf -m5 -nocrop -painters']);
     
 
@@ -549,8 +557,8 @@ if do_density_plot,
     nfile=sprintf('%sglobal/histogram',conf.mapsdir);
     print('-depsc2',nfile);
     print('-dpdf',nfile);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
-    eval(['export_fig ' nfile '.pdf -m5 -nocrop']);
+    print(nfile,'-dpng','-r300');
+    %eval(['export_fig ' nfile '.png -m5 -nocrop']);
     %
     %
     % % total SH
@@ -600,8 +608,9 @@ if do_density_plot,
     colormap default;colorbar('ytick',0:3,'yticklabel',[1 10 100 1000])
     suptitle(sprintf('MEOP-CTD dataset : %d profiles, %d deployments, %d tags',Nprof3,length(unique(Ndep3)),Ntag3));
     nfile=sprintf('%sglobal/density_global',conf.mapsdir);
-    eval(['export_fig ' nfile '.png -m5 -nocrop']);
-    eval(['export_fig ' nfile '.pdf -m5 -nocrop -painters']);
+    print(nfile,'-dpng','-r300');
+    print(nfile,'-dpdf');
+
     %
     % % total WOD13-CTD
     % figure(24);clf,
