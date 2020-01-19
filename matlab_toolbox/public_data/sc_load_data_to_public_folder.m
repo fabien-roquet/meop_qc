@@ -89,15 +89,16 @@ for  kNATION=1:length(list_NATION),
                 end
                 
             end
+            
+            %% update list_deployment
+            if isempty(conf.list_deployment{EXP,'first_version'}{1})
+                conf.list_deployment{EXP,'first_version'} = {conf.version};
+            end
+            conf.list_deployment{EXP,'last_version'} = {conf.version};
+            % writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);
+
         end
     end
 
 end
 
-%% TODO: update list_deployment !!
-% 
-% if isnan(conf.list_deployment{EXP,'first_version'})
-%     conf.list_deployment{EXP,'first_version'} = conf.version;
-% end
-% conf.list_deployment{EXP,'last_version'} = conf.version;
-% writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);

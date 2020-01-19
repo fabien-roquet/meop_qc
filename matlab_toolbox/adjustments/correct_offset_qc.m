@@ -11,7 +11,8 @@ if isempty(I), return; end
 P1=0; P2=0; T1=0; T2=0; S1=0; S2=0; F1=0.6; F2=0;
 list_var = {'T1','T2','S1','S2'};
 for kk = 1:length(list_var),
-    if any(strcmp(list_var{kk},coeff(smru_name,:).Properties.VariableNames)) & ...
+    if ismember(smru_name,coeff.Properties.RowNames) & ...
+            any(strcmp(list_var{kk},coeff(smru_name,:).Properties.VariableNames)) & ...
             coeff{smru_name,list_var{kk}} & ~isnan(coeff{smru_name,list_var{kk}})
         eval([list_var{kk} ' = coeff{smru_name,list_var{kk}};'])
     end

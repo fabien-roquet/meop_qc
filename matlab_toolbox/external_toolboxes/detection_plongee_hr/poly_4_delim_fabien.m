@@ -12,10 +12,10 @@ function[depthmax,vert_speed,da_duration,da_speed,delim]=poly_4_delim_fabien(tdr
 % aucune solution n'est trouv�e � (I) alors on place les limites de part et
 % d'autre de Pmax (ie. bottom presque inexistant).
 %
-display('    poly_4_delim... (3 steps)');
+%disp('    poly_4_delim... (3 steps)');
 plotting=0;
 resolution=round((tdr(2,1)-tdr(1,1))/(1.1574e-05));
-displaytime=1;
+displaytime=0;
 mobmean=12;
 crit=0.75;
 %% 1�) Vitesse verticale
@@ -35,7 +35,7 @@ for k=2+mobmean/2:s(1)-mobmean/2% lissage avec moyenne mobile pour
 end
 vert_speed=vert_speed2;
 clear vert_speed2;
-display('    1�) done')
+%disp('    1�) done')
 %% 2�) Extraction des profondeurs maximales
 %
 depthmax=zeros(2,schg(2));
@@ -43,7 +43,7 @@ for k=1:schg(2)
     [depthmax(1,k),ind]=max(tdr(chg(1,k):chg(2,k),2));
     depthmax(2,k)=ind+chg(1,k)-1;
 end
-display('    2�) done')
+%disp('    2�) done')
 %% 3�) Identification de mont�es et descentes
 %
 delim=zeros(2,size(chg,2));
@@ -65,9 +65,9 @@ for s=1:size(chg,2)
     ok_ = isfinite(x_1) & isfinite(plg);
     
     %% remove call to curve fitting toolbox
-    pcoef = polyfit(x_1(ok_),plg(ok_),4);% fitting de la vitesse verticale
+    [pcoef,S,mu] = polyfit(x_1(ok_),plg(ok_),4);% fitting de la vitesse verticale
     % en fonction du rang des valeurs.
-    vf_ = polyval(pcoef,x_1);% calcul des valeurs pr�dites
+    vf_ = polyval(pcoef,x_1,[],mu);% calcul des valeurs pr�dites
     %
     % attribution des phases
     %
@@ -174,4 +174,4 @@ if plotting == 1
         plot(tdr(delim(2,s),1),tdr(delim(2,s),2)*-1,'.r')
     end
 end
-display('    3�) done')
+%disp('    3�) done')

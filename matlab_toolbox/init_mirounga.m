@@ -81,7 +81,8 @@ list_deployment = readtable(name_list,'ReadRowNames',1,'Delimiter',',');
 list_deployment_code = list_deployment.deployment_code;
 
 % remove old repeated deployments
-for depl = {'ct10r','ct12r','ct17r'},
+list_old_repeated_deployments = {'ct10r','ct12r','ct17r'};
+for depl = list_old_repeated_deployments,
     if any(strcmp(depl{1},list_deployment_code)),
         list_deployment(depl,:)=[];
     end
@@ -112,11 +113,23 @@ for kk=1:length(deployment_code_patch_json),
     end
 end
 
-% for ii=1:length(deployment_json)
-%     if ~any(strcmp(deployment_json(ii).deployment_code,conf.list_deployment.deployment_code)),
-%         disp(sprintf('%s must be added in list_deployment.csv',deployment_json(ii).deployment_code));
-%     end
-% end
+% add new deployments
+new_deployments = 0;
+for ii=1:length(deployment_json)
+    if ~any(strcmp(deployment_json(ii).deployment_code,conf.list_deployment.deployment_code)),
+        % list_deployment.csv :
+        % deployment_code,pi_code,process,public,country,task_done,
+        % first_version,last_version,start_date,end_date,start_date_jul
+        EXP = deployment_json(ii).deployment_code;
+        if any(strcmp(EXP,list_old_repeated_deployments)),
+            continue
+        end
+        conf.list_deployment(EXP,:)={'',1,0,'UNKNOWN',0,'','',NaT,NaT,NaN};
+        conf.list_deployment{EXP,'pi_code'} = {deployment_json(ii).pi_code};
+        disp(sprintf('%s added in list_deployment.csv',deployment_json(ii).deployment_code));
+        new_deployments = 1;
+    end
+end
 
 conf.deployment_json = deployment_json;
 conf.list_deployment_json = {deployment_json(:).deployment_code};
@@ -185,9 +198,6 @@ for kk = 1:length(pi_code),
 end
 conf.list_deployment.pi_code = pi_code;
 
-name_list=[conf.csv_config 'list_deployment.csv'];
-writetable(conf.list_deployment,name_list,'WriteRowNames',1,'Delimiter',',');
-
 % add jul_date of start_date
 date = conf.list_deployment.start_date;
 juldate = zeros(size(date));
@@ -196,6 +206,12 @@ for kk = 1:length(juldate),
 end
 conf.list_deployment.start_date_jul = juldate;
 
+% update list_deployment.json
+name_list=[conf.csv_config 'list_deployment.csv'];
+writetable(conf.list_deployment,name_list,'WriteRowNames',1,'Delimiter',',');
+if new_deployments | ismember(conf.list_group,'UNKNOWN'),
+    error(['Update information for new deployments in ' name_list]);
+end
 
 %% read list deployment CTD HR
 name_list=[conf.csv_config 'list_deployment_hr.csv'];

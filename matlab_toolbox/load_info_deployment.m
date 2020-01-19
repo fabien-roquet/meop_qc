@@ -12,9 +12,12 @@ if iscell(EXP) && length(EXP)==1,
 end
 
 if ~ismember(EXP,conf.list_deployment_code)
+% deployment_code,pi_code,process,public,country,task_done,first_version,last_version,start_date,end_date,start_date_jul
+% {"deployment_code":"hg63","description":"Hammill Hg CTD 2019","pi_code":"HAMMILL ","gts":"Y","dt_created":"2019-02-14T10:07:07Z","dt_modified":"2020-01-08T16:03:27Z"}
     info_deployment.EXP      = EXP;
     info_deployment.list_tag = [];
-    error([EXP ' is not a valid deployment code. Update list_deployment.csv']);
+    info_deployment.invalid_code = 1;
+    disp([EXP ' is not a valid deployment code. Update list_deployment.csv']);
     return
 end
 

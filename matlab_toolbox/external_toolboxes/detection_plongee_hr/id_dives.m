@@ -4,7 +4,7 @@ function[chg,tdr,y2,last,dureed]=id_dives(tdr,pseuil,plotting1,dureed)
 % Attribution des statuts de surface et de bottom et supression des 
 % périodes de bottom anormalement courtes.
 %
-display('    id_dives... (3 steps)')
+%disp('    id_dives... (3 steps)')
 %% 1°) Attribution des statuts "s"=1 et "b"=-1
 %
 resolution=round((tdr(2,1)-tdr(1,1))/(1.1574e-05)); %détermination de la 
@@ -23,7 +23,7 @@ tdr=cat(2,tdr,states,divenumb);% ajout des colonnes "states" et
 % "dive number"
 clear('divenumb');
 s=size(tdr); % mise a jour de "s"
-display('    1°) done');
+%disp('    1°) done');
 %% 2°) Identification des transition S/B et B/S
 %
 chg=[];
@@ -53,7 +53,7 @@ if chg(2,schg(2))==0% supression de la dernière ligne si pas d'info sur la
     chg(:,schg(2))=[];
     schg=size(chg);% mise a jour de "schg"
 end
-display('    2°) done');
+%disp('    2°) done');
 %% 3°) Suppression des périodes de plg trop courtes (< duree)
 %
 if plotting1==1
@@ -81,7 +81,7 @@ if plotting1==1
     histo=histc(shortdives,abscisse);
     bar(abscisse,histo)
     title 'Short dive periods histogram'
-display('Rentrez une valeur minimale de temps (en secondes) en dessous de la quelle');
+%disp('Rentrez une valeur minimale de temps (en secondes) en dessous de la quelle');
 dureed=input('les périodes de plongée seront supprimées (conseillé 500): ');
     clear('shortdives','histo','abscisse');
 end
@@ -103,4 +103,4 @@ while k<=schg(2);
         k=k+1;
     end
 end
-display('    3°) done');
+%disp('    3°) done');

@@ -40,25 +40,20 @@ end
 %   3) init corrections/load adjustment coefficients
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 list_tag = info_deployment.list_smru_name;
-
-if ~any(startsWith(conf.table_coeff.Properties.RowNames,EXP)),
-    
-    for ktag = 1:length(list_tag),
+for ktag=1:length(list_tag),
+    if ~ismember(conf.table_coeff.Properties.RowNames,list_tag{ktag}),
         conf.table_coeff{list_tag{ktag},:}=[zeros(1,6) NaN];
+        name_file=[conf.csv_config 'table_coeff.csv'];
+        writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
     end
-    name_file=[conf.csv_config 'table_coeff.csv'];
-    writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
-    
 end
 
 if ~any(strcmp(conf.table_param.Properties.RowNames,EXP)),
-    
     temp_error=0.1; psal_error=0.2; minT=-3; maxT=32; minS= 4; maxS=40; min_Nprof= 30;
     pmax = 1000; pmax_fluo = 200; is_lon_centre_180 = 0;
     conf.table_param(EXP,:)={temp_error psal_error minT maxT minS maxS min_Nprof pmax pmax_fluo is_lon_centre_180};
     name_file=[conf.csv_config 'table_param.csv'];
-    writetable(conf.table_param,name_file,'WriteRowNames',1,'Delimiter',',');
-    
+    writetable(conf.table_param,name_file,'WriteRowNames',1,'Delimiter',',');    
 end
 
 %   4) apply filters

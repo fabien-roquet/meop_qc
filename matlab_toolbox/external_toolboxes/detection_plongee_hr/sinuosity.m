@@ -3,7 +3,7 @@ function[sinu]=sinuosity(tdr,depthmax,vert_speed,daindexes)
 %
 % sinuosité = bottomvertdistance observed / bottomvertdistance euclidian
 %
-display('    sinuosity...')
+%disp('    sinuosity...')
 sda=size(daindexes);
 euclidian=zeros(1,sda(2));
 for k=1:sda(2)

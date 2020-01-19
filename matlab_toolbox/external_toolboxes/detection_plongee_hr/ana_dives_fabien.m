@@ -37,7 +37,7 @@ pseuil=15;
 startnumb=1;
 plotting1=0;
 dureed=300;
-display('ana_dives... (4 steps)');
+%disp('ana_dives... (4 steps)');
 %% 1°) Identification des phases des plongées
 %
 resolution=(tdr(2,1)-tdr(1,1))/(1.1574e-05); %détermination de la 
@@ -47,12 +47,12 @@ s=size(tdr); % mise a jour de "s"
 tdrtxt={'Ptime Num','Corrected Depth','External Temperature',...
     'Light Level','State','Dive Number'};
 varargout(3)={tdrtxt};
-display('1°) done');
+%disp('1°) done');
 %% 2°) Identification de montées et descentes
 %
 [depthmax,vert_speed,daduration,daspeed,daindexes]=poly_4_delim_fabien(tdr,chg,dureed);
 [sinu]=sinuosity(tdr,depthmax,vert_speed,daindexes);
-display('2°) done');
+%disp('2°) done');
 %% 3°) Affectation des valeurs dans la matrice 'dives'
 %
 schg=size(chg);
@@ -91,7 +91,7 @@ end
 % for k=1:schg(2)
 %     dives(k,10)=res(k); % bottom duration residual
 % end
-display('3°) done');
+%disp('3°) done');
 %% 4°) Information sur le déroulement de la fonction
 %
 % & ajouts d'arguments de sortie
@@ -106,5 +106,5 @@ clear('vert_speed','chg','daduration','depthmax');
 info_ana_dives=struct('Seuil_prof', pseuil,...
     'Resolution_TDR',floor(resolution),...
     'Duree_minimale_plongee',dureed,...
-    'Nb_plongee_reecrites_en_surface',y2) %#ok<NOPRT>
-display('4°) done');
+    'Nb_plongee_reecrites_en_surface',y2); %#ok<NOPRT>
+%disp('4°) done');

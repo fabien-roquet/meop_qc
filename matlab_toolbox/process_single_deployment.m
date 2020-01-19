@@ -3,7 +3,10 @@ function process_single_deployment(EXP)
 
 conf = init_mirounga;
 info_deployment=load_info_deployment(conf,EXP);
-
+if isfield(info_deployment,'invalid_code') & info_deployment.invalid_code,
+    return
+end
+    
 remove_deployment(conf,EXP);
 create_ncargo(conf,EXP);
 create_fr0(conf,EXP);
