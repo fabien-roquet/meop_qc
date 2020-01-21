@@ -62,4 +62,8 @@ for  kNATION=1:length(list_NATION),
     end
 end
 
+% zip files
+disp('Zip folders');    
+folder_output = sprintf('%s%s/',conf.public,conf.version_SMS);
+zip(sprintf('%s%s_ALL.zip',conf.public,conf.version_SMS),sprintf('%s%s',conf.public,conf.version_SMS));
 

@@ -1,4 +1,5 @@
 function process_single_tag(one_smru_name)
+% process_single_tag(one_smru_name)
 % run all the procedure for one tag only
 
 conf = init_mirounga;
@@ -18,3 +19,5 @@ generate_odv4(conf,EXP,one_smru_name);
 
 generate_plot1(conf,EXP,one_smru_name);
 generate_plot2(conf,EXP,one_smru_name);
+
+visualize_tags(conf,EXP);

@@ -47,11 +47,11 @@ bar(xout',[n2;n-n2]','stacked');set(gca,'xlim',[0 1000]);
 title('BOTTOM PRES.');
 
 ax2=subplot(2,3,2);
-[n,xout]=hist(year(sum(Smask.*Tmask,1)~=0),2003.5:1:2018.5);
-[n2,xout2]=hist(year(sum(Smask+Tmask,1)~=0),2003.5:1:2018.5);
+[n,xout]=hist(year(sum(Smask.*Tmask,1)~=0),2003.5:1:2022.5);
+[n2,xout2]=hist(year(sum(Smask+Tmask,1)~=0),2003.5:1:2022.5);
 bar(xout',[n2;n-n2]','stacked');
-set(gca,'xlim',[2004 2018],'xtick',2004.5:4:2018.5, ...
-    'xticklabel',{'04','08','12','16'})
+set(gca,'xlim',[2004 2022],'xtick',2004.5:1:2022.5, ...
+    'xticklabel',{'','05','','','','','10','','','','','15','','','','','20','',''})
 title('DATE')
 
 ax3=subplot(2,3,3);

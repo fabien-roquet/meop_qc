@@ -138,19 +138,6 @@ if conf.update_public_CTD
     disp('Transfer MEOP-CTD to public ftp');
     sc_load_data_to_public_folder;
 
-    disp('Zip folders');    
-    folder_output = sprintf('%s%s/',conf.public,conf.version);
-    EXP_all=tags_processed(conf);
-    list_NATION=unique(EXP_all.country);
-    for kk = 1:length(list_NATION)
-        NATION = list_NATION{kk};
-        if isfolder(sprintf('%s%s/%s',conf.public,conf.version,NATION)),
-            zip(sprintf('%s%s_%s.zip',conf.public,conf.version,NATION),...
-                sprintf('%s%s/%s',conf.public,conf.version,NATION));
-        end
-    end
-    zip(sprintf('%s%s_ALL.zip',conf.public,conf.version),sprintf('%s%s',conf.public,conf.version));
-    
 end
 
 %% load data on public folder
@@ -158,10 +145,6 @@ if conf.update_public_SMS
     
     disp('Transfer MEOP-SMS to public ftp');
     sc_load_data_to_public_folder_SMS;
-    
-    disp('Zip folders');    
-    folder_output = sprintf('%s%s/',conf.public,conf.version_SMS);
-    zip(sprintf('%s%s_ALL.zip',conf.public,conf.version_SMS),sprintf('%s%s',conf.public,conf.version_SMS));
     
 end
 

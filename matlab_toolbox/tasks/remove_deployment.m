@@ -26,13 +26,6 @@ if ~isempty(list),
     end
 end
 
-list = info_deployment.list_tag_lr1;
-if ~isempty(list),
-    for kk=1:length(list),
-        delete([info_deployment.dir list(kk).name]);
-    end
-end
-
 list = info_deployment.list_tag_hr0;
 if ~isempty(list),
     for kk=1:length(list),

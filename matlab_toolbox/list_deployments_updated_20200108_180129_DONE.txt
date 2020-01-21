@@ -1,11 +1,12 @@
 BM02
 DL01
 DL02
-ct11
-ct128a
-ct144
+ct11 OK
+ct128a OK
+ct144 check again
 ct148
 ct149
+ft24
 ct2
 ct6
 ct145
@@ -22,48 +23,47 @@ ct153
 ct156
 ct154
 ct157
-MM03
-NP04s
+MM03 no data
+NP04s no data
 ft23
-ft24
 ft26
-gp21
-gp22
-hg19m
-hg57
-hg62
-hg63
-hg64
-hg65
-hg66
-hg67
-hg68
-hg69
-hp5
-hp6
-hw10
-pv46b
-pv65
-pv67
-pv68
-pv69
-pv71
-pv72
-rs33
-rs34
-rs35
-tu102
-tu103
-tu104
-tu105
-tu106
-tu107
-tu108
-tu109
-tu97
-tu98
+gp21 no data
+gp22 no data
+hg19m no data
+hg57 no data
+hg62 no data
+hg63 no data
+hg64 no data
+hg65 no data
+hg66 no data
+hg67 no data
+hg68 no data
+hg69 no data
+hp5 no data
+hp6 no data
+hw10 no data
+pv46b no data
+pv65 no data
+pv67 no data
+pv68 no data
+pv69 no data
+pv71 no data
+pv72 no data
+rs33 no data
+rs34 no data
+rs35 no data
+tu102 no data
+tu103 no data
+tu104 no data
+tu105 no data
+tu106 no data
+tu107 no data
+tu108 no data
+tu109 no data
+tu97 no data
+tu98 no data
 wd11
-zz2a
-zz2g
+zz2a no data
+zz2g no data
 wd12
 wd13

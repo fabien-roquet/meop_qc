@@ -75,6 +75,7 @@ for  kNATION=1:length(list_NATION),
                 odvfile  = sprintf('%s%s_ODV.txt',info_deployment.dir,smru_name);
                 odvfile2 = sprintf('%s%s_ODV.txt.zip',info_deployment.dir,smru_name);
                 metafile = sprintf('%s%s_METADATA.txt',info_deployment.dir,smru_name);
+                metafile2 = sprintf('%s%s_METADATA.json',info_deployment.dir,smru_name);
                 
                 if exist(ncfile_hr2,'file')
                     [status,message] = copyfile(ncfile_hr2,[folder_output NATION '/DATA_ncARGO/' ncfile_final],'f');
@@ -86,6 +87,7 @@ for  kNATION=1:length(list_NATION),
                     zip(odvfile2,odvfile);
                     [status,message] = movefile(odvfile2,[folder_output NATION '/DATA_csv_interp/' ],'f');
                     [status,message] = copyfile(metafile,[folder_output NATION '/METADATA/' ],'f');
+                    [status,message] = copyfile(metafile2,[folder_output NATION '/METADATA/' ],'f');
                 end
                 
             end
@@ -95,10 +97,25 @@ for  kNATION=1:length(list_NATION),
                 conf.list_deployment{EXP,'first_version'} = {conf.version};
             end
             conf.list_deployment{EXP,'last_version'} = {conf.version};
-            % writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);
+            writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);
 
         end
     end
 
 end
+
+
+% zip files
+disp('Zip folders');    
+folder_output = sprintf('%s%s/',conf.public,conf.version);
+EXP_all=tags_processed(conf);
+list_NATION=unique(EXP_all.country);
+for kk = 1:length(list_NATION)
+    NATION = list_NATION{kk};
+    if isfolder(sprintf('%s%s/%s',conf.public,conf.version,NATION)),
+        zip(sprintf('%s%s_%s.zip',conf.public,conf.version,NATION),...
+            sprintf('%s%s/%s',conf.public,conf.version,NATION));
+    end
+end
+zip(sprintf('%s%s_ALL.zip',conf.public,conf.version),sprintf('%s%s',conf.public,conf.version));
 

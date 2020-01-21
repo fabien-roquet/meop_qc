@@ -1,4 +1,5 @@
 function process_single_deployment(EXP)
+% process_single_deployment(EXP)
 % run all the procedure for one tag only
 
 conf = init_mirounga;
@@ -19,3 +20,5 @@ generate_odv4(conf,EXP);
 
 generate_plot1(conf,EXP);
 generate_plot2(conf,EXP);
+
+visualize_tags(conf,EXP);

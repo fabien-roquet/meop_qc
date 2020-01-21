@@ -53,7 +53,7 @@ try, Mqc.DOXY = ncread(name_prof,'DOXY'); end
 try, Mqc.LIGHT = ncread(name_prof,'LIGHT'); end
 
 sal_cor = load_salinity_offset(smru_name,salinity_offsets,length(I));
-if sal_cor
+if length(sal_cor)
     for ii=1:length(I)
         Mqc.PSAL_ADJUSTED(:,I(ii))=Mqc.PSAL_ADJUSTED(:,I(ii)) + sal_cor(ii);
         str_calib=sprintf('s1= %8.6e  psu/km, s2= %8.6e  psu', S1, S2 - sal_cor(ii));
