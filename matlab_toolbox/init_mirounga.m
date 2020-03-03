@@ -37,8 +37,6 @@ end
 conf.selection_diags      = d.selection_diags;
 
 %%
-
-conf.locdir          = [conf.rawdir 'original_cls_locations/'];
 conf.rawdir_hr       = [conf.rawdir 'original_hr_datasets/'];
 
 conf.datadir         = [conf.processdir 'final_dataset_prof/'];

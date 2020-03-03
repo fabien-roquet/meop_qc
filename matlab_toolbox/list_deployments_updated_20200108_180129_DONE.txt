@@ -1,69 +1,66 @@
-BM02
-DL01
-DL02
-ct11 OK
-ct128a OK
-ct144 check again
-ct148
-ct149
-ft24
-ct2
-ct6
-ct145
-ct146
-ct147
-ct150
-eb04
-ft22
-ft25
-rs28
-ct151
-ct152
-ct153
-ct156
-ct154
-ct157
-MM03 no data
-NP04s no data
-ft23
-ft26
-gp21 no data
-gp22 no data
-hg19m no data
-hg57 no data
-hg62 no data
-hg63 no data
-hg64 no data
-hg65 no data
-hg66 no data
-hg67 no data
-hg68 no data
-hg69 no data
-hp5 no data
-hp6 no data
-hw10 no data
-pv46b no data
-pv65 no data
-pv67 no data
-pv68 no data
-pv69 no data
-pv71 no data
-pv72 no data
-rs33 no data
-rs34 no data
-rs35 no data
-tu102 no data
-tu103 no data
-tu104 no data
-tu105 no data
-tu106 no data
-tu107 no data
-tu108 no data
-tu109 no data
-tu97 no data
-tu98 no data
-wd11
-zz2a no data
-zz2g no data
-wd12
-wd13
+BM02,
+DL01,
+DL02,
+ct11,OK
+ct128a,OK
+ct144,check again
+ct148,
+ct149,
+ft24,
+ct2,
+ct6,
+ct146,
+ct147,
+ct150,
+eb04,
+ft22,
+ft25,
+rs28,
+ct152,
+ct153,
+ct156,
+ct154,
+ct157,
+MM03, no data
+NP04s, no data
+ft23,
+gp21, no data
+gp22, no data
+hg19m, no data
+hg57, no data
+hg62, no data
+hg63, no data
+hg64, no data
+hg65, no data
+hg66, no data
+hg67, no data
+hg68, no data
+hg69, no data
+hp5, no data
+hp6, no data
+hw10, no data
+pv46b, no data
+pv65, no data
+pv67, no data
+pv68, no data
+pv69, no data
+pv71, no data
+pv72, no data
+rs33, no data
+rs34, no data
+rs35, no data
+tu102, no data
+tu103, no data
+tu104, no data
+tu105, no data
+tu106, no data
+tu107, no data
+tu108, no data
+tu109, no data
+tu97, no data
+tu98, no data
+wd11,
+zz2a, no data
+zz2g, no data
+wd12,
+wd13,

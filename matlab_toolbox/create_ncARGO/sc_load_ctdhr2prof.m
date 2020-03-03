@@ -17,10 +17,26 @@ for index=1:length(list_tag)
     
     num_file = list_deployment_hr{smru_name,'instr_id'};
     year     = list_deployment_hr{smru_name,'year'};
-    file     = sprintf('%s%d/%d_ctd.txt',conf.rawdir_hr,year,num_file);;
-    if ~exist(file,'file'), 
-        disp(sprintf('%s not found',file)); 
-        continue, 
+    prefix   = list_deployment_hr{smru_name,'prefix'};
+    if ~isempty(prefix) & ~isnan(prefix),
+        prefix = [num2str(prefix) '_'];
+    else
+        prefix = '';
+    end
+    
+    file     = sprintf('%s%d/%s%d_ctd.txt',conf.rawdir_hr,year,prefix,num_file);
+    if ~exist(file,'file'),
+        lfile = dir(sprintf('%s%d/*_%d_ctd.txt',conf.rawdir_hr,year,num_file));
+        if ~isempty(lfile),
+            file = fullfile(lfile(1).folder,lfile(1).name);
+            prefix = strrep(lfile(1).name,sprintf('_%d_ctd.txt',num_file),'');
+            conf.list_deployment_hr{smru_name,'prefix'} = str2num(prefix);
+            writetable(conf.list_deployment_hr,[conf.csv_config 'list_deployment_hr.csv'],...
+                'WriteRowNames',1,'Delimiter',',');
+        else
+            disp(sprintf('%s not found',file)); 
+            continue,
+        end
     end
     
     Mqc = ARGO_load_qc(name_prof,1);

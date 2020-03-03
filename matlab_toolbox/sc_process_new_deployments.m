@@ -7,12 +7,14 @@ list_file_done = 'list_deployments_updated_20200108_180129_DONE.txt';
 list_forced={};%'ct144','ct148','ct149','ft24','ft22','ct152'};
 
 count=1;%0;
-lEXP = textread(list_file,'%s');
+lEXP = readtable(list_file,'Delimiter',',','ReadVariableNames',0);
+lEXP = {lEXP{:,1}{:}};
 for kk = 1:length(lEXP),
     EXP = lEXP{kk};
     lEXP_done = {};
     if exist(list_file_done,'file')
-        lEXP_done = textread(list_file_done,'%s');
+        lEXP_done = readtable(list_file_done,'Delimiter',',','ReadVariableNames',0);
+        lEXP_done = {lEXP_done{:,1}{:}};
     end
     if ismember(EXP,lEXP_done) & ~ismember(EXP, list_forced),
         visualize_tags([],EXP);
@@ -24,7 +26,7 @@ for kk = 1:length(lEXP),
         process_single_deployment(EXP);
         if ~ismember(EXP,lEXP_done)
             fid2 = fopen(list_file_done,'a');
-            data = fprintf(fid2, '%s\n', EXP);
+            data = fprintf(fid2, '%s,\n', EXP);
             fclose(fid2);
         end
         count = count+1;

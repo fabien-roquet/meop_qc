@@ -38,7 +38,4 @@ for index=1:length(list_tag),
     
 end
 
-% adjust locations
-info_deployment = load_info_deployment(conf,EXP,one_smru_name);
-suffix = '_fr0';        sc_adjust_locations;
 

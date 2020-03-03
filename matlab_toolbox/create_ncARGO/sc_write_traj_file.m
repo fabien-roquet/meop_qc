@@ -1,7 +1,11 @@
 
 %% Creation du fichier nc timeseries
-ficout = sprintf('%s/%s_traj.nc',info_deployment.dir,smru_name);
-delete(ficout);
+ficout = sprintf('%s%s_traj.nc',info_deployment.dir,smru_name);
+if exist(ficout,'file'),
+    delete(ficout);
+end
+
+    
 %     prof_pres_cor=P-(P*coef.p1+coef.p2);
 %     prof_temp_cor=T-(prof_pres_cor*coef.t1+coef.t2);
 %     prof_sal_cor=S-(prof_pres_cor*coef.s1+coef.s2);

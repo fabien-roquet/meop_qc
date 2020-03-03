@@ -24,9 +24,37 @@ for index=1:length(list_tag),
     
 end
 
+% adjust locations using crawl data
 info_deployment = load_info_deployment(conf,EXP,one_smru_name);
-suffix = '_lr0';        sc_adjust_locations;
-suffix = '_hr0';        sc_adjust_locations;
+conf.crawl.locdir          = [conf.rawdir 'original_crawl_locations/'];
+conf.crawl.list    = dir([conf.crawl.locdir,'*_argos_crawl.csv']);
+conf.crawl.ptt     = {};
+conf.crawl.smru_name     = {};
+for kk=1:length(conf.crawl.list)
+    c = strsplit(conf.crawl.list(kk).name,{'_','.'});
+    conf.crawl.smru_name{kk} = c{2};
+    conf.crawl.ptt{kk} = c{3};
+end
+sc_adjust_locations_crawl;
+
+
+% adjust locations using cls delayed mode data
+info_deployment = load_info_deployment(conf,EXP,one_smru_name);
+conf.cls.locdir          = [conf.rawdir 'original_cls_locations/'];
+conf.cls.list    = dir([conf.cls.locdir,'*.smoothing.csv']);
+conf.cls.ptt     = {};
+conf.cls.datemin = {};
+conf.cls.datemax = {};
+for kk=1:length(conf.cls.list)
+    c = strsplit(conf.cls.list(kk).name,{'_','.'});
+    conf.cls.ptt{kk} = c{1};
+    conf.cls.datemin{kk} = c{2};
+    conf.cls.datemax{kk} = c{3};
+end
+conf.cls.datemin_jul = datenum(conf.cls.datemin);
+conf.cls.datemax_jul = datenum(conf.cls.datemax);
+sc_adjust_locations_cls;
+
 
 % write METADATA txt file
 list_tag = info_deployment.list_tag;
