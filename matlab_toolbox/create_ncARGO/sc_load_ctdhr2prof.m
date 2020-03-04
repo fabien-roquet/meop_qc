@@ -14,6 +14,25 @@ for index=1:length(list_tag)
     if ~any(strcmp(list_deployment_hr.Properties.RowNames,smru_name)) || ~exist(name_prof,'file')
         continue
     end
+    ptt = ncreadatt (name_prof,'/','ptt');
+    jul = ncread(name_prof,'JULD')+712224;
+    
+    % load reference locations
+    locs = load_crawl_data(conf,smru_name,ptt,jul);    
+    if isempty(locs), 
+        locs = load_cls_data(conf,smru_name,ptt,jul);
+        if isempty(locs),
+            type_loc='smru';
+            Mqc = ARGO_load_qc(name_prof,1);
+            locs.jul = Mqc.JULD;
+            locs.lat = Mqc.LATITUDE;
+            locs.lon = Mqc.LONGITUDE;
+        else
+            type_loc='cls';
+        end
+    else
+        type_loc='crawl';       
+    end
     
     num_file = list_deployment_hr{smru_name,'instr_id'};
     year     = list_deployment_hr{smru_name,'year'};
@@ -39,7 +58,6 @@ for index=1:length(list_tag)
         end
     end
     
-    Mqc = ARGO_load_qc(name_prof,1);
     data_att = ncloadatt_struct(name_prof);
     listatt = fieldnames(data_att);
     
@@ -57,38 +75,42 @@ for index=1:length(list_tag)
     %% cas des balises qui n'enregistrent que la remontee de certaies profils
     if list_deployment_hr{smru_name,'continuous'}==0
         
-        if length(Fluo)==0 & length(Oxy)==0
-            [date,P,T,S] = ...
-                textread(file,'%s%f%f%*f%f%*[^\n]',...
-                'delimiter','\t','headerlines',1);
-            F=T.*NaN;
-            O=T.*NaN;
-            L=T.*NaN;
+        try
+            if length(Fluo)==0 & length(Oxy)==0
+                [date,P,T,S] = ...
+                    textread(file,'%s%f%f%*f%f%*[^\n]',...
+                    'delimiter','\t','headerlines',1);
+                F=T.*NaN;
+                O=T.*NaN;
+                L=T.*NaN;
             
-        elseif strcmp(smru_name,'ct139-F932BAT-13')
-            [date,P,T,S,F] = ...
-                textread(file,'%s%f%*f%*f%f%*f%f%f%*[^\n]',...
-                'delimiter','\t','headerlines',1);
-            O = T.*NaN;
-            L = T.*NaN;
-            date=replace(date,'2013','2017');
+            elseif strcmp(smru_name,'ct139-F932BAT-13')
+                [date,P,T,S,F] = ...
+                    textread(file,'%s%f%*f%*f%f%*f%f%f%*[^\n]',...
+                    'delimiter','\t','headerlines',1);
+                O = T.*NaN;
+                L = T.*NaN;
+                date=replace(date,'2013','2017');
             
-        elseif length(Fluo)>0 & length(Oxy)==0
-            [date,P,T,S,F] = ...
-                textread(file,'%s%f%f%*f%f%f%*[^\n]',...
-                'delimiter','\t','headerlines',1);
-            isfluo=double(length(find(F~=999))~=0);
-            O=T.*NaN;
-            L=T.*NaN;
+            elseif length(Fluo)>0 & length(Oxy)==0
+                [date,P,T,S,F] = ...
+                    textread(file,'%s%f%f%*f%f%f%*[^\n]',...
+                    'delimiter','\t','headerlines',1);
+                isfluo=double(length(find(F~=999))~=0);
+                O=T.*NaN;
+                L=T.*NaN;
             
-        elseif length(Fluo)==0 & length(Oxy)>0
-            [date,P,T,S,O] = ...
-                textread(file,'%s%f%f%*f%f%f%*[^\n]',...
-                'delimiter','\t','headerlines',1);
-            isoxy=double(length(find(O~=999))~=0);
-            F=T.*NaN;
-            L=T.*NaN;
+            elseif length(Fluo)==0 & length(Oxy)>0
+                [date,P,T,S,O] = ...
+                    textread(file,'%s%f%f%*f%f%f%*[^\n]',...
+                    'delimiter','\t','headerlines',1);
+                isoxy=double(length(find(O~=999))~=0);
+                F=T.*NaN;
+                L=T.*NaN;
             
+            end
+        catch
+            disp(['Error reading file: ' file]);
         end
         
         % on cherche le debut de chaque profil en cherchant les sauts temporelles
@@ -102,15 +124,19 @@ for index=1:length(list_tag)
         
         lat=Ihead*NaN;
         lon=Ihead*NaN;
-        
-        for ii=1: length(Mqc.JULD)
-            [m,I]=min(abs(Mqc.JULD(ii)-date(Ihead)));
-            lat(I)=Mqc.LATITUDE(ii);
-            lon(I)=Mqc.LONGITUDE(ii);
-            
+    
+        try
+            for ii=1: length(locs.jul)
+                [m,I]=min(abs(locs.jul(ii)-date(Ihead)));
+                lat(I)=locs.lat(ii);
+                lon(I)=locs.lon(ii);            
+            end
+            lat=interp1(date(Ihead(~isnan(lat))),lat(~isnan(lat)),date(Ihead));
+            lon=interp1(date(Ihead(~isnan(lon))),lon(~isnan(lon)),date(Ihead));
+        catch
+            disp(['Wrong smru_code for hr data in: ' file])
+            continue
         end
-        lat=interp1(date(Ihead(~isnan(lat))),lat(~isnan(lat)),date(Ihead));
-        lon=interp1(date(Ihead(~isnan(lon))),lon(~isnan(lon)),date(Ihead));
         
         % creation des profils de remontes pour la haute resolution
         grilleHdpres=NaN*zeros(6000,N);
@@ -205,10 +231,10 @@ for index=1:length(list_tag)
         lat = chg(2,:)'*NaN;
         lon = chg(2,:)'*NaN;
         ind = chg(2,:)'*NaN;
-        for ii=1:length(Mqc.JULD)
-            [m,ik] = min(abs(Mqc.JULD(ii)-date(chg(2,:))));
-            lat(ik) = Mqc.LATITUDE(ii);
-            lon(ik) = Mqc.LONGITUDE(ii);
+        for ii=1:length(locs.jul)
+            [m,ik] = min(abs(locs.jul(ii)-date(chg(2,:))));
+            lat(ik) = locs.lat(ii);
+            lon(ik) = locs.lon(ii);
             ind(ik) = chg(2,ik);
         end
         I = find(~isnan(lat) & ~isnan(lon));
@@ -216,7 +242,7 @@ for index=1:length(list_tag)
 %         lon = interp1(date(ind(I)),lon(I),date(chg(2,:)),'linear','extrap');
         lat = interp1(date(ind(I)),lat(I),date(chg(2,:)));
         lon = interp1(date(ind(I)),lon(I),date(chg(2,:)));
-        n0 = length(find(date(chg(2,:))-Mqc.JULD(1)<1))+length(find(date(chg(2,:))-Mqc.JULD(end)>1));
+        n0 = length(find(date(chg(2,:))-locs.jul(1)<1))+length(find(date(chg(2,:))-locs.jul(end)>1));
         if n0, 
             disp([smru_name ': warning! location of ' num2str(n0) ' fr_profiles were extrapolated']);
         end

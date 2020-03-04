@@ -23,6 +23,7 @@ ct154,
 ct157,
 MM03, no data
 NP04s, no data
+ft10,
 ft23,
 gp21, no data
 gp22, no data

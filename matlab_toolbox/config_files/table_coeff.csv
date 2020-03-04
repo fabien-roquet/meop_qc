@@ -101,7 +101,7 @@ ct106-633_rebat-14,0,0,0,0,0,0,no comment
 ct106-705-13,0,0,0,0,0,0,no comment
 ct106-796-13,0,0,0,0,0,0,no comment
 ct107-933-13,0,0,0,-0.03,0,0,no comment
-ct107-933b-13,0,0,0,0,0,0,no comment
+ct107-933b-13,0,0,0,0,1,0,no comment
 ct107-934-13,0,0,0,0.06,0,0,no comment
 ct107-938-13,0,0,0,-0.02,0,0,no comment
 ct107-940-13,0,0,0,0.09,0,0,no comment
@@ -111,7 +111,7 @@ ct107-950-13,0,0,0,0.03,0,0,no comment
 ct107-951-13,0,0,0,0.06,0,0,no comment
 ct107-952-13,0,0,0,0.07,0,0,no comment
 ct107-953-13,0,0,0,0.04,0,0,no comment
-ct107-F945-13,0,0,0,0,0,0,no comment
+ct107-F945-13,0,0,0,0,1,0,no comment
 ct107-F946-13,0,0,0,-0.02,0,0,no comment
 ct107-F954-14,0,0,0,-0.01,0,0,no comment
 ct107-F995-14,0,0,0,0.03,0,0,no comment
@@ -269,7 +269,7 @@ ct129-R235-14,0,0,0,0,0,0,no comment
 ct129-R264-14,0,0,0,0.03,0,0,no comment
 ct129-R267-14,0,0,0,-0.05,0,0,no comment
 ct129-R269-14,0,0,0,0.05,0,0,no comment
-ct129-R270-14,0,0,0,0,0,0,no comment
+ct129-R270-14,0,0,0,0,1,0,no comment
 ct129-R933c-13,0,0,0,-0.04,0,0,no comment
 ct129-R962-14,0,0,0,0,0,0,no comment
 ct13-057-05,0,0,0,0.16,1,0,no comment
@@ -1441,8 +1441,8 @@ ft20-S248-16,0,0,0,0.04,0,0,no comment
 ft20-S249-16,0,0,0,0,0,0,no comment
 ft20-S250-16,0,0,0,0,0,0,no comment
 ft21-423-16,0,0,0,0.02,0,0,no comment
-ft21-675-17,0,0,0,0,0,0,no comment
-ft21-683-17,0,0,0,0,0,0,no comment
+ft21-675-17,0,0,0,0,1,0,no comment
+ft21-683-17,0,0,0,0,1,0,no comment
 ft22-686-18,0,0,0,0,0,0,no comment
 ft22-873-18,0,0,0,-0.01,0,0,no comment
 ft22-874-18,0,0,0,0,0,0,no comment

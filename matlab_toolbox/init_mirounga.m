@@ -255,6 +255,33 @@ if ~exist(name_file,'file')
 end
 conf.table_filter = readtable(name_file,'ReadRowNames',0,'Delimiter',',');
 
+
+%% load information about updated loc
+conf.crawl.locdir          = [conf.rawdir 'original_crawl_locations/'];
+conf.crawl.list    = dir([conf.crawl.locdir,'*_argos_crawl.csv']);
+conf.crawl.ptt     = {};
+conf.crawl.smru_name     = {};
+for kk=1:length(conf.crawl.list)
+    c = strsplit(conf.crawl.list(kk).name,{'_','.'});
+    conf.crawl.smru_name{kk} = c{2};
+    conf.crawl.ptt{kk} = c{3};
+end
+
+conf.cls.locdir          = [conf.rawdir 'original_cls_locations/'];
+conf.cls.list    = dir([conf.cls.locdir,'*.smoothing.csv']);
+conf.cls.ptt     = {};
+conf.cls.datemin = {};
+conf.cls.datemax = {};
+for kk=1:length(conf.cls.list)
+    c = strsplit(conf.cls.list(kk).name,{'_','.'});
+    conf.cls.ptt{kk} = c{1};
+    conf.cls.datemin{kk} = c{2};
+    conf.cls.datemax{kk} = c{3};
+end
+conf.cls.datemin_jul = datenum(conf.cls.datemin);
+conf.cls.datemax_jul = datenum(conf.cls.datemax);
+
+
 end
 
 

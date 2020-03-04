@@ -108,8 +108,14 @@ for ktag=1:length(info_deployment.list_smru_name),
     
 end
 
+
 %   5) create ncARGO file hr0
 sc_create_hr0;
+
+
+%   6) adjust locations
+info_deployment = load_info_deployment(conf,EXP,one_smru_name);
+sc_adjust_locations;
 
 diary off
 
