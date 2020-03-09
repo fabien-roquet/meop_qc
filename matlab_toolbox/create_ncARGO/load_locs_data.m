@@ -7,7 +7,7 @@ function locs = load_locs_data(conf,smru_name,ptt,jul)
     [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
     locs = load_crawl_data(conf,smru_prefix,ptt,jul);
     if isempty(locs), 
-        locs = load_cls_data(conf,smru_name,ptt,jul);
+        locs = load_cls_data(conf,ptt,jul);
         if isempty(locs),
             info_deployment = load_info_deployment(conf,EXP_from_smru_name(smru_name),smru_name);
             name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
@@ -34,7 +34,7 @@ function locs = load_locs_data(conf,smru_name,ptt,jul)
         
 
 
-function locs = load_cls_data(conf,smru_name,ptt,jul)
+function locs = load_cls_data(conf,ptt,jul)
 
     locs=[];
 

@@ -18,7 +18,6 @@ if ~exist('Nlevels','var') || isempty(Nlevels),
     Nlevels=max(hi(:,8)); 
 end
 
-list_smru = conf.list_smru_platform_code;
 if ~exist('one_smru_name','var')
     one_smru_name = '';
 end
@@ -103,10 +102,11 @@ for ii=1:length(list_tag),
     
     smru_name = char(hs(I(1)));
     [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
-    if ~isempty(one_smru_name) & ~strcmp(one_smru_name,smru_prefix),
+    [one_smru_prefix,Nsplit] = Nsplit_from_smru_name(one_smru_name);
+    if ~isempty(one_smru_name) & ~strcmp(one_smru_prefix,smru_prefix),
         continue
     end
-    K=find(strcmp(list_smru,smru_prefix));
+    K=find(strcmp(conf.list_smru_platform_code,one_smru_prefix));
     
     if length(K)>0
         

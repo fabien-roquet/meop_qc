@@ -35,10 +35,11 @@ for index=1:length(list_tag)
         continue
     end
     disp(['Process hr smru_name=' smru_name])
-    ptt = conf.platform_json(strcmp(conf.list_smru_platform_code,smru_name)).ptt;
-    jul = ncread(name_prof,'JULD')+712224;
     
     % load reference locations
+    [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
+    ptt = conf.platform_json(strcmp(conf.list_smru_platform_code,smru_prefix)).ptt;
+    jul = ncread(name_prof,'JULD')+712224;
     locs = load_locs_data(conf,smru_name,ptt,jul);
     disp(sprintf('  SMRU %s, PTT %8s: use %s locations for fr data',smru_name,ptt,locs.type))
     
