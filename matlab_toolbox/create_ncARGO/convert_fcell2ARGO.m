@@ -106,7 +106,7 @@ for ii=1:length(list_tag),
     if ~isempty(one_smru_name) & ~strcmp(one_smru_prefix,smru_prefix),
         continue
     end
-    K=find(strcmp(conf.list_smru_platform_code,one_smru_prefix));
+    K=find(strcmp(conf.list_smru_platform_code,smru_prefix));
     
     if length(K)>0
         
