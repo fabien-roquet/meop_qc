@@ -1,24 +1,36 @@
 function create_hr2(conf,EXP,one_smru_name)
 
+if isempty(conf),
+    conf = init_mirounga;
+end
+
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
+elseif isempty(EXP),
+    EXP=EXP_from_smru_name(one_smru_name);
 end
 
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 if ~exist(info_deployment.dir), return, end
 
+disp(['Create hr2 version [by default, hr1 --> hr2]'])
+list_tag = info_deployment.list_tag_hr1;
 list_tag_fr1 = info_deployment.list_tag_fr1;
-for ll=1:length(list_tag_fr1),
+for ll=1:length(list_tag),
     
-    name_prof_fr0 = sprintf('%s%s',info_deployment.dir,info_deployment.list_tag_fr0(ll).name);
-    name_prof_fr1 = strrep(name_prof_fr0,'_fr0_','_fr1_');
-    name_prof_hr1 = strrep(name_prof_fr0,'_fr0_','_hr1_');
-    name_prof_hr2 = strrep(name_prof_fr0,'_fr0_','_hr2_');
+    name_prof = list_tag(ll).name;
+    smru_name = name_prof(1:end-12);
+    name_prof_hr1 = sprintf('%s%s',info_deployment.dir,name_prof);
+    name_prof_fr1 = strrep(name_prof_hr1,'_hr1_','_fr1_');
+    name_prof_hr2 = strrep(name_prof_hr1,'_hr1_','_hr2_');
     
-    tag_fr1 = list_tag_fr1(ll).name;
-    smru_name = tag_fr1(1:end-12);
-    if ~ismember(smru_name,conf.hr_smru_name), continue; end
-    disp(['(4c)' smru_name])
+    if ~ismember(smru_name,conf.hr_smru_name),
+        disp(['  ' smru_name ': hr1 --> hr2'])
+        copyfile(name_prof_hr1, name_prof_hr2,'f');
+        continue;
+    end
+    
+    
     kk = find(strcmp(smru_name,conf.hr_smru_name));
     
     if conf.hr_continuous(kk),
@@ -54,9 +66,12 @@ for ll=1:length(list_tag_fr1),
             aux(:,1:3,:,J) = aux1(:,1:3,:,I(J));
             ncwrite(name_prof_hr2,list_var3{jj},aux);
         end
+
+        disp(['  ' smru_name ': continuous mode fr1 taken at hr1 datetime  --> hr2'])
         
     else
         
+        disp(['  ' smru_name ': high resolution fr1 --> hr2'])
         copyfile(name_prof_fr1, name_prof_hr2,'f');
         
     end

@@ -9,6 +9,7 @@ tline = fgetl(fid);
 tline = fgetl(fid);
 fclose(fid);
 
+% read header
 clear F O C BD;
 isfluo=0; isoxy=0; iscond=0;islight=0;
 Fluo=strfind(tline,'Fluorescence');
@@ -16,9 +17,9 @@ Oxy =strfind(tline,'Oxygen');
 Cond=strfind(tline,'Conductivity');
 Light=strfind(tline,'Light');
 
-if length(Cond)>0 & length(Fluo)>0 & length(Oxy)>0
-    
-   [tag,numProf,date,lon,lat,P,T,S,F,O,C] = ...
+% read data
+if length(Cond)>0 & length(Fluo)>0 & length(Oxy)>0    
+   [smru_names,numProf,date,lon,lat,P,T,S,F,O,C] = ...
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%f%f%f',...
         'delimiter',';','headerlines',2);
     isfluo=double(length(find(F~=999))~=0); isoxy=double(length(find(O~=999))~=0);
@@ -30,52 +31,74 @@ if length(Cond)>0 & length(Fluo)>0 & length(Oxy)>0
     O(O==999)=NaN;
     L=T.*NaN;
 elseif length(Cond)>0
-    [tag,numProf,date,lon,lat,P,T,S] = ...
+    [smru_names,numProf,date,lon,lat,P,T,S] = ...
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%*f',...
         'delimiter',';','headerlines',2);
     F=T.*NaN;
     O=T.*NaN;
-    L=T.*NaN;
-    
-elseif length(Fluo)==0 & length(Oxy)==0
-    
-    [tag,numProf,date,lon,lat,P,T,S] = ...
+    L=T.*NaN;   
+elseif length(Fluo)==0 & length(Oxy)==0    
+    [smru_names,numProf,date,lon,lat,P,T,S] = ...
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f',...
         'delimiter',';','headerlines',2);
     F=T.*NaN;
     O=T.*NaN;
-    L=T.*NaN;
-    
-elseif length(Fluo)>0 & length(Oxy)>0
-    
-    [tag,numProf,date,lon,lat,P,T,S,F,O] = ...
+    L=T.*NaN;    
+elseif length(Fluo)>0 & length(Oxy)>0    
+    [smru_names,numProf,date,lon,lat,P,T,S,F,O] = ...
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%f%f',...
         'delimiter',';','headerlines',2);
     isfluo=double(length(find(F~=999))~=0); isoxy=double(length(find(O~=999))~=0);
-    L=T.*NaN;
-    
+    L=T.*NaN;    
 elseif length(Light)>0
-    [tag,numProf,date,lon,lat,P,T,S,F,L] = ...
+    [smru_names,numProf,date,lon,lat,P,T,S,F,L] = ...
         textread([conf.rawdir info_deployment.nomfic],'%s%d%*s%s%f%f%*d%f%f%f%f%f',...
         'delimiter',';','headerlines',2);
     isfluo=double(length(find(F~=999))~=0); islight=double(length(find(L~=999))~=0);
     O=T.*NaN;
 end
+
+
+% create header hi (fcell format)
 Ihead=find(numProf~=0);
 N=length(Ihead);
-
 hi=zeros(N,10);
-hs=tag(Ihead);
+hs=smru_names(Ihead);
 ltag=unique(hs);
 for ii=1:length(ltag),
     hi(strcmp(ltag{ii},hs),2)=ii;
 end
-hi(:,3)=numProf(Ihead);
+hi(:,3)=numProf(Ihead); % not used
 hi(:,4)=datenum(date(Ihead),'yyyy-mm-dd HH:MM');
 hi(:,5:6)=[lat(Ihead) lon(Ihead)];
 hi(:,9)=1;
 hi(:,10)=hi(:,2);
 
+% split tags according to table_split_tags,
+for ktag=1:length(ltag),
+    smru_name = ltag{ktag};
+    if any(strcmp(conf.table_split_tags.Properties.RowNames,smru_name)),
+        nsplit = conf.table_split_tags{smru_name,'nsplit'};
+        Iind = find(strcmp(hs,smru_name));
+        jul = hi(Iind,4);
+        [julsort,ii]=sort(diff(jul),'descend');
+        Ibeg = [1;ii(1:nsplit-1)+1];
+        Iend = [ii(1:nsplit-1);length(jul)];
+        for ksplit = 1:nsplit,
+            for kk = Ibeg(ksplit):Iend(ksplit)
+                new_smru_name = sprintf('%s-N%1d',smru_name,ksplit);
+                hs{Iind(kk)}=new_smru_name;
+            end
+        end
+    end
+end
+ltag=unique(hs);
+for ii=1:length(ltag),
+    hi(strcmp(ltag{ii},hs),2)=ii;
+end
+hi(:,10)=hi(:,2);
+
+% format data
 PTi=cell(1,N); PSi=cell(1,N); 
 PFi=cell(1,N); POi=cell(1,N);
 PLi=cell(1,N);
@@ -84,8 +107,7 @@ F(F==999)=NaN; O(O==999)=NaN;
 L(L==999)=NaN;
 Ihead2=[Ihead;length(P)+1];
 nprof=1; ntag=1; pold=0;
-for ii=1:N,
-    
+for ii=1:N,    
     I=Ihead2(ii):Ihead2(ii+1)-1;
     I=I(diff([P(I);P(I(end))+1])~=0);
     PTi{ii}=[P(I) T(I)];
@@ -94,8 +116,7 @@ for ii=1:N,
     POi{ii}=[P(I) O(I)];
     PLi{ii}=[P(I) L(I)];
     hi(ii,7)=P(Ihead2(ii+1)-1);
-    hi(ii,8)=length(I);
-    
+    hi(ii,8)=length(I);  
 end
 
 % find bad location

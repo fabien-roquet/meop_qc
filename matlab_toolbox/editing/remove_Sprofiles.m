@@ -100,11 +100,12 @@ else
 end
 
 nn=length(I);
+if ~nn,
+    return
+end
 
-if nn,
-    for kk=1:nn,
-        p = argo_qc.PSAL_QC(:,I(kk)); argo_qc.PSAL_QC(p~=9,I(kk))=4;
-    end
+for kk=1:nn,
+    p = argo_qc.PSAL_QC(:,I(kk)); argo_qc.PSAL_QC(p~=9,I(kk))=4;
 end
 argo_qc.PSAL(argo_qc.PSAL_QC>1)=NaN;
 

@@ -6,7 +6,10 @@ end
 
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
+elseif isempty(EXP),
+    EXP=EXP_from_smru_name(one_smru_name);
 end
+
 
 info_deployment = load_info_deployment(conf,EXP,one_smru_name);
 list_tag = info_deployment.list_tag_hr1;

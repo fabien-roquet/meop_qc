@@ -1,11 +1,30 @@
 function apply_adjustments(conf,EXP,one_smru_name)
 
+
+if isempty(conf),
+    conf = init_mirounga;
+end
+
 if ~exist('one_smru_name','var') % all tags from EXP deployment
     one_smru_name = '';
+elseif isempty(EXP),
+    EXP=EXP_from_smru_name(one_smru_name);
 end
+
 
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 if ~exist(info_deployment.dir), return, end
+
+% create default coefficients if needed
+info_deployment=load_info_deployment(conf,EXP,one_smru_name);
+list_tag = info_deployment.list_smru_name;
+for ktag=1:length(list_tag),
+    if ~ismember(conf.table_coeff.Properties.RowNames,list_tag{ktag}),
+        conf.table_coeff{list_tag{ktag},:}=[zeros(1,6) NaN];
+        name_file=[conf.csv_config 'table_coeff.csv'];
+        writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
+    end
+end
 
 % apply offset
 for kk=1:length(info_deployment.list_tag),

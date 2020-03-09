@@ -1,8 +1,15 @@
-function generate_plot2(conf,EXP,one_smru_name)
+function generate_plot2(conf,EXP,one_smru_name, suffix, mode)
 
 if isempty(conf),
     conf = init_mirounga;
 end
+
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = '';
+elseif isempty(EXP),
+    EXP=EXP_from_smru_name(one_smru_name);
+end
+
 close all
 
 if ~exist('one_smru_name','var') % all tags from EXP deployment
@@ -16,6 +23,7 @@ else  % tag smru_tag only
         return
     end
 end
+
 
 %% load configuration of plots
 do_figure='on';
@@ -54,44 +62,54 @@ end
 
 
 %% do the plots
+if exist('suffix','var') & exist('mode','var'),
 
-if length(info_deployment.list_tag_lr0)
-    suffix = '_lr0'; mode = 'raw';
     disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
     sc_plot_data_tags;
     sc_plot_data_deploy;
     sc_build_latex;
-end
 
-if length(info_deployment.list_tag_lr1)
-    suffix = '_lr1'; mode = 'adj';
-    disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
-    sc_plot_data_tags;
-    sc_plot_data_deploy;
-    sc_build_latex;
-end
+else
 
-if length(info_deployment.list_tag_lr1)
-    suffix = '_hr1'; mode = 'adj';
-    disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
-    sc_plot_data_tags;
-    sc_plot_data_deploy;
-    sc_build_latex;
-end
+    if length(info_deployment.list_tag_lr0)
+        suffix = '_lr0'; mode = 'raw';
+        disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+        sc_plot_data_tags;
+        sc_plot_data_deploy;
+        sc_build_latex;
+    end
 
-if length(info_deployment.list_tag_hr2)
-    suffix = '_hr2'; mode = 'adj';
-    disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
-    sc_plot_data_tags;
-    sc_plot_data_deploy;
-    sc_build_latex;
-end
+    if length(info_deployment.list_tag_lr1)
+        suffix = '_lr1'; mode = 'adj';
+        disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+        sc_plot_data_tags;
+        sc_plot_data_deploy;
+        sc_build_latex;
+    end
 
-if length(info_deployment.list_tag_fr1)
-    suffix = '_fr1'; mode = 'adj';
-    disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
-    sc_plot_data_tags;
-    sc_plot_data_deploy;
-    sc_build_latex;
+    if length(info_deployment.list_tag_lr1)
+        suffix = '_hr1'; mode = 'adj';
+        disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+        sc_plot_data_tags;
+        sc_plot_data_deploy;
+        sc_build_latex;
+    end
+
+    if length(info_deployment.list_tag_hr2)
+        suffix = '_hr2'; mode = 'adj';
+        disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+        sc_plot_data_tags;
+        sc_plot_data_deploy;
+        sc_build_latex;
+    end
+
+    if length(info_deployment.list_tag_fr1)
+        suffix = '_fr1'; mode = 'adj';
+        disp(['plot diag ' EXP ': ' suffix(2:end) ', ' mode]);
+        sc_plot_data_tags;
+        sc_plot_data_deploy;
+        sc_build_latex;
+    end
+
 end
 

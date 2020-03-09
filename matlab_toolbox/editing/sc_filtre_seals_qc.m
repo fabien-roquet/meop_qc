@@ -1,6 +1,27 @@
 plot_diags=0;
 N1=0; N2=0;
 
+% load data and init flags
+Mqc=ARGO_load_qc(name_prof,0);
+Mqc.PRES_QC(Mqc.PRES_QC==0) = 1;
+Mqc.TEMP_QC(Mqc.TEMP_QC==0) = 1;
+Mqc.PSAL_QC(Mqc.PSAL_QC==0) = 1;
+if isfield(Mqc,'CHLA_QC'), Mqc.CHLA_QC(Mqc.CHLA_QC==0) = 1; end
+if isfield(Mqc,'DOXY_QC'), Mqc.DOXY_QC(Mqc.DOXY_QC==0) = 1; end
+if isfield(Mqc,'LIGHT_QC'), Mqc.LIGHT_QC(Mqc.LIGHT_QC==0) = 1; end
+ARGO_save_qc(name_prof,Mqc,0);
+
+
+% create default paramaters
+if ~any(strcmp(conf.table_param.Properties.RowNames,EXP)),
+    temp_error=0.1; psal_error=0.2; minT=-3; maxT=32; minS= 4; maxS=40; min_Nprof= 30;
+    pmax = 1000; pmax_fluo = 200; is_lon_centre_180 = 0;
+    conf.table_param(EXP,:)={temp_error psal_error minT maxT minS maxS min_Nprof pmax pmax_fluo is_lon_centre_180};
+    name_file=[conf.csv_config 'table_param.csv'];
+    writetable(conf.table_param,name_file,'WriteRowNames',1,'Delimiter',',');    
+end
+
+% max/min paramters
 minT=conf.table_param{EXP,'minT'};
 maxT=conf.table_param{EXP,'maxT'};
 maxT=conf.table_param{EXP,'maxT'};
@@ -9,12 +30,10 @@ maxS=conf.table_param{EXP,'maxS'};
 min_Nprof=conf.table_param{EXP,'min_Nprof'};
 
 %% lat/lon/date
-
 [Mqc,nn]=remove_profiles(info_deployment,smru_name,'index',find(isnan(Mqc.LATITUDE.*Mqc.LONGITUDE.*Mqc.JULD)),suffix);
-
+N1=nn;
 
 %% outliers
-
 nT=nansum(double(Mqc.TEMP_QC<=1));
 [Mqc,nn1]=remove_profiles(info_deployment,smru_name,'index',find(nT<3&nT>0),suffix);
 [Mqc,nn2]=remove_profiles(info_deployment,smru_name,'Tmin',minT,suffix);
@@ -27,7 +46,6 @@ N1=nn1+nn2+nn3+nn4+nn5+nn6;
 if nn5, disp(sprintf('Bad locations (lat=0): %d profiles',nn5)), end
 
 %% salinity number point
-
 nS=nansum(double(Mqc.PSAL_QC<2));
 
 [Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,'index',find(nS<=5&nS>0),suffix);
@@ -53,6 +71,41 @@ I=find(Mqc.PTMP(2,:)<7 & nS>5 & Mqc.SIG0(Ibot)-Mqc.SIG0(2,:)<-.03);
 
 N2=N2+nn1+nn2;
 
+% manual editing
+if conf.table_coeff{smru_name,'remove'},
+    Mqc=remove_tag(info_deployment,smru_name);
+end
+
+if conf.table_coeff{smru_name,'Sremove'},
+    [Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name);
+end
+N2=N2+nn1;
+
+filters1=[];
+if any(strcmp(EXP, conf.table_filter.smru_platform_name)),
+    filters1 = conf.table_filter(strcmp(EXP, conf.table_filter.smru_platform_name),:);
+end
+
+filters2=[];
+if any(strcmp(smru_name, conf.table_filter.smru_platform_name)),
+    filters2 = conf.table_filter(strcmp(smru_name, conf.table_filter.smru_platform_name),:);
+end
+
+filters = [filters1; filters2];
+if ~isempty(filters),
+    for kk=1:length(filters.smru_platform_name),
+        if filters{kk,'Sonly'},
+            [Mqc,nn1]=remove_Sprofiles(info_deployment,smru_name,...
+                filters{kk,'filter'}{1},filters{kk,{'x1','x2'}},suffix);
+            N2=N2+nn1;
+        else
+            [Mqc,nn1]=remove_profiles(info_deployment,smru_name,...
+                filters{kk,'filter'}{1},filters{kk,{'x1','x2'}},suffix);
+            N1=N1+nn1;
+        end
+    end
+end
+    
 
 
 % %% spike test 1
@@ -98,8 +151,7 @@ if length(find(nT>5))<min_Nprof & length(find(nT>5))>0,
     name_file=[conf.csv_config 'table_coeff.csv'];
     writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
 else
-    ARGO_save_qc(name_prof,Mqc,0);
-    disp(sprintf('%s: %d profiles and %d Sprofiles removed',smru_name,N1,N2));    
+    disp(sprintf('  %s: %d profiles and %d Sprofiles removed',smru_name,N1,N2));    
 end
 
 

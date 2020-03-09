@@ -23,7 +23,7 @@ ncwriteatt(name_prof,'/','Netcdf_version','3.6');
 ncwriteatt(name_prof,'/','naming_authority','MEOP consortium (Marine Mammals Exploring the Oceans Pole to Pole)');
 ncwriteatt(name_prof,'/','cdm_data_type','Station');
 ncwriteatt(name_prof,'/','geospatial_vertical_min',0);
-ncwriteatt(name_prof,'/','geospatial_vertical_min',2000);
+ncwriteatt(name_prof,'/','geospatial_vertical_max',2000);
 ncwriteatt(name_prof,'/','data_assembly_center','MEOP/Fabien Roquet (MISU)');
 ncwriteatt(name_prof,'/','distribution_statement','Follow MEOP data policy standards, cf. http://www.meop.net/the-dataset/data-access.html. Data available free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data');
 ncwriteatt(name_prof,'/','citation','The marine mammal data were collected and made freely available by the International MEOP Consortium and the national programs that contribute to it (http://www.meop.net).');

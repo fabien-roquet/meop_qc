@@ -86,7 +86,8 @@ for index=1:length(list_tag),
     
     %save fcell
     name_fcell=[conf.temporary_fcell smru_name '_hr0_fcell.mat'];
-    save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','PLi','EXP','PI','NATION','isoxy','isfluo','islight');
+    save(name_fcell,'hi','hs','PTi','PSi',...
+        'PFi','POi','PLi','EXP','PI','NATION','isoxy','isfluo','islight');
     
     %% save in Argo netcdf format
     if length(hi)>0
@@ -104,4 +105,9 @@ for index=1:length(list_tag),
         ARGO_save_qc(name_prof_hr0,Mqc,0);
     end
 
+    % write global attributes
+    name_prof = sprintf('%s%s_hr0_prof.nc',info_deployment.dir,smru_name);
+    sc_write_global_attribute;
+    
 end
+

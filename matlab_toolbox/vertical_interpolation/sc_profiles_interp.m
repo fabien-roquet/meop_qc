@@ -1,15 +1,15 @@
-% PRES, TEMP, SALI, z_std --> TEMP_std_lev,SALI_std_lev
+% PRES, TEMP, SALI, CHLA, DOXY, LIGHT, std_std --> **_std_lev
 
 % std_1dbar = (0:2000)';
 N_std = length(std_lev);
 N_prof = size(PRES,2);
 
 PRES_std_lev = repmat(std_lev,1,N_prof);
-TEMP_std_lev = NaN*std_lev;
-SALI_std_lev = NaN*std_lev;
-CHLA_std_lev = NaN*std_lev;
-DOXY_std_lev = NaN*std_lev;
-LIGHT_std_lev = NaN*std_lev;
+TEMP_std_lev = NaN*PRES_std_lev;
+SALI_std_lev = NaN*PRES_std_lev;
+CHLA_std_lev = NaN*PRES_std_lev;
+DOXY_std_lev = NaN*PRES_std_lev;
+LIGHT_std_lev = NaN*PRES_std_lev;
 
 % [Sgrid,Tgrid] = meshgrid(10:50,-4:.5:25);
 % Dgrid = sw_dens0(Sgrid,Tgrid);

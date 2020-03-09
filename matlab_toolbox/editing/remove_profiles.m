@@ -108,12 +108,14 @@ end
 
 nn=length(I);
 
-if nn
-    for kk=1:nn,
-        p = argo_qc.PRES_QC(:,I(kk)); argo_qc.PRES_QC(p~=9,I(kk))=4;
-        p = argo_qc.TEMP_QC(:,I(kk)); argo_qc.TEMP_QC(p~=9,I(kk))=4;
-        p = argo_qc.PSAL_QC(:,I(kk)); argo_qc.PSAL_QC(p~=9,I(kk))=4;
-    end
+if ~nn,
+    return
+end
+
+for kk=1:nn,
+    p = argo_qc.PRES_QC(:,I(kk)); argo_qc.PRES_QC(p~=9,I(kk))=4;
+    p = argo_qc.TEMP_QC(:,I(kk)); argo_qc.TEMP_QC(p~=9,I(kk))=4;
+    p = argo_qc.PSAL_QC(:,I(kk)); argo_qc.PSAL_QC(p~=9,I(kk))=4;
 end
 
 argo_qc.PRES(argo_qc.PRES_QC>1)=NaN;
@@ -121,21 +123,24 @@ argo_qc.TEMP(argo_qc.TEMP_QC>1)=NaN;
 argo_qc.PSAL(argo_qc.PSAL_QC>1)=NaN;
 
 if isfield(argo_qc,'CHLA'),
-    if nn
-        for kk=1:nn,
-            p = argo_qc.CHLA_QC(:,I(kk)); argo_qc.CHLA_QC(p~=9,I(kk))=4;
-        end
+    for kk=1:nn,
+        p = argo_qc.CHLA_QC(:,I(kk)); argo_qc.CHLA_QC(p~=9,I(kk))=4;
     end
     argo_qc.CHLA(argo_qc.CHLA_QC>1)=NaN;
 end
 
 if isfield(argo_qc,'DOXY'),
-    if nn
-        for kk=1:nn,
-            p = argo_qc.DOXY_QC(:,I(kk)); argo_qc.DOXY_QC(p~=9,I(kk))=4;
-        end
+    for kk=1:nn,
+        p = argo_qc.DOXY_QC(:,I(kk)); argo_qc.DOXY_QC(p~=9,I(kk))=4;
     end
     argo_qc.DOXY(argo_qc.DOXY_QC>1)=NaN;
+end
+
+if isfield(argo_qc,'LIGHT'),
+    for kk=1:nn,
+        p = argo_qc.LIGHT_QC(:,I(kk)); argo_qc.LIGHT_QC(p~=9,I(kk))=4;
+    end
+    argo_qc.LIGHT(argo_qc.LIGHT_QC>1)=NaN;
 end
 
 ARGO_save_qc(name_prof,argo_qc,0);

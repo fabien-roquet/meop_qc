@@ -32,8 +32,10 @@ if ~adjusted,
             a(a==kk)=48+kk;
         end
         data = char(a);
-        ncwrite(name_prof,'CHLA_QC',data);
-        ncwrite(name_prof,'CHLA_ADJUSTED_QC',data);
+        try
+            ncwrite(name_prof,'CHLA_QC',data);
+            ncwrite(name_prof,'CHLA_ADJUSTED_QC',data);
+        end
     end
     
     if isfield(argo_qc,'DOXY')
@@ -42,8 +44,10 @@ if ~adjusted,
             a(a==kk)=48+kk;
         end
         data = char(a);
-        ncwrite(name_prof,'DOXY_QC',data);
-        ncwrite(name_prof,'DOXY_ADJUSTED_QC',data);
+        try
+            ncwrite(name_prof,'DOXY_QC',data);
+            ncwrite(name_prof,'DOXY_ADJUSTED_QC',data);
+        end
     end
     
      if isfield(argo_qc,'LIGHT')
@@ -52,8 +56,10 @@ if ~adjusted,
             a(a==kk)=48+kk;
         end
         data = char(a);
-        ncwrite(name_prof,'LIGHT_QC',data);
-        ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data);
+        try
+            ncwrite(name_prof,'LIGHT_QC',data);
+            ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data);
+        end
     end
     
 else
@@ -85,8 +91,7 @@ else
             a(a==kk)=48+kk;
         end
         data = char(a);
-        
-        ncwrite(name_prof,'CHLA_ADJUSTED_QC',data);
+        try, ncwrite(name_prof,'CHLA_ADJUSTED_QC',data); end
     end
     
     if isfield(argo_qc,'DOXY')
@@ -95,7 +100,7 @@ else
             a(a==kk)=48+kk;
         end
         data = char(a);
-        ncwrite(name_prof,'DOXY_ADJUSTED_QC',data);
+        try, ncwrite(name_prof,'DOXY_ADJUSTED_QC',data); end
     end
     
     if isfield(argo_qc,'LIGHT')
@@ -104,7 +109,7 @@ else
             a(a==kk)=48+kk;
         end
         data = char(a);
-        ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data);
+        try, ncwrite(name_prof,'LIGHT_ADJUSTED_QC',data); end
     end
     
 end

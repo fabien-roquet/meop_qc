@@ -255,6 +255,12 @@ if ~exist(name_file,'file')
 end
 conf.table_filter = readtable(name_file,'ReadRowNames',0,'Delimiter',',');
 
+name_file=[conf.csv_config 'table_split_tags.csv'];
+if ~exist(name_file,'file')
+    disp(['WARNING: the file ' name_file ' was not found!'])
+end
+conf.table_split_tags = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
+
 
 %% load information about updated loc
 conf.crawl.locdir          = [conf.rawdir 'original_crawl_locations/'];
