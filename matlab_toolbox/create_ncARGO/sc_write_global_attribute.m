@@ -29,16 +29,18 @@ ncwriteatt(name_prof,'/','distribution_statement','Follow MEOP data policy stand
 ncwriteatt(name_prof,'/','citation','The marine mammal data were collected and made freely available by the International MEOP Consortium and the national programs that contribute to it (http://www.meop.net).');
 ncwriteatt(name_prof,'/','thermal_lag_adjustment','no');
 
-K=find(strcmp(conf.list_smru_platform_code,smru_name));
+[smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
+K=find(strcmp(conf.list_smru_platform_code,smru_prefix));
 platform = conf.platform_json(K);
 try
     ncwriteatt(name_prof,'/','platform_code',platform.platform_code);
     if length(platform.wmo_platform_code)>0
-        ncwriteatt(name_prof,'/','wmo_platform_code',sprintf('Q99%05d',str2num(platform.wmo_platform_code)));
+        ncwriteatt(name_prof,'/',...
+            'wmo_platform_code',sprintf('Q99%05d',str2num(platform.wmo_platform_code)));
     else
         ncwriteatt(name_prof,'/','wmo_platform_code',' ');
     end
-    ncwriteatt(name_prof,'/','smru_platform_code',platform.smru_platform_code);
+    ncwriteatt(name_prof,'/','smru_platform_code',smru_name);
     ncwriteatt(name_prof,'/','deployment_code',platform.deployment_code);
     ncwriteatt(name_prof,'/','species',platform.species);
     ncwriteatt(name_prof,'/','time_coverage_start',platform.time_coverage_start);
@@ -70,7 +72,8 @@ catch
 end
 
 %% manual update of metadata
-K2=find(ismember(conf.table_meta.smru_platform_code,smru_name));
+[smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
+K2=find(ismember(conf.table_meta.smru_platform_code,smru_prefix));
 if length(K2)==1,
     var = conf.table_meta.Properties.VariableNames;
     for kk=1:length(var)

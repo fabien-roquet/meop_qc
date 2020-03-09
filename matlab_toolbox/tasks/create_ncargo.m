@@ -45,8 +45,7 @@ end
 
 %  write global attributes
 info_deployment=load_info_deployment(conf,EXP,one_smru_name);
-list_tag = info_deployment.list_smru_name;
-for ktag=1:length(list_tag),
+for ktag=1:length(info_deployment.list_smru_name),
     smru_name = info_deployment.list_smru_name{ktag};
     name_prof = sprintf('%s%s_lr0_prof.nc',info_deployment.dir,smru_name);
     sc_write_global_attribute;
@@ -54,6 +53,7 @@ end
 
 
 %  apply filters
+info_deployment=load_info_deployment(conf,EXP,one_smru_name);
 for ktag=1:length(info_deployment.list_smru_name),    
     smru_name = info_deployment.list_smru_name{ktag};
     suffix = '_lr0';
@@ -63,7 +63,6 @@ end
 
 
 %  adjust locations
-info_deployment = load_info_deployment(conf,EXP,one_smru_name);
 sc_adjust_locations;
 
 

@@ -102,10 +102,11 @@ for ii=1:length(list_tag),
     end
     
     smru_name = char(hs(I(1)));
-    K=find(strcmp(list_smru,smru_name));
-    if ~isempty(one_smru_name) & ~strcmp(one_smru_name,smru_name),
+    [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
+    if ~isempty(one_smru_name) & ~strcmp(one_smru_name,smru_prefix),
         continue
     end
+    K=find(strcmp(list_smru,smru_prefix));
     
     if length(K)>0
         
@@ -119,7 +120,8 @@ for ii=1:length(list_tag),
         
         ARGO_create(ficoutind,Nprof,Nlevels,isfluo,isoxy,islight,0);
         %ncwrite(ficoutind,'PLATFORM_NUMBER',platform_number(:,I));
-        ncwrite(ficoutind,'PLATFORM_NUMBER',repmat(sprintf('%08d',str2num(conf.platform_json(K).platform_code)),Nprof,1)');
+        ncwrite(ficoutind,'PLATFORM_NUMBER',...
+            repmat(sprintf('%08d',str2num(conf.platform_json(K).platform_code)),Nprof,1)');
         ncwrite(ficoutind,'PI_NAME',repmat(sprintf('%64s',PI),Nprof,1)');
         ncwrite(ficoutind,'PROJECT_NAME',repmat(sprintf('%64s','MEOP'),Nprof,1)');
         ncwrite(ficoutind,'CYCLE_NUMBER',cycle_number(I));

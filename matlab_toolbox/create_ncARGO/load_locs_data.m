@@ -4,7 +4,8 @@ function locs = load_locs_data(conf,smru_name,ptt,jul)
         conf = init_mirounga;
     end
 
-    locs = load_crawl_data(conf,smru_name,ptt,jul);
+    [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);
+    locs = load_crawl_data(conf,smru_prefix,ptt,jul);
     if isempty(locs), 
         locs = load_cls_data(conf,smru_name,ptt,jul);
         if isempty(locs),
@@ -93,6 +94,8 @@ function locs = load_crawl_data(conf,smru_name,ptt,jul)
 
     locs=[];
 
+    datemin = min(jul);
+    datemax = max(jul);
     I = find(ismember(conf.crawl.ptt,ptt) & ismember(conf.crawl.smru_name,smru_name));
     if isempty(I), 
         return
@@ -108,4 +111,14 @@ function locs = load_crawl_data(conf,smru_name,ptt,jul)
     locs.jul = datenum(data{:,'date'});
     locs.lat = data{:,'lat'};
     locs.lon = data{:,'lon'};
+
+    I=find(locs.jul>datemin-10 & locs.jul<datemax+10);
+    if isempty(I)
+        locs=[];
+    else
+        locs.jul = locs.jul(I);
+        locs.lat = locs.lat(I);
+        locs.lon = locs.lon(I);
+    end
+    
 
