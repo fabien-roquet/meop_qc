@@ -19,10 +19,11 @@ list_tag_fr1 = info_deployment.list_tag_fr1;
 for ll=1:length(list_tag),
     
     name_prof = list_tag(ll).name;
-    smru_name = name_prof(1:end-12);
-    name_prof_hr1 = sprintf('%s%s',info_deployment.dir,name_prof);
-    name_prof_fr1 = strrep(name_prof_hr1,'_hr1_','_fr1_');
-    name_prof_hr2 = strrep(name_prof_hr1,'_hr1_','_hr2_');
+    [smru_prefix,Nsplit,suffix,namedir] = smru_name_from_name_prof(name_prof);
+    smru_name = gen_smru_name(smru_prefix,Nsplit);
+    name_prof_hr1 = gen_name_prof(smru_prefix,Nsplit,'hr1',info_deployment.dir);
+    name_prof_fr1 = gen_name_prof(smru_prefix,Nsplit,'fr1',info_deployment.dir);
+    name_prof_hr2 = gen_name_prof(smru_prefix,Nsplit,'hr2',info_deployment.dir);
     
     if ~ismember(smru_name,conf.hr_smru_name),
         disp(['  ' smru_name ': hr1 --> hr2'])

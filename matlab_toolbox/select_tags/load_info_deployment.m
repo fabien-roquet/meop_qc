@@ -7,6 +7,12 @@ if isempty(conf),
     conf = init_mirounga;
 end
 
+if ~exist('one_smru_name','var') % all tags from EXP deployment
+    one_smru_name = '';
+elseif isempty(EXP),
+    EXP=EXP_from_smru_name(one_smru_name);
+end
+
 if iscell(EXP) && length(EXP)==1,
     EXP = EXP{1};
 end
@@ -20,11 +26,6 @@ if ~ismember(EXP,conf.list_deployment_code)
     disp([EXP ' is not a valid deployment code. Update list_deployment.csv']);
     return
 end
-
-if ~exist('one_smru_name','var') % all tags from EXP deployment
-    one_smru_name = '';
-end
-
 
 info_deployment.EXP      = EXP;
 info_deployment.PI       = conf.list_deployment{EXP,'pi_code'}{1};

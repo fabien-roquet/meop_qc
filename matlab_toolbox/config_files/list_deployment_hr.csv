@@ -1,4 +1,4 @@
-﻿smru_platform_code,instr_id,year,period,continuous,prefix
+smru_platform_code,instr_id,year,period,continuous,prefix
 ct96-02-13,12554,2013,moult,0,NaN
 ct96-03-13,12555,2013,moult,0,NaN
 ct96-09-13,12564,2013,moult,0,NaN
@@ -61,7 +61,6 @@ ct135-184BAT-14,13184,2017,moult,0,NaN
 ct135-186BAT-14,13186,2017,moult,0,NaN
 ct135-190BAT-14,13190,2017,moult,0,NaN
 ft18-C2-13,12552,2014,reproduction,0,NaN
-ct112-034-14,13034,2014,reproduction,1,NaN
 ct139-F932BAT-13,12932,2017,reproduction,0,NaN
 ft23-F676-18,14676,2018,reproduction,1,NaN
 ft23-F781-18,14781,2018,reproduction,1,NaN
@@ -85,7 +84,7 @@ ct107-933-13,12933,2014,reproduction,0,2014001
 ct107-934-13-N1,12934,2014,reproduction,0,2014003
 ct107-953-13-N2,12953,2014,reproduction,0,2014027
 ct107-F946-13-N1,12946,2014,reproduction,0,2014005
-ct107-938-13-N2,12938,2014,reproduction,0,NaN
+ct107-938-13-N2,12938,2014,reproduction,0,2014024
 ct107-951-13-N1,12951,2014,reproduction,0,2014008
 ct107-947-13-N1,12947,2014,reproduction,0,2014009
 ct107-950-13-N1,12950,2014,reproduction,0,2014012

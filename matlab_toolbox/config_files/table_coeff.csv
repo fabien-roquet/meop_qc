@@ -194,9 +194,9 @@ ct114-06-14-N2,0,0,0,0,0,1,no comment
 ct114-07-14,0,0,0,0.17,0,0,no comment
 ct114-08-14,0,0,0,0.06,0,0,no comment
 ct114-09-14-N1,0,0,0,0,0,0,no comment
-ct114-09-14-N2,0,0,0,.2,0,0,no comment
+ct114-09-14-N2,0,0,0,0.2,0,0,no comment
 ct114-10-14,0,0,0,0,0,0,no comment
-ct114-11-14,0,0,0,.02,0,0,no comment
+ct114-11-14,0,0,0,0.02,0,0,no comment
 ct114-12-14,0,0,0,0.1,0,0,no comment
 ct114-13-14,0,0,0,0.09,0,0,no comment
 ct114-14-14,0,0,0,0,0,0,no comment
@@ -464,7 +464,7 @@ ct145-427-BAT-18,0,0,0,0.01,0,0,no comment
 ct145-428-BAT-18,0,0,0,0.12,0,0,no comment
 ct145-675-BAT-18,0,0,0,-0.3,0,0,no comment
 ct145-767-18,0,0,0,0,0,0,no comment
-ct145-933-BAT2-18,0,0,0,0.03,0,0,no comment
+ct145-933-BAT2-18,0,0,0,0.03,1,0,no comment
 ct145-953-BAT2-18,0,0,0,0.03,0,0,no comment
 ct145-F995-18,0,0,0,-0.01,0,0,no comment
 ct146-1-18,0,0,0,-0.05,0,0,no comment
@@ -1744,10 +1744,10 @@ DL01-860-18,0,0,0,0,1,0,no comment
 DL01-861-18,0,0,0,0,1,0,no comment
 DL01-862-18,0,0,0,0,1,0,no comment
 ct145-227-BAT2-12,0,0,0,0,1,0,no comment
-ct145-231-BAT2-14,0,0,0,0,0,0,no comment
+ct145-231-BAT2-14,0,0,0,0,1,0,no comment
 ct145-235-BAT-14,0,0,0,0,0,0,no comment
-ct145-366-BAT2-15,0,0,0,0,0,0,no comment
-ct145-367-BAT2-15,0,0,0,0,0,0,no comment
+ct145-366-BAT2-15,0,0,0,0,1,0,no comment
+ct145-367-BAT2-15,0,0,0,0,1,0,no comment
 ct145-427-BAT-10,0,0,0,0,0,0,no comment
 ct145-F995-BAT-14,0,0,0,0,0,0,no comment
 ct146-2-18,0,0,0,0,0,0,no comment

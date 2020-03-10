@@ -19,7 +19,21 @@ end
 conf.version     = d.version.CTDnew;
 conf.version_old = d.version.CTDold;
 conf.version_SMS = d.version.SMSnew;
-addpath(genpath(conf.matlabdir))
+
+p=genpath(conf.matlabdir);
+Ibeg=[1 strfind(p,':')+1]; Ibeg(end)=[];
+Iend=[strfind(p,':')-1];
+if length(Ibeg),
+    p2=[];
+    for ii=1:length(Ibeg),
+        name=p(Ibeg(ii):Iend(ii));
+        if ~length(strfind(name,'/.AppleDouble'))
+            p2=[p2 ':' name ];
+        end
+    end
+    p2(1)=[]; p2(end+1)=':';
+end
+addpath(p2)
 
 d = jsondecode(fileread('config_processing.json'));
 tasks = fieldnames(d.tasks);
