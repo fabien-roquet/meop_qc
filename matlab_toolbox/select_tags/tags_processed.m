@@ -13,7 +13,7 @@ Itag=[];
 if nargin==1
     
     EXPs = conf.list_deployment(conf.list_deployment.process==1,:);
-    EXPs=sortrows(EXPs,{'country','pi_code','start_date_jul'});
+    EXPs = sortrows(EXPs,{'country','pi_code','start_date_jul'});
     
 elseif nargin==2 && iscell(varargin{1})
     

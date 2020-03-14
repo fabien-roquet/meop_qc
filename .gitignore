@@ -2,4 +2,5 @@
 *.m~
 Icon*
 *.AppleDouble
-.AppleDouble*
+*.AppleDouble*
+
