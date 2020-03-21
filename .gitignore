@@ -4,4 +4,4 @@ Icon*
 *.AppleDouble
 *.AppleDouble*
 */.AppleDouble/*
-.Parent
+*.Parent

@@ -51,7 +51,12 @@ end
 conf.selection_diags      = d.selection_diags;
 
 %%
-conf.rawdir_hr       = [conf.rawdir 'original_hr_datasets/'];
+conf.rawdir          = [conf.datadir 'raw_smru_data_odv/'];
+conf.rawdir_hr       = [conf.datadir 'raw_smru_hr_data/'];
+conf.json            = [conf.datadir 'config_files/'];
+conf.csv_config      = [conf.datadir 'config_files/'];
+conf.crawl.locdir    = [conf.datadir 'crawl_locations/'];
+conf.cls.locdir      = [conf.datadir 'smooth_cls_locations/'];
 
 conf.datadir         = [conf.processdir 'final_dataset_prof/'];
 conf.mapsdir         = [conf.processdir 'maps/'];
@@ -59,8 +64,9 @@ conf.texdir          = [conf.processdir 'doc_latex/'];
 conf.plotdir         = [conf.processdir 'plots/'];
 conf.calibplotdir    = [conf.processdir 'calibration_plots/'];
 
-conf.json            = [conf.matlabdir 'config_files/'];
-conf.csv_config      = [conf.matlabdir 'config_files/'];
+conf.woddir          = [conf.refdir 'WOD_data/WOD_matlab_nc/'];
+conf.coradir         = [conf.refdir 'CORA_data/CORA_ncfiles/'];
+conf.meopdir         = [conf.refdir 'MEOP_last_stable_version/'];
 
 conf.temporary       = [conf.processdir 'temporary/'];
 conf.temporary_tex   = [conf.processdir 'temporary/tex/'];
@@ -277,7 +283,6 @@ conf.table_split_tags = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
 
 %% load information about updated loc
-conf.crawl.locdir          = [conf.rawdir 'original_crawl_locations/'];
 conf.crawl.list    = dir([conf.crawl.locdir,'*_argos_crawl.csv']);
 conf.crawl.ptt     = {};
 conf.crawl.smru_name     = {};
@@ -287,7 +292,6 @@ for kk=1:length(conf.crawl.list)
     conf.crawl.ptt{kk} = c{3};
 end
 
-conf.cls.locdir          = [conf.rawdir 'original_cls_locations/'];
 conf.cls.list    = dir([conf.cls.locdir,'*.smoothing.csv']);
 conf.cls.ptt     = {};
 conf.cls.datemin = {};
