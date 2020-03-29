@@ -39,7 +39,6 @@ info_deployment.dir      = [conf.datadir,EXP,'/'];
 
 info_deployment.process   = conf.list_deployment{EXP,'process'};
 info_deployment.public    = conf.list_deployment{EXP,'public'};
-info_deployment.task_done = conf.list_deployment{EXP,'task_done'};
 
 
 info_deployment.list_tag = dir([info_deployment.dir one_smru_name '*_lr0_prof.nc']);

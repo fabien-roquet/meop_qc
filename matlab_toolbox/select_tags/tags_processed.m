@@ -10,18 +10,23 @@ function EXPs = tags_processed(conf,varargin);
 %
 
 Itag=[];
-if nargin==1
+if nargin==0
+    conf = init_mirounga;
+    EXPs = conf.list_deployment(conf.list_deployment.process==1,:);
+    EXPs = sortrows(EXPs,{'country','pi_code','start_date_jul'});
     
+elseif nargin==1
+    if isempty(conf),
+        conf = init_mirounga;
+    end
     EXPs = conf.list_deployment(conf.list_deployment.process==1,:);
     EXPs = sortrows(EXPs,{'country','pi_code','start_date_jul'});
     
 elseif nargin==2 && iscell(varargin{1})
-    
     list = varargin{1};
     EXPs = conf.list_deployment(list,:);
     
 elseif nargin==2 && isstr(varargin{1})
-    
     mode = varargin{1};
     switch mode
         case 'unprocessed_tags' % tags that have not been processed
@@ -41,17 +46,18 @@ elseif nargin==2 && isstr(varargin{1})
             
         case 'new_tags' % tags that were not present in previous release
             
-            EXPs = conf.list_deployment(strcmp(conf.list_deployment.last_version,''),:);
+            EXPs = conf.list_deployment(conf.list_deployment.process==1 & ...
+                strcmp(conf.list_deployment.last_version,''),:);
 
         otherwise % valid nation
             
-            EXPs = conf.list_deployment(strcmp(conf.list_deployment.country,mode),:);
+            EXPs = conf.list_deployment(conf.list_deployment.process==1 & ...
+                strcmp(conf.list_deployment.country,mode),:);
             
     end
     EXPs=sortrows(EXPs,{'country','pi_code','start_date_jul'});
 
 else
-    
     error('Too many arguments in tag_processed');
     
 end

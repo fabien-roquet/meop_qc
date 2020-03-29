@@ -17,6 +17,11 @@ function locs = load_locs_data(conf,smru_name,ptt,jul)
                 locs.jul = Mqc.JULD;
                 locs.lat = Mqc.LATITUDE;
                 locs.lon = Mqc.LONGITUDE;
+                % remove doublons and sort by chronological order
+                [jul,ij]=unique(locs.jul);
+                locs.jul=jul;
+                locs.lat=locs.lat(ij);
+                locs.lon=locs.lon(ij);
             else
                 locs = [];
                 locs.type='none';
@@ -31,7 +36,6 @@ function locs = load_locs_data(conf,smru_name,ptt,jul)
         locs.type='crawl';        
     end
     
-        
 
 
 function locs = load_cls_data(conf,ptt,jul)

@@ -518,7 +518,8 @@ writetable(table_group ,[conf.processdir 'info_groups.csv']);
 writetable(table_depl  ,[conf.processdir 'info_deployments.csv']);
 writetable(table_tag   ,[conf.processdir 'info_tags.csv']);
 
-
+% plot global latex file
+% sc_build_latex_global;
 
 if do_density_plot,
     

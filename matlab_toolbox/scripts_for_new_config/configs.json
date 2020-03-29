@@ -2,24 +2,35 @@
 "config":"",
 "version":
   {
-  "CTDnew":"MEOP-CTD_2020-01-02",
+  "CTDnew":"MEOP-CTD_2020-04-01",
   "CTDold":"MEOP-CTD_2018-04-10",
   "SMSnew":"MEOP-SMS_2020-01-02",
   "SMSold":"MEOP-SMS_2019-05-17"
   },
 "configs":
   {
-  "froqu_linux":
+  "information":"Run config_id in matlab to determine default name of your machine",
+  "froqu_pc207_linux":
+    {
+    "datadir":"/media/dropbox/MEOP/RAW_MEOP_DATA/",
+    "processdir":"/home/froqu/MEOP_process/",
+    "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
+    "inputdir":"/media/dropbox/SMUG_INPUT/all/",
+    "refdir":"/media/dropbox/MEOP/REF_DATASETS/",
+    "public":"/media/dropbox/PUBLIC/public/",
+    "pdflatex":"pdflatex"
+    }, 
+  "froqu_mxlinux_linux":
     {
     "datadir":"/home/froqu/Dropbox/MEOP/RAW_MEOP_DATA/",
     "processdir":"/home/froqu/Dropbox/MEOP_process/",
     "matlabdir":"/home/froqu/GitHub/meop_qc/matlab_toolbox/",
     "inputdir":"/home/froqu/Dropbox/SMUG_INPUT/all/",
-    "refdir":"/home/froqu/Dropbox/MEOP/RAW_MEOP_DATA/",
+    "refdir":"/home/froqu/Dropbox/MEOP/REF_DATASETS/",
     "public":"/home/froqu/Dropbox/PUBLIC/public/",
     "pdflatex":"pdflatex"
     },
-  "roquet_mac":
+  "roquet_roquet_local_mac":
     {
     "datadir":"/Users/roquet/Dropbox/MEOP/RAW_MEOP_DATA/",
     "processdir":"/Users/roquet/Dropbox/MEOP_process/",

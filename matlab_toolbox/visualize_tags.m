@@ -32,5 +32,5 @@ for kk=1:length(info_deployment.list_smru_name)
     end
 end
 
-name_file=[conf.csv_config 'table_filter.csv'];
+name_file=[conf.processdir 'table_filter.csv'];
 writetable(conf.table_filter,name_file,'WriteRowNames',1,'Delimiter',',');

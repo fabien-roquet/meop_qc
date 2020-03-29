@@ -1,95 +1,9 @@
 function conf = init_mirounga()
 
-
-%% initialization of the mirounga processing system
-d = jsondecode(fileread('configs.json'));
-if isempty(d.config),
-    if ispc, name = getenv('COMPUTERNAME');
-    elseif ismac, name = [getenv('USER') '_mac'];
-    else name = [getenv('USER') '_linux'];
-    end
-    d.config = strtrim(lower(name));
-    d.config = strrep(d.config,'.','_');    
-end
-try
-    conf = getfield(d.configs,d.config);
-catch
-    error([d.config ' is not a supported config. modify configs.json']);
-end
-conf.version     = d.version.CTDnew;
-conf.version_old = d.version.CTDold;
-conf.version_SMS = d.version.SMSnew;
-
-p=genpath(conf.matlabdir);
-Ibeg=[1 strfind(p,':')+1]; Ibeg(end)=[];
-Iend=[strfind(p,':')-1];
-if length(Ibeg),
-    p2=[];
-    for ii=1:length(Ibeg),
-        name=p(Ibeg(ii):Iend(ii));
-        if ~length(strfind(name,'/.AppleDouble'))
-            p2=[p2 ':' name ];
-        end
-    end
-    p2(1)=[]; p2(end+1)=':';
-end
-addpath(p2)
-
-d = jsondecode(fileread('config_processing.json'));
-tasks = fieldnames(d.tasks);
-for kk=1:length(tasks),
-    conf = setfield(conf,tasks{kk},getfield(d.tasks,tasks{kk}));
-end
-conf.selection   = d.selection;
-conf.list_tasks  = d.list_tasks;
-
-d = jsondecode(fileread('config_diags.json'));
-tasks = fieldnames(d.tasks_diags);
-for kk=1:length(tasks),
-    conf = setfield(conf,tasks{kk},getfield(d.tasks_diags,tasks{kk}));
-end
-conf.selection_diags      = d.selection_diags;
-
-%%
-conf.rawdir          = [conf.datadir 'raw_smru_data_odv/'];
-conf.rawdir_hr       = [conf.datadir 'raw_smru_hr_data/'];
-conf.json            = [conf.datadir 'config_files/'];
-conf.csv_config      = [conf.datadir 'config_files/'];
-conf.crawl.locdir    = [conf.datadir 'crawl_locations/'];
-conf.cls.locdir      = [conf.datadir 'smooth_cls_locations/'];
-
-conf.datadir         = [conf.processdir 'final_dataset_prof/'];
-conf.mapsdir         = [conf.processdir 'maps/'];
-conf.texdir          = [conf.processdir 'doc_latex/'];
-conf.plotdir         = [conf.processdir 'plots/'];
-conf.calibplotdir    = [conf.processdir 'calibration_plots/'];
-
-conf.woddir          = [conf.refdir 'WOD_data/WOD_matlab_nc/'];
-conf.coradir         = [conf.refdir 'CORA_data/CORA_ncfiles/'];
-conf.meopdir         = [conf.refdir 'MEOP_last_stable_version/'];
-
-conf.temporary       = [conf.processdir 'temporary/'];
-conf.temporary_tex   = [conf.processdir 'temporary/tex/'];
-conf.temporary_fcell = [conf.processdir 'temporary/fcell/'];
-
-%%
-[s,mess,messid] = mkdir(conf.datadir);
-[s,mess,messid] = mkdir(conf.mapsdir);
-[s,mess,messid] = mkdir([conf.mapsdir 'deployments']);
-[s,mess,messid] = mkdir([conf.mapsdir 'groups']);
-[s,mess,messid] = mkdir([conf.mapsdir 'global']);
-[s,mess,messid] = mkdir(conf.texdir);
-[s,mess,messid] = mkdir(conf.plotdir);
-[s,mess,messid] = mkdir(conf.calibplotdir);
-[s,mess,messid] = mkdir(conf.matlabdir);
-[s,mess,messid] = mkdir(conf.temporary);
-[s,mess,messid] = mkdir(conf.temporary_tex);
-[s,mess,messid] = mkdir(conf.temporary_fcell);
-
+conf = init_config;
 
 %% read list deployment
-
-name_list=[conf.csv_config 'list_deployment.csv'];
+name_list=[conf.processdir 'list_deployment.csv'];
 if ~exist(name_list,'file')
     disp('WARNING: the file list_deployment.csv was not found!')
     disp(['path: ' name_list])
@@ -225,59 +139,55 @@ end
 conf.list_deployment.start_date_jul = juldate;
 
 % update list_deployment.json
-name_list=[conf.csv_config 'list_deployment.csv'];
+name_list=[conf.processdir 'list_deployment.csv'];
 writetable(conf.list_deployment,name_list,'WriteRowNames',1,'Delimiter',',');
 if new_deployments | ismember(conf.list_group,'UNKNOWN'),
     error(['Update information for new deployments in ' name_list]);
 end
 
 %% read list deployment CTD HR
-name_list=[conf.csv_config 'list_deployment_hr.csv'];
+name_list=[conf.processdir 'list_deployment_hr.csv'];
 if ~exist(name_list,'file')
-    disp('WARNING: the file list_deployment_hr.csv was not found!')
-    disp(['path: ' name_list])
-    conf.list_deployment_hr = [];
-else
-    conf.list_deployment_hr = readtable(name_list,'ReadRowNames',1,'Delimiter',',');
+    error(['WARNING: the file ' name_list ' was not found!']);
 end
-conf.list_deployment_hr = readtable([conf.csv_config 'list_deployment_hr.csv'],'ReadRowNames',1,'Delimiter',',');
+conf.list_deployment_hr = readtable(name_list,'ReadRowNames',1,'Delimiter',',');
 conf.hr_smru_name = conf.list_deployment_hr.smru_platform_code;
 conf.hr_continuous = conf.list_deployment_hr.continuous;
 
 %% load config files
-name_file=[conf.csv_config 'table_coeff.csv'];
+name_file=[conf.processdir 'table_coeff.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_coeff = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
-name_file=[conf.csv_config 'table_param.csv'];
+name_file=[conf.processdir 'table_param.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_param = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
-name_file=[conf.csv_config 'table_salinity_offsets.csv'];
+name_file=[conf.processdir 'table_salinity_offsets.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_salinity_offsets = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
-name_file=[conf.csv_config 'table_meta.csv'];
+name_file=[conf.processdir 'table_meta.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_meta = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
-name_file=[conf.csv_config 'table_filter.csv'];
+name_file=[conf.processdir 'table_filter.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_filter = readtable(name_file,'ReadRowNames',0,'Delimiter',',');
 
-name_file=[conf.csv_config 'table_split_tags.csv'];
+name_file=[conf.processdir 'table_split_tags.csv'];
 if ~exist(name_file,'file')
-    disp(['WARNING: the file ' name_file ' was not found!'])
+    error(['WARNING: the file ' name_file ' was not found!'])
 end
 conf.table_split_tags = readtable(name_file,'ReadRowNames',1,'Delimiter',',');
 
