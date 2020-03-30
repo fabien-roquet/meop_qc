@@ -17,7 +17,7 @@ if ~any(strcmp(conf.table_param.Properties.RowNames,EXP)),
     temp_error=0.1; psal_error=0.2; minT=-3; maxT=32; minS= 4; maxS=40; min_Nprof= 30;
     pmax = 1000; pmax_fluo = 200; is_lon_centre_180 = 0;
     conf.table_param(EXP,:)={temp_error psal_error minT maxT minS maxS min_Nprof pmax pmax_fluo is_lon_centre_180};
-    name_file=[conf.csv_config 'table_param.csv'];
+    name_file=[conf.processdir 'table_param.csv'];
     writetable(conf.table_param,name_file,'WriteRowNames',1,'Delimiter',',');    
 end
 
@@ -148,7 +148,7 @@ nT=nansum(double(Mqc.TEMP_QC(:,:)<=1));
 if length(find(nT>5))<min_Nprof & length(find(nT>5))>0,
     Mqc = remove_tag(info_deployment,smru_name);
     conf.table_coeff{smru_name,'remove'} = 1;
-    name_file=[conf.csv_config 'table_coeff.csv'];
+    name_file=[conf.processdir 'table_coeff.csv'];
     writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
 else
     disp(sprintf('  %s: %d profiles and %d Sprofiles removed',smru_name,N1,N2));    

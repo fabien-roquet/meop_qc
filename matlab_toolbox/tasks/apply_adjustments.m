@@ -21,7 +21,7 @@ list_tag = info_deployment.list_smru_name;
 for ktag=1:length(list_tag),
     if ~ismember(conf.table_coeff.Properties.RowNames,list_tag{ktag}),
         conf.table_coeff{list_tag{ktag},:}=[zeros(1,6) NaN];
-        name_file=[conf.csv_config 'table_coeff.csv'];
+        name_file=[conf.processdir 'table_coeff.csv'];
         writetable(conf.table_coeff,name_file,'WriteRowNames',1,'Delimiter',',');
     end
 end

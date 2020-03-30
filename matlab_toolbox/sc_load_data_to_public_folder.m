@@ -97,7 +97,7 @@ for  kNATION=1:length(list_NATION),
                 conf.list_deployment{EXP,'first_version'} = {conf.version};
             end
             conf.list_deployment{EXP,'last_version'} = {conf.version};
-            writetable(conf.list_deployment,[conf.csv_config 'list_deployment.csv'],'WriteRowNames',true);
+            writetable(conf.list_deployment,[conf.processdir 'list_deployment.csv'],'WriteRowNames',true);
 
         end
     end

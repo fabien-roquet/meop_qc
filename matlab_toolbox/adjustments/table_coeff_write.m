@@ -16,7 +16,7 @@ for kk=1:length(new_table_coeff.Properties.RowNames),
     end
 end
 
-name_file=[conf.csv_config 'table_coeff.csv'];
+name_file=[conf.processdir 'table_coeff.csv'];
 if ~exist(name_file,'file')
     error(['WARNING: the file ' name_file ' was not found!'])
 end

@@ -62,7 +62,7 @@ for index=1:length(list_tag)
             name_hr_file = fullfile(lfile(1).folder,lfile(1).name);
             prefix = strrep(lfile(1).name,sprintf('_%d_ctd.txt',num_file),'');
             conf.list_deployment_hr{smru_name,'prefix'} = str2num(prefix);
-            writetable(conf.list_deployment_hr,[conf.csv_config 'list_deployment_hr.csv'],...
+            writetable(conf.list_deployment_hr,[conf.processdir 'list_deployment_hr.csv'],...
                 'WriteRowNames',1,'Delimiter',',');
         else
             disp(sprintf('  %s not found',name_hr_file)); 
