@@ -203,7 +203,9 @@ for  kNATION=1:length(list_NATION),
             year = datestr(min(M.JULD(find(sum(M.Tmask)'))),29);
             if ~isfield(Mattr,'loc_algorithm'), Mattr.loc_algorithm = Mattr.location_class; end
             table_aux = cell2table({M.smru_platform_code,EXP,NATION,ispublic,NprofTS,NprofT...
-                ,year,Mattr.ptt,Mattr.wmo_platform_code,Mattr.reference_doi,Mattr.instr_id,Mattr.platform_code,Mattr.location,Mattr.species,Mattr.loc_algorithm});
+                ,year,Mattr.ptt,Mattr.wmo_platform_code,Mattr.reference_doi,...
+                Mattr.instr_id,Mattr.platform_code,Mattr.location,...
+                Mattr.species,Mattr.loc_algorithm});
             table_aux.Properties.VariableNames = table_tag.Properties.VariableNames;
             table_tag = [ table_tag ; table_aux ];
             

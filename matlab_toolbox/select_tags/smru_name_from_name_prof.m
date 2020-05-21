@@ -5,7 +5,7 @@ function [smru_prefix,Nsplit,suffix,namedir] = smru_name_from_name_prof(name_pro
     end
     
     namedir='';
-    I=find(strfind(name_prof,'/'));
+    I=strfind(name_prof,'/');
     if length(I),
         namedir = name_prof(1:I(end));
     else

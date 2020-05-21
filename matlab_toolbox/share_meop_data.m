@@ -1,112 +1,108 @@
-function share_meop_data(conf,sharedir,EXP_list)
+function [table_depl,table_tag] = share_meop_data(list_EXP,sharedir)
 %% copy final data files in public folder
 
+    init_config;
+    conf = init_mirounga;
+    if isstr(list_EXP) | iscell(list_EXP),
+        list_EXP = tags_processed(list_EXP);
+    end
+    if isempty(list_EXP),
+        return
+    end
+    
     [status,msg,msgID] = rmdir(sharedir, 's');
     [s,mess,messid] = mkdir(sharedir);
     if ~strcmp(sharedir(end),'/'),
         sharedir(end+1)='/';
     end
 
-    [status,message] = copyfile('README_licenseODbl.txt',sharedir,'f');
-    [status,message] = copyfile([conf.processdir 'info_total.csv'],sharedir,'f');
-    [status,message] = copyfile([conf.processdir 'info_tags.csv'],sharedir,'f');
-    [status,message] = copyfile([conf.processdir 'info_deployments.csv'],sharedir,'f');
-    [status,message] = copyfile([conf.processdir 'info_groups.csv'],sharedir,'f');
-    [status,message] = copyfile(sprintf('%sglobal/map_global_public.png',conf.mapsdir),sharedir,'f');
-    [status,message] = copyfile(sprintf('%sglobal/map_SH.png',conf.mapsdir),sharedir,'f');
-    [status,message] = copyfile(sprintf('%sglobal/map_NH.png',conf.mapsdir),sharedir,'f');
+    table_depl_empty  = table({},{},[],[],[],[],...
+        'VariableNames',{'depl','group','ispublic','Ntag','NprofTS','NprofT'});
+    table_tag_empty   = table({},{},{},[],[],[],{},{},{},{},{},{},{},{},{},...
+        'VariableNames',{'tag','depl','group','ispublic','NprofTS','NprofT',...
+        'start_date','PTT','WMO','doi','body','platform_code',...
+        'location','species','location_class'});
 
-    list_NATION=unique(EXP_list.country);
-    for  kNATION=1:length(list_NATION),
+    table_depl = table_depl_empty;
+    table_tag = table_tag_empty;
+    for kEXP = 1:size(list_EXP,1),
     
-        NATION = list_NATION{kNATION};
-        EXPs=tags_processed(conf,NATION);
-        list_EXP = EXPs.deployment_code;
-    
-        if ~any(EXPs.process==1), continue; end
-        if ~any(EXPs.public ==1), continue; end
-    
-        [s,mess,messid] = mkdir([sharedir NATION '/PDF/']);
-        [s,mess,messid] = mkdir([sharedir NATION '/MAPS/']);
-        [s,mess,messid] = mkdir([sharedir NATION '/DATA_ncARGO/']);
-        [s,mess,messid] = mkdir([sharedir NATION '/DATA_csv_interp/']);
-        [s,mess,messid] = mkdir([sharedir NATION '/METADATA/']);
-    
-        data1 = readtable([conf.processdir 'info_tags.csv']);
-        data2 = data1(strcmp(data1.group,NATION),:);
-        data3 = data2(data2.ispublic==1,:);
-        writetable(data3,[sharedir NATION '/info_tags_' NATION '.csv']);
-    
-        data1 = readtable([conf.processdir 'info_deployments.csv']);
-        data2 = data1(strcmp(data1.group,NATION),:);
-        data3 = data2(data2.ispublic==1,:);
-        writetable(data3,[sharedir NATION '/info_deployments_' NATION '.csv']);
-    
-        [status,message] = copyfile('README_licenseODbl.txt',[sharedir NATION],'f');
-        [status,message] = copyfile(sprintf('%sgroups/%s_*.png',conf.mapsdir,NATION),[sharedir NATION],'f');
+        EXP = list_EXP.Properties.RowNames{kEXP};
+        info_deployment=load_info_deployment(conf,EXP);
+        ispublic = logical(info_deployment.public);        
+        NATION = info_deployment.NATION;
+        table_aux = cell2table({EXP,NATION,ispublic,0,0,0});
+        table_aux.Properties.VariableNames = table_depl.Properties.VariableNames;
+        table_depl = [ table_depl ; table_aux ];
 
-        for kEXP = 1:length(list_EXP),
+        [s,mess,messid] = mkdir([sharedir EXP]);
+        try
+            [status,message] = copyfile( ...
+                sprintf('%s%s_hr2_doc_adj.pdf',conf.texdir,EXP),...
+                [sharedir EXP],'f');
+        catch
+            [status,message] = copyfile( ...
+                sprintf('%s%s_lr1_doc_adj.pdf',conf.texdir,EXP),...
+                [sharedir EXP],'f');
+
+        end
+        [status,message] = copyfile( ...
+            sprintf('%sdeployments/%s_map*.png',conf.mapsdir,EXP),...
+            [sharedir EXP],'f');
         
-            EXP = list_EXP{kEXP};
-            info_deployment=load_info_deployment(conf,EXP);
-            ispublic = logical(info_deployment.public);
-            if ispublic
-                [status,message] = copyfile( ...
-                    sprintf('%s%s_lr1_doc_adj.pdf',conf.texdir,EXP),...
-                    [sharedir NATION '/PDF/'],'f');
-                try
-                    [status,message] = copyfile( ...
-                        sprintf('%s%s_hr2_doc_adj.pdf',conf.texdir,EXP),...
-                        [sharedir NATION '/PDF/'],'f');
-                end
-                [status,message] = copyfile( ...
-                    sprintf('%sdeployments/%s_map*.png',conf.mapsdir,EXP),...
-                    [sharedir NATION '/MAPS/'],'f');
+        list_tag = info_deployment.list_tag_hr1;
+        table_tag_aux = table_tag_empty;
+        for jj=1:length(list_tag),
             
-                list_tag = info_deployment.list_tag_lr1;
-                Ntag = length(list_tag);
-                for jj=1:Ntag,
-                
-                    ncfile = sprintf('%s%s',info_deployment.dir,list_tag(jj).name);
-                    smru_name = list_tag(jj).name(1:end-12);
-                    ncfile_final = strrep(list_tag(jj).name, '_lr1', '');
-                    ncfile_hr1 = strrep(ncfile, '_lr1', '_hr1');
-                    ncfile_hr2 = strrep(ncfile, '_lr1', '_hr2');
-                    odvfile  = sprintf('%s%s_ODV.txt',info_deployment.dir,smru_name);
-                    odvfile2 = sprintf('%s%s_ODV.txt.zip',info_deployment.dir,smru_name);
-                    metafile = sprintf('%s%s_METADATA.txt',info_deployment.dir,smru_name);
-                    metafile2 = sprintf('%s%s_METADATA.json',info_deployment.dir,smru_name);
-                
-                    if exist(ncfile_hr2,'file')
-                        [status,message] = copyfile(ncfile_hr2,[sharedir NATION '/DATA_ncARGO/' ncfile_final],'f');
-                    else
-                        [status,message] = copyfile(ncfile,[sharedir NATION '/DATA_ncARGO/' ncfile_final],'f');
-                    end
-                
-                    if exist(odvfile,'file'),
-                        zip(odvfile2,odvfile);
-                        [status,message] = movefile(odvfile2,[sharedir NATION '/DATA_csv_interp/' ],'f');
-                        [status,message] = copyfile(metafile,[sharedir NATION '/METADATA/' ],'f');
-                        [status,message] = copyfile(metafile2,[sharedir NATION '/METADATA/' ],'f');
-                    end
-                
-                end
+            name_prof = [info_deployment.dir list_tag(jj).name];
+            [smru_prefix,Nsplit,suffix,namedir] = smru_name_from_name_prof(name_prof);
+            smru_name = gen_smru_name(smru_prefix,Nsplit);
+            ncfile_hr1 = gen_name_prof(smru_prefix,Nsplit,'hr1',namedir);
+            ncfile_hr2 = gen_name_prof(smru_prefix,Nsplit,'hr2',namedir);
+            ncfile_lr1 = gen_name_prof(smru_prefix,Nsplit,'lr1',namedir);
+
+            ncfile_final = gen_name_prof(smru_prefix,Nsplit,'',[sharedir EXP]);
+            ncfile_raw = gen_name_prof(smru_prefix,Nsplit,'raw',[sharedir EXP]);
+            metafile = sprintf('%s%s_METADATA.txt',info_deployment.dir,smru_name);
+            metafile2 = sprintf('%s%s_METADATA.json',info_deployment.dir,smru_name);
             
+            M=ARGO_load_qc(name_prof,1);
+            Mattr=ncloadatt_struct(name_prof);
+            M.Tmask=double(M.TEMP_QC<2);
+            M.Smask=double(M.PSAL_QC<2);
+            
+            % update tables
+            NprofTS=length(find(sum(M.Tmask.*M.Smask)~=0));
+            NprofT =length(find(sum(M.Tmask)~=0));
+            
+            table_depl{end,4:6}   = table_depl{end,4:6} + [1 NprofTS NprofT];
+            year = datestr(min(M.JULD(find(sum(M.Tmask)'))),29);
+            if ~isfield(Mattr,'loc_algorithm'), Mattr.loc_algorithm = Mattr.location_class; end
+            table_aux = cell2table({M.smru_platform_code,EXP,NATION,ispublic,NprofTS,NprofT...
+                ,year,Mattr.ptt,Mattr.wmo_platform_code,Mattr.reference_doi,...
+                Mattr.instr_id,Mattr.platform_code,Mattr.location,...
+                Mattr.species,Mattr.loc_algorithm});
+            table_aux.Properties.VariableNames = table_tag.Properties.VariableNames;
+            table_tag_aux = [ table_tag_aux ; table_aux ];
+
+        
+            if exist(ncfile_hr2,'file')
+                [status,message] = copyfile(ncfile_hr2,ncfile_final,'f');
+            else
+                [status,message] = copyfile(ncfile_hr1,ncfile_final,'f');
             end
-        end
+            [status,message] = copyfile(ncfile_lr1,ncfile_raw,'f');
+            [status,message] = copyfile(metafile2,[sharedir EXP],'f');    
 
+        end
+        writetable(table_tag_aux   ,[sharedir EXP '/info_tags.csv']);
+        table_tag = [ table_tag ; table_tag_aux ];
     end
 
-    % zip files
-    disp('Zip folders');    
-    for kk = 1:length(list_NATION)
-        NATION = list_NATION{kk};
-        if isfolder(sprintf('%s%s',sharedir,NATION)),
-            zip(sprintf('%s../%s_%s.zip',sharedir,conf.version,NATION),...
-                sprintf('%s%s',sharedir,NATION));
-        end
-    end
-    zip(sprintf('%s../%s.zip',sharedir,conf.version),sprintf('%s%s',sharedir,conf.version));
+    writetable(table_depl  ,[sharedir 'info_deployments.csv']);
+    writetable(table_tag   ,[sharedir 'info_tags.csv']);
+    [status,message] = copyfile('README_licenseODbl.txt',sharedir,'f');
+
 
 
 

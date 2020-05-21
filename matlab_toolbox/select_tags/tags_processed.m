@@ -1,6 +1,6 @@
-function EXPs = tags_processed(conf,varargin);
+function EXPs = tags_processed(varargin);
 %% choose list tag to be processed
-% [Itag]=tags_processed(conf,varargin);
+% [Itag]=tags_processed(varargin);
 % Arguments:
 %   1) conf: required struct variable obtained when initializing sc_mirounga
 %   2) if cell: list of deployments that need to be processed
@@ -8,6 +8,15 @@ function EXPs = tags_processed(conf,varargin);
 % Output:
 %   1) EXPs: list of deployments that must be processed
 %
+% tag_processed(): list info for all processed tags
+% tag_processed(one_smru_name): info on one_smru_name
+% tag_processed(list_smru_name): info on tags in list_smru_name (cell string array)
+% tag_processed(conf,list_smru_name): info on tags in list_smru_name
+% tag_processed(conf,'unprocessed_tags'): list info on unprocessed_tags
+% tag_processed(conf,'new_tags'): list info on unprocessed_tags
+% tag_processed(conf,'NATION',NATION): list info on tags from NATION
+%
+% conf is returned by function init_mirounga. Autoimatically retrieved if conf=[].
 
 Itag=[];
 if nargin==0
@@ -16,18 +25,23 @@ if nargin==0
     EXPs = sortrows(EXPs,{'country','pi_code','start_date_jul'});
     
 elseif nargin==1
-    if isempty(conf),
-        conf = init_mirounga;
+    smru_name = varargin{1};
+    conf = init_mirounga;
+    if isstr(smru_name),
+        smru_name = {smru_name};
     end
-    EXPs = conf.list_deployment(conf.list_deployment.process==1,:);
-    EXPs = sortrows(EXPs,{'country','pi_code','start_date_jul'});
+    EXPs = conf.list_deployment(smru_name,:);
     
-elseif nargin==2 && iscell(varargin{1})
-    list = varargin{1};
+elseif nargin==2 && iscell(varargin{2})
+    conf = varargin{1};
+    if isempty(conf), conf=init_mirounga; end
+    list = varargin{2};
     EXPs = conf.list_deployment(list,:);
     
-elseif nargin==2 && isstr(varargin{1})
-    mode = varargin{1};
+elseif nargin==2 && isstr(varargin{2})
+    conf = varargin{1};
+    if isempty(conf), conf=init_mirounga; end
+    mode = varargin{2};
     switch mode
         case 'unprocessed_tags' % tags that have not been processed
             
@@ -49,14 +63,20 @@ elseif nargin==2 && isstr(varargin{1})
             EXPs = conf.list_deployment(conf.list_deployment.process==1 & ...
                 strcmp(conf.list_deployment.last_version,''),:);
 
-        otherwise % valid nation
+        otherwise % invalid mode
             
-            EXPs = conf.list_deployment(conf.list_deployment.process==1 & ...
-                strcmp(conf.list_deployment.country,mode),:);
+            error('Invalid selection mode in tag_processed');
             
     end
     EXPs=sortrows(EXPs,{'country','pi_code','start_date_jul'});
 
+elseif nargin==3 && isstr(varargin{2}) && strcmp(varargin{2},'NATION')
+    conf = varargin{1};
+    if isempty(conf), conf=init_mirounga; end
+    NATION = varargin{3};
+    EXPs = conf.list_deployment(conf.list_deployment.process==1 & ...
+        strcmp(conf.list_deployment.country,NATION),:);
+    
 else
     error('Too many arguments in tag_processed');
     
