@@ -58,11 +58,6 @@ test_ctd_table.END_DATE=datetime(test_ctd_table.END_DATE,'Format','uuuu-MM-dd HH
 %END_DATE automatically read into datetime column
 test_ctd_table=readtable(strcat(output_filename,'.dat'),'Delimiter','tab','Encoding','UTF-8');
 
-%Option 3: read in the tab-separated values in the *.dat textfile
-%END_DATE automatically read into datetime column
-test_ctd_table=readtable('Recent_CTD_Casts_20191004173731.dat','Delimiter','tab','Encoding','UTF-8');
-
-
 %test making ragged array style columns from those holding multiple values 
 %within CSV string  
 colnames_to_split = {'TEMP_DBAR','TEMP_VALS','SAL_DBAR','SAL_VALS','QC_TEMP','QC_SAL'};
@@ -74,7 +69,7 @@ end
 
 %try to plot out the first few temperature profiles
 %for cast_row_ind = 1:height(test_ctd_table)
-for cast_row_ind = 1:200
+for cast_row_ind = 1:4
    plot( cell2mat(test_ctd_table{cast_row_ind,'TEMP_VALS_DBLS'}),cell2mat(test_ctd_table{cast_row_ind,'TEMP_DBAR_DBLS'}));
    set(gca, 'YDir','reverse');
    titlestring=strcat( ...
