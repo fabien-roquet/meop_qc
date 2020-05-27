@@ -99,6 +99,10 @@ for ii=1:length(list_tag),
     if ~fixed_levels,
         Nlevels=max([sum(any(~isnan(Temp(:,I)),2)) sum(any(~isnan(Sali(:,I)),2))]);
     end
+    if ~Nlevels,
+        disp(['No valid TS data'])
+        continue,
+    end
     
     smru_name = char(hs(I(1)));
     [smru_prefix,Nsplit] = Nsplit_from_smru_name(smru_name);

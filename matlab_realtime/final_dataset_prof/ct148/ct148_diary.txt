@@ -1,0 +1,62 @@
+Process smru_name=ct148-935-18
+	1 tags
+	11 profiles
+  ct148-935-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-936-18
+	1 tags
+	20 profiles
+  ct148-936-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-962-18
+	1 tags
+	10 profiles
+  ct148-962-18: 0 profiles and 1 Sprofiles removed
+Process smru_name=ct148-963-18
+	1 tags
+	3 profiles
+  ct148-963-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-968-18
+N>Nlevels 16
+	1 tags
+	2 profiles
+  ct148-968-18: 0 profiles and 1 Sprofiles removed
+Process smru_name=ct148-935-18
+	1 tags
+	11 profiles
+  ct148-935-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-936-18
+	1 tags
+	20 profiles
+  ct148-936-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-962-18
+	1 tags
+	10 profiles
+  ct148-962-18: 0 profiles and 1 Sprofiles removed
+Process smru_name=ct148-963-18
+	1 tags
+	3 profiles
+  ct148-963-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-968-18
+N>Nlevels 16
+	1 tags
+	2 profiles
+  ct148-968-18: 0 profiles and 1 Sprofiles removed
+Process smru_name=ct148-935-18
+	1 tags
+	11 profiles
+  ct148-935-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-936-18
+	1 tags
+	20 profiles
+  ct148-936-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-962-18
+	1 tags
+	10 profiles
+  ct148-962-18: 0 profiles and 1 Sprofiles removed
+Process smru_name=ct148-963-18
+	1 tags
+	3 profiles
+  ct148-963-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct148-968-18
+	1 tags
+	2 profiles
+  ct148-968-18: 0 profiles and 0 Sprofiles removed

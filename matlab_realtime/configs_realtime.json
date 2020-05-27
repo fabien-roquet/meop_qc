@@ -1,0 +1,22 @@
+{
+"config":"",
+"version":
+  {
+  "CTDnew":"SMRU-NRT"
+  },
+"configs":
+  {
+  "information":"Run config_id in matlab to determine default name of your machine",
+  "roquet_edu220213_eduroam_gu_se_linux":
+    {
+    "processdir":"/Users/roquet/GitHub/meop_qc/matlab_realtime/",
+    "matlabdir":"/Users/roquet/GitHub/meop_qc/matlab_toolbox/"
+    }, 
+  "froqu_pc207_linux":
+    {
+    }, 
+  "froqu_mxlinux_linux":
+    {
+    }
+  }
+}

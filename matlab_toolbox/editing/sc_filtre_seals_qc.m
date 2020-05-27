@@ -24,7 +24,6 @@ end
 % max/min paramters
 minT=conf.table_param{EXP,'minT'};
 maxT=conf.table_param{EXP,'maxT'};
-maxT=conf.table_param{EXP,'maxT'};
 minS=conf.table_param{EXP,'minS'};
 maxS=conf.table_param{EXP,'maxS'};
 min_Nprof=conf.table_param{EXP,'min_Nprof'};

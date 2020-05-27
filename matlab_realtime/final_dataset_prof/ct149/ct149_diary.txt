@@ -1,0 +1,12 @@
+Process smru_name=ct149-926-18
+	1 tags
+	17 profiles
+  ct149-926-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct149-926-18
+	1 tags
+	17 profiles
+  ct149-926-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct149-926-18
+	1 tags
+	17 profiles
+  ct149-926-18: 0 profiles and 0 Sprofiles removed

@@ -1,0 +1,118 @@
+Process smru_name=ct144-278BAT-14
+	1 tags
+	6 profiles
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('internal.matlab.imagesci.nc/openToRead', '/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/+internal/+matlab/+imagesci/nc.m', 1270)" style="font-weight:bold">internal.matlab.imagesci.nc/openToRead</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/+internal/+matlab/+imagesci/nc.m',1270,0)">line 1270</a>)
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('internal.matlab.imagesci.nc', '/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/+internal/+matlab/+imagesci/nc.m', 121)" style="font-weight:bold">internal.matlab.imagesci.nc</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/+internal/+matlab/+imagesci/nc.m',121,0)">line 121</a>)
+                    this.openToRead();
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('ncreadatt', '/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/ncreadatt.m', 36)" style="font-weight:bold">ncreadatt</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2019a.app/toolbox/matlab/imagesci/ncreadatt.m',36,0)">line 36</a>)
+ncObj    = internal.matlab.imagesci.nc(ncFile);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('ncloadatt_struct', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/miscellaneous/ncloadatt_struct.m', 24)" style="font-weight:bold">ncloadatt_struct</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/miscellaneous/ncloadatt_struct.m',24,0)">line 24</a>)
+        aa = ncreadatt(fileIn,'/',varargin{ii});
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('ARGO_load_qc', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/ARGO_load_qc.m', 264)" style="font-weight:bold">ARGO_load_qc</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/ARGO_load_qc.m',264,0)">line 264</a>)
+    data_att=ncloadatt_struct(fileIn);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('remove_profiles', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/editing/remove_profiles.m', 32)" style="font-weight:bold">remove_profiles</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/editing/remove_profiles.m',32,0)">line 32</a>)
+argo_qc=ARGO_load_qc(name_prof,0);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_filtre_seals_qc', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/editing/sc_filtre_seals_qc.m', 38)" style="font-weight:bold">sc_filtre_seals_qc</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/editing/sc_filtre_seals_qc.m',38,0)">line 38</a>)
+[Mqc,nn2]=remove_profiles(info_deployment,smru_name,'Tmin',minT,suffix);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('create_ncargo_realtime', '/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m', 52)" style="font-weight:bold">create_ncargo_realtime</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m',52,0)">line 52</a>)
+    sc_filtre_seals_qc;
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_oracle_ctd_process', '/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m', 40)" style="font-weight:bold">sc_oracle_ctd_process</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m',40,0)">line 40</a>)
+create_ncargo_realtime(conf,EXP,one_smru_name,table);
+} 
+Process smru_name=ct144-278BAT-14
+	1 tags
+	6 profiles
+  ct144-278BAT-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-186BAT2-14
+	1 tags
+	16 profiles
+  ct144-186BAT2-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-278BAT-14
+	1 tags
+	6 profiles
+  ct144-278BAT-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-800-18
+	1 tags
+	1 profiles
+  ct144-800-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-801-18
+	1 tags
+	6 profiles
+  ct144-801-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-939BAT2-14
+	1 tags
+	13 profiles
+  ct144-939BAT2-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-186BAT2-14
+	1 tags
+	16 profiles
+  ct144-186BAT2-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-278BAT-14
+	1 tags
+	6 profiles
+  ct144-278BAT-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-800-18
+	1 tags
+	1 profiles
+  ct144-800-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-801-18
+	1 tags
+	6 profiles
+  ct144-801-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-939BAT2-14
+	1 tags
+	13 profiles
+  ct144-939BAT2-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-084BAT2-14
+	1 tags
+	1 profiles
+  ct144-084BAT2-14: 0 profiles and 2 Sprofiles removed
+Process smru_name=ct144-186BAT2-14
+	1 tags
+	16 profiles
+  ct144-186BAT2-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-278BAT-14
+	1 tags
+	6 profiles
+  ct144-278BAT-14: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-800-18
+	1 tags
+	1 profiles
+  ct144-800-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-801-18
+	1 tags
+	6 profiles
+  ct144-801-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct144-939BAT2-14
+	1 tags
+	13 profiles
+  ct144-939BAT2-14: 0 profiles and 0 Sprofiles removed

@@ -1,0 +1,48 @@
+Process smru_name=ct150-360BAT-16
+	1 tags
+	3 profiles
+  ct150-360BAT-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-416BAT-16
+	1 tags
+	1 profiles
+  ct150-416BAT-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-971-BULL-18
+	1 tags
+	21 profiles
+  ct150-971-BULL-18: 1 profiles and 2 Sprofiles removed
+Process smru_name=ct150-976-VERT-18
+N>Nlevels 16
+N>Nlevels 16
+N>Nlevels 16
+N>Nlevels 16
+	1 tags
+	8 profiles
+  ct150-976-VERT-18: 0 profiles and 4 Sprofiles removed
+Process smru_name=ct150-977-VERT-18
+	1 tags
+	19 profiles
+  ct150-977-VERT-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-360BAT-16
+	1 tags
+	3 profiles
+  ct150-360BAT-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-416BAT-16
+	1 tags
+	1 profiles
+  ct150-416BAT-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-971-BULL-18
+	1 tags
+	21 profiles
+  ct150-971-BULL-18: 1 profiles and 2 Sprofiles removed
+Process smru_name=ct150-976-VERT-18
+N>Nlevels 16
+N>Nlevels 16
+N>Nlevels 16
+N>Nlevels 16
+	1 tags
+	8 profiles
+  ct150-976-VERT-18: 0 profiles and 4 Sprofiles removed
+Process smru_name=ct150-977-VERT-18
+	1 tags
+	19 profiles
+  ct150-977-VERT-18: 0 profiles and 0 Sprofiles removed
