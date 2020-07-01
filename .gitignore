@@ -5,3 +5,5 @@ Icon*
 *.AppleDouble*
 */.AppleDouble/*
 *.Parent
+*/.ipynb_*
+*.ipynb_*
