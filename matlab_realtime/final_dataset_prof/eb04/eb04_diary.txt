@@ -1,0 +1,64 @@
+Process smru_name=eb04-180-16
+No valid TS data
+	1 tags
+	17 profiles
+Process smru_name=eb04-182-16
+No valid TS data
+	1 tags
+	8 profiles
+Process smru_name=eb04-186-16
+No valid TS data
+	1 tags
+	20 profiles
+Process smru_name=eb04-324-16
+	1 tags
+	6 profiles
+  eb04-324-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=eb04-353-16
+	1 tags
+	2 profiles
+  eb04-353-16: 0 profiles and 0 Sprofiles removed
+Process smru_name=eb04-644-18
+Index in position 1 exceeds array bounds (must not exceed 17).
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('convert_fcell2ARGO', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/convert_fcell2ARGO.m', 137)" style="font-weight:bold">convert_fcell2ARGO</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/convert_fcell2ARGO.m',137,0)">line 137</a>)
+        ncwrite(ficoutind,'PRES', Pres(1:Nlevels,I));
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_load_table2prof', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m', 115)" style="font-weight:bold">sc_load_table2prof</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m',115,0)">line 115</a>)
+    convert_fcell2ARGO(conf,EXP,name_fcell,'lr0_prof.nc',[],one_smru_name);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('create_ncargo_realtime', '/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m', 34)" style="font-weight:bold">create_ncargo_realtime</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m',34,0)">line 34</a>)
+sc_load_table2prof;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_oracle_ctd_process', '/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m', 42)" style="font-weight:bold">sc_oracle_ctd_process</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m',42,0)">line 42</a>)
+    create_ncargo_realtime(conf,EXP,one_smru_name,table);
+
+data = data(~isnan(data.LAT.*data.LON.*data),:);
+{Undefined operator '.*' for input arguments of type 'table'.
+} 
+data = data(~isnan(data.LAT.*data.LON),:);
+Process smru_name=eb04-180-16
+N>Nlevels 18
+N>Nlevels 18
+Index in position 1 exceeds array bounds (must not exceed 17).
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('convert_fcell2ARGO', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/convert_fcell2ARGO.m', 141)" style="font-weight:bold">convert_fcell2ARGO</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/convert_fcell2ARGO.m',141,0)">line 141</a>)
+        ncwrite(ficoutind,'PSAL', Sali(1:Nlevels,I));
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_load_table2prof', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m', 115)" style="font-weight:bold">sc_load_table2prof</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m',115,0)">line 115</a>)
+    convert_fcell2ARGO(conf,EXP,name_fcell,'lr0_prof.nc',[],one_smru_name);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('create_ncargo_realtime', '/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m', 34)" style="font-weight:bold">create_ncargo_realtime</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m',34,0)">line 34</a>)
+sc_load_table2prof;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_oracle_ctd_process', '/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m', 43)" style="font-weight:bold">sc_oracle_ctd_process</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m',43,0)">line 43</a>)
+    create_ncargo_realtime(conf,EXP,one_smru_name,table);
+
+data = sortrows(data,'GREF','ascend');
+data = sortrows(data,'smru_name','ascend');
+ktag
+
+ktag =
+
+    23
+

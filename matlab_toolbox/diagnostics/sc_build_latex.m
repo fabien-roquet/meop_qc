@@ -3,14 +3,18 @@
 plotdir = [conf.plotdir,EXP,'/'];
 
 list_plot=dir(sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode));
-if length(list_plot)==0,
+if length(list_plot)==0
     
     disp(['no plots ' sprintf('%s*%s_diags_TS_%s.png',plotdir,suffix,mode) ]);
+    
+elseif ~isfield(conf,'pdflatex'),
+    
+    disp('no latex compiler')
     
 else
     
     namefile=strrep(EXP,'-','_');
-    nfic=sprintf('%stex/%s%s_doc_%s.tex',conf.temporary,namefile,suffix,mode);
+    nfic=sprintf('%s%s%s_doc_%s.tex',conf.temporary,namefile,suffix,mode);
     fid=fopen(nfic,'w');
     fprintf(fid,...
         ['\\documentclass[twocolumn]{article}\n' ...

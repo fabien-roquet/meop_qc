@@ -1,8 +1,8 @@
 %% sc_load_odv_fcell_argo
 
-EXP=table.GREF{1};
-PI='unknown';
-NATION='unknown';
+EXP=info_deployment.EXP;
+PI=info_deployment.PI;
+NATION=info_deployment.NATION;
 
 % read header
 clear F O C L;
@@ -51,15 +51,28 @@ for kprof = 1: N,
     str = table.SAL_VALS{kprof}; str = strrep(str,',',' ');
     Ss = sscanf(str,'%f');
 
-    PTi{kprof}=[Pt Tt];
-    PSi{kprof}=[Ps Ss];
+    if table.N_TEMP(kprof)>0,
+        PTi{kprof}=[Pt Tt];
+    else
+        PTi{kprof}=zeros(8,2)*NaN;
+    end
+    
+    if table.N_SAL(kprof)>0,
+        PSi{kprof}=[Ps Ss];
+    else
+        PSi{kprof}=zeros(8,2)*NaN;
+    end
+    
     PFi{kprof}=PTi{kprof}*NaN;
     POi{kprof}=PTi{kprof}*NaN;
     PLi{kprof}=PTi{kprof}*NaN;
-    P = unique([Pt;Ps]);
-    hi(ii,7) = max(P);
-    hi(ii,8) = length(P);  
-
+    
+    if ~isempty(Pt) || ~isempty(Ps),
+        P = unique([Pt;Ps]);
+        hi(kprof,7) = max(P);
+        hi(kprof,8) = length(P);  
+    end
+    
 end
 
 
@@ -90,7 +103,7 @@ PLi=PLi(I);
 hs=hs(I);
 
 %save fcell
-name_fcell=['tmp_fcell.mat'];
+name_fcell=[conf.temporary_fcell info_deployment.EXP '_lr0_fcell.mat'];
 save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','PLi','EXP','PI','NATION','isoxy','isfluo','islight');
 
 %% save in Argo netcdf format

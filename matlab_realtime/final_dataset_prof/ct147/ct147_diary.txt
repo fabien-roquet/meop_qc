@@ -1,0 +1,24 @@
+Process smru_name=ct147-863-18
+	1 tags
+	24 profiles
+  ct147-863-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct147-894-18
+	1 tags
+	14 profiles
+  ct147-894-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct147-863-18
+	1 tags
+	24 profiles
+  ct147-863-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct147-894-18
+	1 tags
+	14 profiles
+  ct147-894-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct147-863-18
+	1 tags
+	24 profiles
+  ct147-863-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct147-894-18
+	1 tags
+	14 profiles
+  ct147-894-18: 0 profiles and 0 Sprofiles removed
