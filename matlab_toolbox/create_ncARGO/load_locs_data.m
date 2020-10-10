@@ -95,7 +95,7 @@ function locs = load_cls_data(conf,ptt,jul)
 
 
 function locs = load_crawl_data(conf,smru_name,ptt,jul)
-
+    warning('off','MATLAB:table:ModifiedAndSavedVarnames')
     locs=[];
 
     datemin = min(jul);

@@ -46,6 +46,7 @@ if length(Ibeg),
     p2(1)=[]; p2(end+1)=':';
 end
 addpath(p2)
+rmpath([conf.matlabdir 'scripts_for_new_config'])
 
 conf.rawdir          = [conf.datadir 'raw_smru_data_odv/'];
 conf.rawdir_hr       = [conf.datadir 'raw_smru_hr_data/'];
