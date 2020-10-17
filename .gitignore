@@ -7,3 +7,4 @@ Icon*
 *.Parent
 */.ipynb_*
 *.ipynb_*
+*/__pycache__
