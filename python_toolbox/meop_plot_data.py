@@ -102,6 +102,14 @@ def plot_data_tags(ds,namefig=None):
               linewidth=1, color='gray', alpha=0.5)
     gl.top_labels = False
     gl.right_labels = False
+    extent = list(ax['xy'].get_extent())
+    if extent[1]-extent[0]<2:
+        extent[0] -= 1.
+        extent[1] += 1.
+    if extent[3]-extent[2]<2:
+        extent[2] -= 1.
+        extent[3] += 1.
+    ax['xy'].set_extent(extent, crs=ccrs.PlateCarree())
     ax['xy'].stock_img()
     ax['xy'].coastlines()
 
