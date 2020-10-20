@@ -55,7 +55,7 @@ def central_longitude(ds):
         
 
 #-----------------------------------  plot diags   --------------------------------------------#
-def plot_data_tags(ds,namefig=None):
+def plot_data_tags(ds,var_suffix='_ADJUSTED',namefig=None):
 
     from cycler import cycler
     cmap = plt.get_cmap('viridis',ds.dims['N_PROF'])
@@ -69,25 +69,41 @@ def plot_data_tags(ds,namefig=None):
     ax['S'] = fig.add_subplot(gs[1, 1])
     ax['D'] = fig.add_subplot(gs[1, 2])
     ax['TS'] = fig.add_subplot(gs[0, 2:])
-    ax['xy'] = fig.add_subplot(gs[0, :2],projection=ccrs.PlateCarree(central_longitude=central_longitude(ds)))
+    ax['xy'] = fig.add_subplot(gs[0, :2], \
+                projection=ccrs.PlateCarree(central_longitude=central_longitude(ds)))
     for key in ax:
         ax[key].set_prop_cycle(custom_cycler)
 
+    # add pressure
+    if var_suffix == '_INTERP':
+        name_coord_levels = "N_INTERP"
+        ds = ds.assign_coords(pressure=(name_coord_levels, ds.PRES_INTERP[0,:]))
+    else:
+        # '_ADJUSTED' if fr1
+        name_coord_levels = "N_LEVELS"
+        ds = ds.assign_coords(pressure=(name_coord_levels, ds.PRES[0,:]))
+    TEMP = ds['TEMP'+var_suffix]
+    PSAL = ds['PSAL'+var_suffix]
+
     # T profiles
-    ds.TEMP_ADJUSTED.plot.line(ax = ax['T'], y='pressure',yincrease=False,hue='N_PROF',add_legend=False,linewidth=.6)
+    TEMP.plot.line(ax = ax['T'], y='pressure', \
+                   yincrease=False, hue='N_PROF', add_legend=False, linewidth=.6)
     ax['T'].set_title(f"TEMP: {np.sum((ds.N_TEMP)>0).data} T-profiles")
 
     # S profiles
-    ds.PSAL_ADJUSTED.plot.line(ax = ax['S'], y='pressure',yincrease=False,hue='N_PROF',add_legend=False,linewidth=.6)
+    PSAL.plot.line(ax = ax['S'], y='pressure', \
+                   yincrease=False, hue='N_PROF', add_legend=False, linewidth=.6)
     ax['S'].set_title(f"PSAL: {np.sum((ds.N_PSAL)>0).data} S-profiles")
 
     # sig0 profiles
-    ds.SIG0_ADJUSTED.plot.line(ax = ax['D'], y='pressure',yincrease=False,hue='N_PROF',add_legend=False,linewidth=.6)
+    ds['SIG0'] = (('N_PROF',name_coord_levels), gsw.sigma0(PSAL,TEMP))
+    ds.SIG0.plot.line(ax = ax['D'], y='pressure', \
+                      yincrease=False, hue='N_PROF', add_legend=False, linewidth=.6)
     ax['D'].set_title(f"SIG0: {np.sum((ds.N_PSAL*ds.N_TEMP)>0).data} TS-profiles")
 
     # TS-diagram
     for pp in ds.N_PROF:
-        ax['TS'].plot(ds.PSAL_ADJUSTED.sel(N_PROF=pp),ds.TEMP_ADJUSTED.sel(N_PROF=pp),linewidth=.6)
+        ax['TS'].plot(PSAL.sel(N_PROF=pp),TEMP.sel(N_PROF=pp),linewidth=.6)
     x0,x1 = ax['TS'].get_xlim()
     y0,y1 = ax['TS'].get_ylim()
     X,Y = np.meshgrid(np.linspace(x0,x1),np.linspace(y0,y1))

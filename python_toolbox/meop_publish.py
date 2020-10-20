@@ -50,14 +50,12 @@ def create_ncfile_all(smru_name,folder_out):
 
 
 # publish meop-ctd data in 
-def create_tag_plots(fname,folder_out,prefix_name):
+def create_tag_plots(fname,folder_out,prefix_name,var_suffix):
 
     with meop.read_ncfile(fname) as ds:
-        ds = ds.assign_coords(pressure=("N_LEVELS", ds.PRES[0,:]))
-        ds['SIG0_ADJUSTED'] = (('N_PROF','N_LEVELS'),gsw.sigma0(ds.PSAL_ADJUSTED,ds.TEMP_ADJUSTED))
         namefig = folder_out / (prefix_name+'_data_description.png')
         if not namefig.exists():
-            meop_plot_data.plot_data_tags(ds,namefig=namefig)
+            meop_plot_data.plot_data_tags(ds,namefig=namefig,var_suffix=var_suffix)
             plt.close()
 
     return
@@ -106,11 +104,11 @@ def publish_meop_ctd(folder_public, publish=True, genplots=True):
                 # figure based on fr1 if possible. Otherwise based on adjusted profiles
                 fname = folder_data / meop.fname_prof(tag,qf='fr1').name
                 if fname.is_file():
-                    create_tag_plots(fname,folder_plots,tag)
+                    create_tag_plots(fname,folder_plots,tag,'_ADJUSTED')
                 else:
                     fname = folder_data / meop.fname_prof(tag,qf='all').name
                     if fname.is_file():
-                        create_tag_plots(fname,folder_plots,tag)
+                        create_tag_plots(fname,folder_plots,tag,'_INTERP')
         
     return
 

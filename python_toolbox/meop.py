@@ -296,9 +296,9 @@ def copy_netcdf_variable(nc_in,var_name_in,var_dims_in,nc_out,var_name_out,var_d
         # copy variable
         if var_name_out not in dst.variables:
             var = dst.createVariable(var_name_out, src.variables[var_name_in].datatype, var_dims_out)
-        dst[var_name_out][:] = src[var_name_in][:]
         # copy variable attributes all at once via dictionary
         dst[var_name_out].setncatts(src[var_name_in].__dict__)
+        dst[var_name_out][:] = src[var_name_in][:]
 
     return 1
 
