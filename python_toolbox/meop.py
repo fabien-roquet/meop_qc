@@ -7,12 +7,15 @@ import csv
 import gsw
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
+from importlib import reload
+import netCDF4 as nc
 
 processdir = Path.home() / 'MEOP_process'
 
 # list functions
 
 #  EXP_from_SMRU_CODE(smru_platform_code)
+#  list_tag_EXP(EXP,qf='lr0')
 #  fname_prof(smru_name,depl='',qf='hr1')
 #  fname_plot_diags_matlab(smru_name,depl='',qf='hr1')
 #  N_PARAM(ds,PARAM)
@@ -26,6 +29,9 @@ processdir = Path.home() / 'MEOP_process'
 #  filter_profiles_with_Tdata(list_profiles, list_tags, list_deployments)
 #  filter_country(country, list_profiles, list_tags, list_deployments)
 
+#  copy_netcdf_variable(nc_in,var_name_in,var_dims_in,nc_out,var_name_out,var_dims_out)
+#  read_ncfile(ncfile_name)
+
 #-----------------------------------   utils     --------------------------------------------#
 def EXP_from_SMRU_CODE(smru_platform_code):
     return smru_platform_code.split("-")[0]
@@ -35,6 +41,12 @@ def fname_prof(smru_name,depl='',qf='hr1'):
     if not depl:
         depl = EXP_from_SMRU_CODE(smru_name)
     return Path(processdir,'final_dataset_prof',depl,smru_name+'_'+qf+'_prof.nc')
+
+# return ncARGO filename
+def list_tag_EXP(EXP,qf='lr0'):
+    dirEXP = Path(processdir,'final_dataset_prof',EXP)
+    list_tag = [ncfile for ncfile in dirEXP.glob(f'{EXP}-*_{qf}_prof.nc')]
+    return list_tag
 
 # return ncARGO filename
 def fname_plot_diags_matlab(smru_name,depl='',qf='hr1'):
@@ -270,3 +282,43 @@ def read_list_profiles(rebuild=False,verbose=False,public=False,Tdata=False,coun
     return list_profiles, list_tags, list_deployments
 
 
+#  copy the variable var from nc_in in nc_out
+def copy_netcdf_variable(nc_in,var_name_in,var_dims_in,nc_out,var_name_out,var_dims_out):
+    
+    with nc.Dataset(nc_in) as src, nc.Dataset(nc_out, "a") as dst:
+        # copy dimensions if not already existing
+        for i, name in enumerate(var_dims_out):
+            if name not in dst.dimensions:
+                dst.createDimension( name, src.dimensions[var_dims_in[i]].size )
+            if src.dimensions[var_dims_in[i]].size - dst.dimensions[var_dims_out[i]].size != 0:
+                print(f"Dimension {name} has wrong size in {nc_out}")
+                return 0
+        # copy variable
+        if var_name_out not in dst.variables:
+            var = dst.createVariable(var_name_out, src.variables[var_name_in].datatype, var_dims_out)
+        dst[var_name_out][:] = src[var_name_in][:]
+        # copy variable attributes all at once via dictionary
+        dst[var_name_out].setncatts(src[var_name_in].__dict__)
+
+    return 1
+
+
+# read a netCDF ARGO file and return a xarray dataset structure
+def read_ncfile(ncfile_name):
+    
+    if ncfile_name.is_file():
+        ds = xr.open_dataset(ncfile_name)
+        for dim in ds.dims:
+            ds[dim] = ((dim), ds[dim])
+            ds.set_coords([dim])
+        ds['N_TEMP'] = (('N_PROF'),N_PARAM(ds,'TEMP'))
+        ds['N_PSAL'] = (('N_PROF'),N_PARAM(ds,'PSAL'))
+        if 'N_CHLA' in ds.variables:
+            ds['N_CHLA'] = (('N_PROF'),N_PARAM(ds,'CHLA'))
+        if 'N_DOXY' in ds.variables:
+            ds['N_DOXY'] = (('N_PROF'),N_PARAM(ds,'DOXY'))
+    else:
+        print('No file: ',ncfile_name)
+        return None
+    return ds
+    

@@ -11,11 +11,13 @@ import gsw
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import netCDF4
+from importlib import reload
 import meop
 
 # list functions
 
 #  update_metadata(table_meta = meop.processdir / 'table_meta.csv', EXP='',one_smru_name=''):
+               
 
 
 #--------------------  MATLAB  ----------------------------#
@@ -69,12 +71,14 @@ def init_mirounga():
     run_command("conf = init_mirounga;")
     return conf
 
+
 def load_info_deployment(EXP='',one_smru_name=''):
     init_mirounga()
     eng.workspace['EXP'] = EXP
     eng.workspace['one_smru_name'] = one_smru_name
     eng.eval("info_deployment=load_info_deployment(conf,EXP,one_smru_name);",nargout=0)
 
+    
 def process_single_deployment(EXP=''):
     load_info_deployment(EXP=EXP)
     if eng.eval("isfield(info_deployment,'invalid_code')") and eng.eval("info_deployment.invalid_code"):
@@ -96,6 +100,7 @@ def process_single_deployment(EXP=''):
     if not run_command("create_hr2(conf,EXP);"):
         return False
     return True
+
 
 def process_single_tag(one_smru_name=''):
     load_info_deployment(one_smru_name=one_smru_name)
@@ -154,32 +159,6 @@ def update_metadata(EXP='',one_smru_name=''):
     return
 
 
-
-# # publish meop-ctd data in 
-# def create_tag_plots(folder_public):
-
-#     list_profiles, list_tags, list_deployments = meop.read_list_profiles(rebuild=False,verbose=False,public=True,Tdata=False)
-
-#     for COUNTRY in list_tags_public.COUNTRY.unique():
-        
-#         print(COUNTRY)
-#         folder_plots = folder_public / COUNTRY / 'PLOTS'
-#         folder_plots.mkdir(parents=True, exist_ok=True)
-
-#         list_profiles_country, list_tags_country, list_deployments_country = meop.filter_country(country, list_profiles, list_tags, list_deployments)
-#         for tag in list_tags_country.SMRU_PLATFORM_CODE.unique():
-#             print(tag)
-#             if meop.fname_prof(tag,qf='hr2').is_file():
-#                 with meop.read_ncfile(tag,qf='hr2') as ds:
-#                     ds = ds.assign_coords(pressure=("N_LEVELS", ds.PRES[0,:]))
-#                     ds['SIG0_ADJUSTED'] = (('N_PROF','N_LEVELS'),gsw.sigma0(ds.PSAL_ADJUSTED,ds.TEMP_ADJUSTED))
-#                     depl = meop.EXP_from_SMRU_CODE(tag)
-#                     namefig = folder_plots / (tag+'_data_description.png')
-#                     if not namefig.exists():
-#                         meop.plot_data_tags(ds,namefig=namefig)
-#                         plt.close()
-
-                
 # Execute in terminal command line
 if __name__ == "__main__":
 
