@@ -35,16 +35,19 @@ def create_ncfile_all(smru_name,folder_out):
     # copy lr1 in all
     ncfile_in = meop.fname_prof(smru_name,qf='lr1')
     ncfile_out = folder_out / meop.fname_prof(smru_name,qf='all').name
-    shutil.copyfile(ncfile_in,ncfile_out)
 
-    # copy ADJUSTED values in hr1 in INTERP variables
-    ncfile_add = meop.fname_prof(smru_name,qf='hr1')
-    meop.copy_netcdf_variable(ncfile_add,'PRES_ADJUSTED',('N_PROF', 'N_LEVELS'),\
-                              ncfile_out,'PRES_INTERP',('N_PROF', 'N_INTERP'))
-    meop.copy_netcdf_variable(ncfile_add,'TEMP_ADJUSTED',('N_PROF', 'N_LEVELS'),\
-                              ncfile_out,'TEMP_INTERP',('N_PROF', 'N_INTERP'))
-    meop.copy_netcdf_variable(ncfile_add,'PSAL_ADJUSTED',('N_PROF', 'N_LEVELS'),\
-                              ncfile_out,'PSAL_INTERP',('N_PROF', 'N_INTERP'))
+    if ncfile_in.is_file():
+        
+        shutil.copyfile(ncfile_in,ncfile_out)
+
+        # copy ADJUSTED values in hr1 in INTERP variables
+        ncfile_add = meop.fname_prof(smru_name,qf='hr1')
+        meop.copy_netcdf_variable(ncfile_add,'PRES_ADJUSTED',('N_PROF', 'N_LEVELS'),\
+                                  ncfile_out,'PRES_INTERP',('N_PROF', 'N_INTERP'))
+        meop.copy_netcdf_variable(ncfile_add,'TEMP_ADJUSTED',('N_PROF', 'N_LEVELS'),\
+                                  ncfile_out,'TEMP_INTERP',('N_PROF', 'N_INTERP'))
+        meop.copy_netcdf_variable(ncfile_add,'PSAL_ADJUSTED',('N_PROF', 'N_LEVELS'),\
+                                  ncfile_out,'PSAL_INTERP',('N_PROF', 'N_INTERP'))
     
     return ncfile_out
 
