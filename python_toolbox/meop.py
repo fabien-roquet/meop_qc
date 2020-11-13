@@ -84,7 +84,7 @@ def read_list_deployment(filename_list='list_deployment.csv'):
 
 
 # build list data in MEOP, store it in pickle file and return the dataframe
-def build_list_metadata():
+def build_list_metadata(qf='lr0'):
 
     datadir = Path(processdir,'final_dataset_prof')
 
@@ -92,7 +92,11 @@ def build_list_metadata():
     list_df=[]
     for dirpath in datadir.iterdir():
         dirname = dirpath.parts[-1]
-        for ncfile in dirpath.glob(f'{dirname}-*_lr0_prof.nc'):
+        if qf in ['lr1','hr1','fr1','all','hr2']:
+            data_suffix = '_ADJUSTED'
+        else:
+            data_suffix = ''
+        for ncfile in dirpath.glob(f'{dirname}-*_{qf}_prof.nc'):
             with xr.open_dataset(ncfile) as ds:
                 data = {'DEPLOYMENT_CODE': EXP_from_SMRU_CODE(ds.smru_platform_code),
                         'SMRU_PLATFORM_CODE': ds.smru_platform_code,
@@ -100,15 +104,15 @@ def build_list_metadata():
                         'JULD': ds['JULD'],
                         'LATITUDE': ds['LATITUDE'],
                         'LONGITUDE': ds['LONGITUDE'],
-                        'N_TEMP' : N_PARAM(ds,'TEMP'),
-                        'N_PSAL' : N_PARAM(ds,'PSAL'),
-                        'N_CHLA' : N_PARAM(ds,'CHLA')}
+                        'N_TEMP' : N_PARAM(ds,'TEMP'+data_suffix),
+                        'N_PSAL' : N_PARAM(ds,'PSAL'+data_suffix),
+                        'N_CHLA' : N_PARAM(ds,'CHLA'+data_suffix)}
             df = pd.DataFrame(data)
             list_df.append(df)
 
     # concatenate list of dataframes into one dataframe
     df_all = pd.concat(list_df)
-    df_all.to_pickle(processdir / 'list_meta_lr0_prof.pkl')
+    df_all.to_pickle(processdir / f'list_meta_{qf}_prof.pkl')
     
     return df_all
     
@@ -186,12 +190,12 @@ def filter_country(country, list_profiles, list_tags, list_deployments):
 
 # read MEOP data list from pickle file and return the dataframe.
 # If filename_pkl is not found, the list file is generated.
-def read_list_profiles(rebuild=False,verbose=False,public=False,Tdata=False,country=None):
+def read_list_profiles(rebuild=False,verbose=False,public=False,Tdata=False,country=None,qf='lr0'):
 
-    if (Path(processdir / 'list_meta_lr0_prof.pkl').is_file()) and (not rebuild):
-        list_profiles = pd.read_pickle(processdir / 'list_meta_lr0_prof.pkl')
+    if (Path(processdir / f'list_meta_{qf}_prof.pkl').is_file()) and (not rebuild):
+        list_profiles = pd.read_pickle(processdir / f'list_meta_{qf}_prof.pkl')
     else:
-        print(f'Create metadata files in {processdir}: list_meta_lr0_prof.pkl')
+        print(f'Create metadata files in {processdir}: list_meta_{qf}_prof.pkl')
         list_profiles = build_list_metadata()
 
     # read list of profiles
@@ -266,9 +270,6 @@ def read_list_profiles(rebuild=False,verbose=False,public=False,Tdata=False,coun
 
     if verbose:
         print(f'Update metadata files in {processdir}: list_profiles.pkl, list_tags.csv, list_deployments.csv')
-    list_profiles.to_pickle(processdir / 'list_profiles.pkl')
-    list_tags.to_csv(processdir / 'list_tags.csv', index=False)
-    list_deployments.to_csv(processdir / 'list_deployments.csv', index=False)
     
     if public:
         list_profiles, list_tags, list_deployments = filter_public_data(list_profiles, list_tags, list_deployments)

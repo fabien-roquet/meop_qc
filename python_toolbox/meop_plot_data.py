@@ -144,7 +144,7 @@ def plot_data_tags(ds,var_suffix='_ADJUSTED',namefig=None):
 
     return fig, ax
 
-def plot_map_deployments(ds,namefig=None,groupby='SMRU_PLATFORM_CODE',title='',legend=True):
+def plot_map_deployments(ds,namefig=None,groupby='SMRU_PLATFORM_CODE',title='',legend=True,folder='.'):
 
     ds = ds.reset_index()
     list_group = sorted(ds[groupby].unique())
@@ -186,7 +186,7 @@ def plot_map_deployments(ds,namefig=None,groupby='SMRU_PLATFORM_CODE',title='',l
 
     plt.tight_layout()
     if namefig:
-        plt.savefig(namefig,dpi=300,bbox_inches='tight')
+        plt.savefig((Path(folder) / namefig),dpi=300,bbox_inches='tight')
 
     return fig, ax
 

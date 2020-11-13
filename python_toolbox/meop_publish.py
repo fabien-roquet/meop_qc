@@ -65,6 +65,14 @@ def create_tag_plots(fname,folder_out,prefix_name,var_suffix):
 
 
 # publish meop-ctd data in 
+def copy_license(folder_out):
+
+    shutil.copyfile((meop.processdir / 'README_licenseODbl.txt'),(Path(folder_out) / 'README_licenseODbl.txt'))
+
+    return
+
+
+# publish meop-ctd data in 
 def publish_meop_ctd(folder_public, publish=True, genplots=True):
 
     folder_public = Path(folder_public)
@@ -72,6 +80,9 @@ def publish_meop_ctd(folder_public, publish=True, genplots=True):
     if len(os.listdir(folder_public)):
         print(f'Warning: the public directory where to store public data {folder_public} is not empty. Risk of data corruption.')
     
+    # copy license information
+    copy_license(folder_public)
+
     list_profiles, list_tags, list_deployments = meop.read_list_profiles(rebuild=False,verbose=False,public=True,Tdata=False)
 
     for COUNTRY in list_deployments.COUNTRY.unique():
@@ -87,31 +98,37 @@ def publish_meop_ctd(folder_public, publish=True, genplots=True):
         list_profiles_country, list_tags_country, list_deployments_country = \
             meop.filter_country(COUNTRY, list_profiles, list_tags, list_deployments)
         
-        for tag in list_tags_country.SMRU_PLATFORM_CODE.unique():
+        if publish:
             
+            for tag in list_tags_country.SMRU_PLATFORM_CODE.unique():
             
-            # copy ncfile: 'fr1 'if exists, otherwise 'all' with both low res and interp data
-            is_done = (folder_data / meop.fname_prof(tag,qf='fr1').name).is_file() or \
-                (folder_data / meop.fname_prof(tag,qf='all').name).is_file()
-            if not is_done:
-                print(tag)
-                fname = meop.fname_prof(tag,qf='fr1')
-                if fname.exists():
-                    shutil.copyfile(fname,folder_data / fname.name)
-                else:
-                    fname = create_ncfile_all(tag,folder_data)
+                # copy ncfile: 'fr1 'if exists, otherwise 'all' with both low res and interp data
+                is_done = (folder_data / meop.fname_prof(tag,qf='fr1').name).is_file() or \
+                    (folder_data / meop.fname_prof(tag,qf='all').name).is_file()
+                if not is_done:
+                    print('Publish:',tag)
+                    fname = meop.fname_prof(tag,qf='fr1')
+                    if fname.exists():
+                        shutil.copyfile(fname,folder_data / fname.name)
+                    else:
+                        fname = create_ncfile_all(tag,folder_data)
             
-            # create a plot for the tag
-            namefig = folder_plots / (tag+'_data_description.png')
-            if not namefig.is_file():
-                # figure based on fr1 if possible. Otherwise based on adjusted profiles
-                fname = folder_data / meop.fname_prof(tag,qf='fr1').name
-                if fname.is_file():
-                    create_tag_plots(fname,folder_plots,tag,'_ADJUSTED')
-                else:
-                    fname = folder_data / meop.fname_prof(tag,qf='all').name
+        if genplots:
+
+            for tag in list_tags_country.SMRU_PLATFORM_CODE.unique():
+            
+                # create a plot for the tag
+                namefig = folder_plots / (tag+'_data_description.png')
+                if not namefig.is_file():
+                    print('Generate plot:',tag)
+                    # figure based on fr1 if possible. Otherwise based on adjusted profiles
+                    fname = folder_data / meop.fname_prof(tag,qf='fr1').name
                     if fname.is_file():
-                        create_tag_plots(fname,folder_plots,tag,'_INTERP')
+                        create_tag_plots(fname,folder_plots,tag,'_ADJUSTED')
+                    else:
+                        fname = folder_data / meop.fname_prof(tag,qf='all').name
+                        if fname.is_file():
+                            create_tag_plots(fname,folder_plots,tag,'_INTERP')
         
     return
 
