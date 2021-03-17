@@ -1,35 +1,35 @@
-function[dives,info_ana_dives,varargout]=ana_dives(tdr)
-%%  Extraction des plongées et calcul de leurs paramètres
+function [dives,info_ana_dives,varargout]=ana_dives(tdr)
+%%  Extraction des plongÃ©es et calcul de leurs paramÃ¨tres
 %
 % [x,y,z,t,a,b,c,d,e,f]=dives(tdr)
 %
-% x est le tableau de synthèse des plongées à l'issue de l'analyse des
-% données TDR
+% x est le tableau de synthÃ¨se des plongÃ©es Ã  l'issue de l'analyse des
+% donnÃ©es TDR
 % y est une structure contenant des informations sur l'identification des
-% plongées.
+% plongÃ©es.
 % z, facultatif - noms des colonnes de x.
-% t, facultatif - les données tdr avec le statut (surf/plg) mis à jour.
+% t, facultatif - les donnÃ©es tdr avec le statut (surf/plg) mis Ã  jour.
 % a, facultatif - noms des colonnes de t.
-% b, facultatif - indexes de bébut et fin de plongée (tableau "chg").
-% c, facultatif - indexes de bébut et fin de bottom (tableau "daindexes").
-% e, facultatif - vitesse verticale lissée.
+% b, facultatif - indexes de bÃ©but et fin de plongÃ©e (tableau "chg").
+% c, facultatif - indexes de bÃ©but et fin de bottom (tableau "daindexes").
+% e, facultatif - vitesse verticale lissÃ©e.
 % f, facultatif - profondeur max et indexes.
 %
 % *Parametres:*
 %
 % * pseuil: profondeur a partir de laquelle l'animal est considere en
-% plongée.
+% plongÃ©e.
 %
-% * startnumb: premier num pour numerotation des plongées.
+% * startnumb: premier num pour numerotation des plongÃ©es.
 %
-% * plotting1: "1" pour tracer l'histogramme des petites période de surface 
-% et de plongée. % Il permet à l'utilisateur de voir quel est le parametre
-% "duree" le plus adapté aux données dans chacun des cas.
+% * plotting1: "1" pour tracer l'histogramme des petites pÃ©riode de surface 
+% et de plongÃ©e. % Il permet Ã  l'utilisateur de voir quel est le parametre
+% "duree" le plus adaptÃ© aux donnÃ©es dans chacun des cas.
 %
-% * dureed: dans le cas ou l'histogramme n'est pas affiché, la valeur par
-% defaut du paramètre "durée" pour les périodes de plongée.
+% * dureed: dans le cas ou l'histogramme n'est pas affichÃ©, la valeur par
+% defaut du paramÃ¨tre "durÃ©e" pour les pÃ©riodes de plongÃ©e.
 % Il s'agit du minimum de temps (en seconde) que doit durer une periode de 
-% plongée pour etre considéré comme valide.
+% plongÃ©e pour etre considÃ©rÃ© comme valide.
 %
 % * infos: "1" pour afficher les infos a la fin de la fonction.
 %
@@ -38,22 +38,22 @@ startnumb=1;
 plotting1=0;
 dureed=300;
 %disp('ana_dives... (4 steps)');
-%% 1°) Identification des phases des plongées
+%% 1Â°) Identification des phases des plongÃ©es
 %
-resolution=(tdr(2,1)-tdr(1,1))/(1.1574e-05); %détermination de la 
-% résolution des données en datenum, 1.1574e-05 correspond à 1 seconde
+resolution=(tdr(2,1)-tdr(1,1))/(1.1574e-05); %dÃ©termination de la 
+% rÃ©solution des donnÃ©es en datenum, 1.1574e-05 correspond Ã  1 seconde
 [chg,tdr,y2,last,dureed]=id_dives(tdr,pseuil,plotting1,dureed);
 s=size(tdr); % mise a jour de "s"
 tdrtxt={'Ptime Num','Corrected Depth','External Temperature',...
     'Light Level','State','Dive Number'};
 varargout(3)={tdrtxt};
-%disp('1°) done');
-%% 2°) Identification de montées et descentes
+%disp('1Â°) done');
+%% 2Â°) Identification de montÃ©es et descentes
 %
 [depthmax,vert_speed,daduration,daspeed,daindexes]=poly_4_delim_fabien(tdr,chg,dureed);
 [sinu]=sinuosity(tdr,depthmax,vert_speed,daindexes);
-%disp('2°) done');
-%% 3°) Affectation des valeurs dans la matrice 'dives'
+%disp('2Â°) done');
+%% 3Â°) Affectation des valeurs dans la matrice 'dives'
 %
 schg=size(chg);
 dives=zeros(schg(2),13);
@@ -74,7 +74,7 @@ for k=1:schg(2)
     if k<schg(2)
 		dives(k,6)=(chg(1,k+1)-chg(2,k))*resolution; % time spent in surface after diving
     else
-        dives(k,6)=(last-chg(2,k))*resolution; % idem mais pour la dernière plongée
+        dives(k,6)=(last-chg(2,k))*resolution; % idem mais pour la derniÃ¨re plongÃ©e
     end
 	dives(k,7)=daduration(1,k); % desc duration
 	dives(k,8)=dives(k,4)-daduration(1,k)-daduration(2,k); % bottom duration
@@ -84,15 +84,15 @@ for k=1:schg(2)
     dives(k,13)=sinu(k); % sinuosity
 end
 %
-% % regression linéaire multiple pour calcul des résidus du bottom time
+% % regression linÃ©aire multiple pour calcul des rÃ©sidus du bottom time
 % % model: Bottom time ~ maxdepth + dive duration
 % %
 % [betahat,Ibeta,res]=regress(dives(:,8),dives(:,4:5)); %#ok<ASGLU>
 % for k=1:schg(2)
 %     dives(k,10)=res(k); % bottom duration residual
 % end
-%disp('3°) done');
-%% 4°) Information sur le déroulement de la fonction
+%disp('3Â°) done');
+%% 4Â°) Information sur le dÃ©roulement de la fonction
 %
 % & ajouts d'arguments de sortie
 %
@@ -107,4 +107,5 @@ info_ana_dives=struct('Seuil_prof', pseuil,...
     'Resolution_TDR',floor(resolution),...
     'Duree_minimale_plongee',dureed,...
     'Nb_plongee_reecrites_en_surface',y2); %#ok<NOPRT>
-%disp('4°) done');
+%disp('4Â°) done');
+

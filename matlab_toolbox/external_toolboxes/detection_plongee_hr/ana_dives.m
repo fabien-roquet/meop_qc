@@ -1,4 +1,4 @@
-function[dives,info_ana_dives,varargout]=ana_dives(tdr)
+function [dives,info_ana_dives,varargout]=ana_dives(tdr)
 %%  Extraction des plongées et calcul de leurs paramètres
 %
 % [x,y,z,t,a,b,c,d,e,f]=dives(tdr)
