@@ -13,7 +13,6 @@ import cartopy.crs as ccrs
 import netCDF4
 from importlib import reload
 import meop
-import io
 
 # list functions
 

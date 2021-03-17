@@ -46,3 +46,18 @@ Process smru_name=ct150-977-VERT-18
 	1 tags
 	19 profiles
   ct150-977-VERT-18: 0 profiles and 0 Sprofiles removed
+Process smru_name=ct150-360BAT-16
+Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('save')" style="font-weight:bold">save</a>
+Cannot create 'ct150_lr0_fcell.mat' because '/Users/roquet/GitHub/meop_qc/matlab_realtime/temporary' does not exist.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_load_table2prof', '/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m', 107)" style="font-weight:bold">sc_load_table2prof</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_toolbox/create_ncARGO/sc_load_table2prof.m',107,0)">line 107</a>)
+save(name_fcell,'hi','hs','PTi','PSi','PFi','POi','PLi','EXP','PI','NATION','isoxy','isfluo','islight');
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('create_ncargo_realtime', '/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m', 34)" style="font-weight:bold">create_ncargo_realtime</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/create_ncargo_realtime.m',34,0)">line 34</a>)
+sc_load_table2prof;
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('sc_oracle_ctd_process', '/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m', 43)" style="font-weight:bold">sc_oracle_ctd_process</a> (<a href="matlab: opentoline('/Users/roquet/GitHub/meop_qc/matlab_realtime/sc_oracle_ctd_process.m',43,0)">line 43</a>)
+    create_ncargo_realtime(conf,EXP,one_smru_name,table);
+
+conf = init_mirounga_realtime;
+[s,mess,messid] = mkdir(conf.temporary);
