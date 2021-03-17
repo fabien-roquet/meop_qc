@@ -33,7 +33,7 @@ function[dives,info_ana_dives,varargout]=ana_dives(tdr)
 %
 % * infos: "1" pour afficher les infos a la fin de la fonction.
 %
-pseuil=15;
+pseuil=2;
 startnumb=1;
 plotting1=0;
 dureed=300;
